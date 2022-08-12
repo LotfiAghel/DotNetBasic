@@ -1,0 +1,13 @@
+
+@using Models
+@using System.ComponentModel;
+@using Tools;
+@{
+    reload();
+}
+<div>fff</div>
+@if(comp!=null){
+    <div>@Program0.CreateDynamicComponent2(this,comp,url)</div>
+}else{
+    <div>function not found</div>
+}

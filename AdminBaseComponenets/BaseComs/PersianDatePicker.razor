@@ -1,0 +1,126 @@
+﻿
+@using System.Collections.Generic
+@using Blazor.PersianDatePicker
+
+
+@{
+    Console.WriteLine($"persian Date picker {value}");
+}
+<div class="row pt-2 pb-2">
+    <div class="col-4">
+        <InputPersianDatePicker Id="@($"id-{Guid.NewGuid().ToString()}")"
+                                @bind-Value="strValue"
+                                Visible="true"
+                                Disabled=@ReadOnly
+                                PickerAlign="Align.Left"
+                                PickerOffsetTopPositionInPixels="-5"
+                                InitialValue="false"
+                                CalendarType="Calendar.DualModeJalaliDefault"
+                                DigitType="DigitType.BasedOnCalendar"
+                                DateFormat="DateFormat.yyyy_slash_MM_slash_dd"
+                                MinDateSetOnToday="false"
+                                Placeholder="انتخاب تاریخ"
+                                CssClass="form-control"
+                                Theme="PickerTheme.Default"
+                                OnChange="@Click2" />
+    </div>
+
+    <div class="col-4">
+        <SfTimePicker TValue="DateTime?" Value='@dayTime' ValueChanged="@Click2"
+                      Readonly=@ReadOnly></SfTimePicker>
+    </div>
+    @* <div class="col-2">
+        <Select @bind-Value="@Hours" onchange=@Click2()>
+            @for (int t = 0; t < 24; ++t)
+            {
+                var localVariable = t;
+                <SelectItem TValue="int" Value=@localVariable>
+                    @localVariable
+                </SelectItem>
+            }
+        </Select>
+    </div>
+
+    <div class="col-2">
+        <Select @bind-Value="@Minutes" onchange=@Click2()>
+            @for (int t = 0; t < 60; ++t)
+            {
+                var localVariable = t;
+                <SelectItem TValue="int" Value=@localVariable>
+                    @localVariable
+                </SelectItem>
+            }
+        </Select>
+    </div>
+
+    <div class="col-2">
+        <Select @bind-Value="@Seconds" onchange=@Click2()>
+            @for (int t = 0; t < 60; ++t)
+            {
+                var localVariable = t;
+                <SelectItem TValue="int" Value=@localVariable>
+                    @localVariable
+                </SelectItem>
+            }
+        </Select>
+    </div> *@
+</div>
+
+@code
+{
+
+    System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
+
+    [Parameter]
+    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
+
+    [Parameter]
+    public DateTime value { get; set; }
+
+     [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
+
+
+    public DateTime dayTime
+    {
+        get => value;
+        set { this.value = value; }
+    }
+    public int Hours
+    {
+        get => pc.GetHour(value);
+        set { this.value = pc.ToDateTime(pc.GetYear(this.value), pc.GetMonth(this.value), pc.GetDayOfMonth(this.value), value, Minutes, Seconds, 0); }
+    }
+    public int Minutes
+    {
+        get => pc.GetMinute(value);
+        set { this.value = pc.ToDateTime(pc.GetYear(this.value), pc.GetMonth(this.value), pc.GetDayOfMonth(this.value), Hours, value, Seconds, 0); }
+    }
+    public int Seconds
+    {
+        get => pc.GetSecond(value);
+        set { this.value = pc.ToDateTime(pc.GetYear(this.value), pc.GetMonth(this.value), pc.GetDayOfMonth(this.value), Hours, Minutes, value, 0); }
+    }
+
+    DateTime prvValue;
+    [Parameter] public EventCallback<object> changeRefrence { get; set; }
+
+    public string strValue { get { return value.ToPersianDateString(); } set { this.value = value.toPersianDate(); } }
+
+    async Task Click2()
+    {
+        Console.WriteLine("inja");
+        //this.value = pc.ToDateTime(pc.GetYear(this.value), pc.GetMonth(this.value), pc.GetDayOfMonth(this.value), Hours, Minutes, Seconds, 0);
+        this.value = value;
+        //value=DateTime.Now;
+        if (prvValue != value)
+        {
+
+            await changeRefrence.InvokeAsync(value);
+        }
+        prvValue = value;
+
+    }
+
+}

@@ -1,0 +1,56 @@
+@typeparam TEntity
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+@using Models
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+@inherits IntegerForeignKeyInput<TEntity>
+
+@{
+    Data =default(TEntity);
+     var tmp = Program0.getEntityManager<TEntity>();
+
+     Data = tmp.getFromLoaded(value.Value);
+     if(Data!=null)
+        w = Program0.createWidget(Data.GetType(), new List<Attribute>() {  });
+     if(Data is  IIdMapper<int> dd)
+        dataId=dd.id;
+
+    
+}
+
+
+<div class="row pt-2 pb-2" @key=@dataId>
+    @if(Data!=null && w != null){
+        <div class="col-sm-10">
+            <div  @key=@dataId>@Program0.CreateDynamicComponent2(this, w, Data)</div>
+        </div>
+    }else{
+        <div>@value.Value</div>
+    }
+    
+</div>
+
+
+
+
+
+@code
+{
+   
+
+
+
+
+   
+}
+

@@ -1,0 +1,45 @@
+@typeparam TEntity
+
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+@inherits IntegerForeignKeyInput<TEntity>
+
+
+
+@if(!ReadOnly){
+    @if(generator!=null ){
+        <Select TValue="int" SelectedValue=@value
+                SelectedValueChanged=@Click2
+                ReadOnly=@ReadOnly>
+            @if (generator != null)
+                foreach (var t in  generator)
+                {
+                            
+                    <SelectItem TValue="int" Value=@t.Value>
+                        @if (ItemComponenet != null)
+                        {
+                            <div>@Program0.CreateDynamicComponent2(this, ItemComponenet, t))</div>
+                        }
+                    </SelectItem>
+                }
+        </Select>
+    }
+}
+<div>@generator.GetHashCode()</div>
+
+       
+
+
+

@@ -1,0 +1,90 @@
+@typeparam TItem 
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+@inherits NullableInput2<TItem>
+
+<div>
+    @if(!__valueIsNull){
+        <Button Clicked=" (_) => setNull()" style="position: absolute; z-index: 10; margin: .5rem; left: 20%;">
+            <mat-icon class="material-icons" style="font-size:14px; font-weight:bold; color:red">close</mat-icon>
+        </Button>
+
+     @if (_w != null)
+                        {
+                            Action<object> onChangeRefrence = async (x) => { 
+                                Console.WriteLine("value = x");
+                                value = (TItem)x; 
+                                __valueIsNull=false;
+                                await Click();
+                                Console.WriteLine("value = "+value);
+                                
+                            };
+                             <div>@Program0.CreateDynamicComponent2(this,_w, value, onChangeRefrence,Attributes,ReadOnly)</div>;
+                        }
+    }else if(!ReadOnly){
+        <Button Outlined="true" Clicked=@create     Raised="true" >ایجاد</Button>
+    }
+    
+</div>
+
+@code
+{
+
+    
+
+    ComponentBase _w=null;
+    /*ComponentBase w{ get{
+            if(_w==null)
+                _w=Program0.createForm(typeof(TItem),Attributes);
+            return _w;
+        }
+        set{_w=value;}
+    }/**/
+     async Task create()
+    {
+
+
+        __valueIsNull = false;
+        _w=Program0.createForm(typeof(TItem),Attributes);
+        
+
+    }
+    async Task Click2()
+    {
+
+        
+        var bv=value;
+        var vv=await Click();
+        
+        if (!bv.Equals(vv) )
+            return;
+        
+        
+
+    }
+    protected override async Task OnInitializedAsync(){
+            _w=Program0.createForm(typeof(TItem),Attributes);
+
+    }
+
+   
+
+    protected override void OnParametersSet(){
+
+        
+    }
+
+
+}

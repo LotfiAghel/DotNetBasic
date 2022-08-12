@@ -1,0 +1,305 @@
+@typeparam TType
+@using System.Linq
+@using Microsoft.Extensions.Logging
+@using ClTool
+@using MyRefelctionMirror;
+@inject HttpClient Http
+@using System;
+@using System.Net;
+@using Newtonsoft.Json.Linq;
+@using Newtonsoft.Json;
+
+
+
+@using System.Collections.Generic;
+@using System.ComponentModel.DataAnnotations;
+@using System.ComponentModel.DataAnnotations.Schema;
+@using Tools;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@using System.Collections;
+
+
+
+@functions {
+
+    //<DataList TItem2=@Coach TItem=@Coach url="/old/" url2=@entityName >
+      RenderFragment CreateDynamicComponent2(Type typeClass) => builder =>
+   {
+       
+
+       var gt = typeof(AdminBaseComponenets.BaseComs.TypeLink<>).MakeGenericType(new Type[] {  typeClass });
+
+       builder.OpenComponent(0, gt);
+       /*Action<Type> onRedirect=(url)=>{
+            //Console.WriteLine("constructor is nullllllllllllllllllll " + tt);
+            Console.WriteLine("onRedirect "+url);
+            typeClass=url;
+            var typeName=url.GetName().Replace(".","__");
+            StateHasChanged();
+            //Click();
+            var link="/typeshow2/"+typeName;
+            //NavigationManager.NavigateTo(link, false);
+       };
+       var callback = EventCallback.Factory.Create<Type>(this, onRedirect);/**/
+       builder.AddAttribute(1, "onRedirect", onRedirect);
+
+       builder.CloseComponent();
+   };
+}
+
+@if(typeClass!=null){
+    var superClass=typeClass.BaseType;
+    var interfaces=typeClass.GetInterfaces();
+    Action<object> onClick0 = async (x) =>
+                                                                            {
+                                                                                await Click(typeClass);
+                                                                            };
+    <div style="text-align:left;width:100%;direction:ltr">
+                                
+                                <span>    @typeClass.GetDocPerisanName()</span>                
+                                <div>@typeClass.getKindName() <p style="display: inline;color:blue" @onclick=@onClick0>@typeClass.GetName() </p>
+                                    @if(superClass!=typeof(object) || interfaces.Length>0){
+                                        bool started=false;
+                                        <span> : </span>
+                                            @if(superClass!=typeof(object)){
+                                                started=true;
+                                                 Action<object> onClick = async (x) =>
+                                                                            {
+                                                                                await Click(superClass);
+                                                                            };
+                                                <p style="display: inline;color:blue" @onclick=@onClick>@superClass.GetName() </p>
+                                            }
+                                            @if(false){
+                                                foreach (var item in interfaces)
+                                                {
+                                                    if(started){
+                                                        <span > , </span>
+                                                    }
+                                                    started=true;
+                                                    Action<object> onClick2 = async (x) =>
+                                                                                {
+                                                                                    await Click(item);
+                                                                                };
+                                                    <p style="display: inline;color:blue" @onclick=@onClick2>@item.GetName() </p>
+                                                }
+                                            }
+                                        
+                                    }
+                                    {  <br>
+                                        @{
+                                            if(typeClass==typeof(String)){
+                                                
+                                            }else{
+                                                var prs=typeClass.GetProperties();
+                                                foreach(var pr in prs){
+                                                   
+                                                    var x = pr.GetCustomFirstAttributes<Models.CustomIgnoreTag>();
+                                                        
+                                                    if(x!=null && x.kinds.Contains(Models.CustomIgnoreTag.Kind.CLIENT))    
+                                                        continue;
+
+                                                    bool required = pr.GetCustomFirstAttributes<RequiredAttribute>() !=null;
+                                                    var name=   required? "*"+pr.Name:pr.Name; 
+                                                    
+                                                    var y=pr.GetCustomFirstAttributes<CollectionAttr>();
+                
+                                                   
+                                                    var doc=pr.GetDocPerisanName();
+                                                    <span style="margin:20px;">    @name : @CreateDynamicComponent2(pr.PropertyType) </span>
+                                                    if(y!=null && y.type==typeof(ForeignKeyAttr)){
+                                                        var ftype=y.data[0] as Type;    
+                                                        if(ftype!=null){
+                                                            <span>   ----&gt collection of ForeignKey to @CreateDynamicComponent2(ftype)</span> 
+                                                        }
+                                                    }
+
+                                                    @if(doc!=null){
+                                                        <span>   ----&gt @doc</span> 
+                                                    }
+                                                    
+                                                    
+                                                    <div></div>
+                                                    
+                                                    
+                                                                
+                                                                
+                                                    
+                                                }                                                
+                                            }   
+                                            if(typeClass.IsEnum){
+                                                 @for (int i = 0; i < optionsV.Count; ++i)
+                                                    {
+                                                        <div style="margin:20px;">@optionsL[i] = @optionsV[i]</div>
+                                                    }
+                                                
+                                            }
+                                        } 
+                                } </div>
+                                                
+
+                                            
+                                </div>
+
+<Accordion title="kotlin">
+                
+             <div style="text-align:left;width:100%;direction:ltr">
+                                
+                                <div>@typeClass.getKindName() <p style="display: inline;color:blue"  @onclick=@onClick0>@typeClass.Name</p>
+                                    @if(superClass!=typeof(object) || interfaces.Length>0){
+                                        bool started=false;
+                                        <span style="display: inline;"> : </span>
+                                            @if(superClass!=typeof(object)){
+                                                started=true;
+                                                 Action<object> onClick = async (x) =>
+                                                                            {
+                                                                                await Click(superClass);
+                                                                            };
+                                                 <p style="display: inline;color:blue"  @onclick=@onClick>@superClass.GetName() </p>
+                                            }
+                                            @if(false){
+                                                foreach (var item in interfaces)
+                                                {
+                                                    if(started){
+                                                        <span > , </span>
+                                                    }
+                                                    started=true;
+                                                    Action<object> onClick2 = async (x) =>
+                                                                                {
+                                                                                    await Click(item);
+                                                                                };
+                                                     <p style="display: inline;color:blue" @onclick=@onClick2>@item.GetName() </p>
+                                                }
+                                            }
+                                        
+                                    }
+                                    {  <br>
+                                        @{
+                if(typeClass==typeof(String)){
+                                                
+                                            }else{
+                                                var prs=typeClass.GetProperties();
+                                                foreach(var pr in prs){
+                                                   var y = pr.GetCustomFirstAttributes<JsonIgnoreAttribute>();
+                            if (y != null)
+                                continue;
+                                                    var x = pr.GetCustomFirstAttributes<Models.CustomIgnoreTag>();
+                                                    
+                                                        
+                                                    if(x!=null && x.kinds.Contains(Models.CustomIgnoreTag.Kind.CLIENT))    
+                                                        continue;
+
+                                                    bool required = pr.GetCustomFirstAttributes<RequiredAttribute>() !=null;
+                                                    var name=   pr.Name; 
+                                                    
+                                                    
+                
+                                                   
+                                                    
+                                                    <span style="margin:20px;">    @name : @CreateDynamicComponent2(pr.PropertyType) ;</span>
+                                                    
+                                                    <div></div>
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                                
+                                                                
+                                                    
+                                                }                                                
+                                            }   
+                                            if(typeClass.IsEnum){
+                                                 @for (int i = 0; i < optionsV.Count; ++i)
+                                                    {
+                                                        <div style="margin:20px;">@optionsL[i] = @optionsV[i]</div>
+                                                    }
+                                                
+                                            }
+                                        } 
+                                } </div>
+                                                
+
+                                            
+                                </div>           
+                
+    </Accordion>
+
+}
+
+
+
+@code {
+
+
+    public List<int> optionsV = new List<int>();
+    public List<string> optionsL = new List<string>();
+
+    [Parameter]
+    public EventCallback<Type> onRedirect {get;set;}
+  
+    public Type typeClass;
+    
+    
+    
+    
+    
+      
+    protected override async Task OnInitializedAsync()
+    {
+        
+        typeClass=typeof(TType);
+
+        var valuesAndDescriptions = new Dictionary<int, string>();
+
+        // gets the Type that contains all the info required
+        // to manipulate this type
+        
+
+        // I will get all values and iterate through them
+        if(typeClass.IsEnum){
+            var enumValues = typeClass.GetEnumValues();
+
+            foreach (object value in enumValues)
+            {
+                // with our Type object we can get the information about
+                // the members of it
+                var memberInfo =
+                    typeClass.GetMember(value.ToString()).First();
+
+
+                optionsV.Add((int)Convert.ChangeType(value, typeof(int)));
+                optionsL.Add(value.ToString());
+
+
+
+
+            }
+        }
+    }
+    public async Task doWithDelay(){
+        await Task.Delay(30);
+        StateHasChanged();
+    }
+    @inject NavigationManager NavigationManager; //dos not work in widget
+    async Task Click(Type url)
+    {
+        var link="/typeshow/"+url.GetName().Replace(".","__");
+        /*typeClass=url;
+        Console.WriteLine("click "+link);
+        doWithDelay();/**/
+        
+         //NavigationManager.NavigateTo(link, false);
+         Console.WriteLine("click "+link);
+         await onRedirect.InvokeAsync(url);
+         Console.WriteLine("click</> "+link);
+         //NavigationManager.NotifyLocationChanged();
+    }
+
+
+
+
+
+
+
+}

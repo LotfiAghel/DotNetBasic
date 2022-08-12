@@ -1,0 +1,13 @@
+@typeparam TINP
+@typeparam TOUT
+
+
+@using Models
+@using System.ComponentModel;
+@using Tools;
+
+
+@Program0.CreateDynamicComponent2(this,Program0.createForm(typeof(FuncV<TINP, TOUT>),new List<Attribute>() { }),inpOut)
+<Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+<div>actions</div>
+

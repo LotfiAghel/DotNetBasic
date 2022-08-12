@@ -1,0 +1,147 @@
+﻿@using ClTool
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Net.Http
+
+
+<p>
+    <label>
+        آپلود تا @maxAllowedFiles فایل:
+        <InputFile OnChange="@OnInputFileChange" multiple />
+    </label>
+</p>
+
+@if (files != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <ul>
+                <li>
+                    نام فایل ذخیره شده: @files.Name
+                    <br>
+                    @if (uploadResults != null)
+                    {
+                        <span>
+                             فایل : @uploadResults.StoredFileName
+                        </span>
+                        var nn = ClTool.WebClient.webClient.baseUrl + "StaticFiles/" + uploadResults.StoredFileName;
+                        <img src=@nn class="img" />
+                    }
+                    else if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        <span>
+                             فایل : @files.Name
+                        </span>
+                        <img src=@value class="img" />
+                    }
+                    else
+                    {
+                        <span>
+                            خطا در آپلود فایل
+                        </span>
+                    }
+                </li>
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
+
+    [Parameter]
+    public string value { get; set; } = "";
+
+    [Parameter] 
+    public EventCallback<object> changeRefrence { get; set; }
+
+    private File files = null;
+    private UploadResult uploadResults = null;
+    private int maxAllowedFiles = 1;
+    private bool shouldRender;
+
+    protected override bool ShouldRender() => shouldRender;
+    //string  serverUrl = "https://localhost:5000/";
+    
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        shouldRender = false;
+        long maxFileSize = 1024L*1024 * 1024 *2;
+        var upload = false;
+
+        using var content = new MultipartFormDataContent();
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            if (uploadResults is null)
+            {
+                var fileContent = new StreamContent(file.OpenReadStream());
+
+                files =
+                    new File()
+                    {
+                        Name = file.Name,
+                    };
+
+                if (file.Size < maxFileSize)
+                {
+                    content.Add(
+                        content: fileContent,
+                        name: "\"files\"",
+                        fileName: file.Name);
+
+                    upload = true;
+                }
+                else
+                {
+                    //logger.LogInformation("{FileName} not uploaded", file.Name);
+
+                    uploadResults = new UploadResult()
+                    {
+                        FileName = file.Name,
+                        ErrorCode = 6,
+                        Uploaded = false,
+                    };
+                }
+            }
+        }
+
+        if (upload)
+        {
+
+
+            var oldBase =ClTool.WebClient.webClient;
+            await oldBase.fetch("", null, HttpMethod.Get);
+            uploadResults = await oldBase.sendFile("v1/file", content);
+            value = uploadResults.StoredFileName;
+            value=ClTool.WebClient.webClient.baseUrl + "StaticFiles/" + uploadResults.StoredFileName;
+            uploadResults=null;
+            await changeRefrence.InvokeAsync(value);
+
+
+
+        }
+
+        shouldRender = true;
+    }
+
+
+    protected override void OnInitialized()
+    {
+        var valueArray = value.Split('/');
+        string fileName = valueArray[valueArray.Length - 1];
+
+        files = new File()
+        {
+            Name = fileName
+        };
+    }
+
+
+
+    private class File
+    {
+        public string Name { get; set; }
+    }
+}

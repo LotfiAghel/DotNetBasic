@@ -1,0 +1,77 @@
+﻿@typeparam ENUM
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+@using Newtonsoft.Json.Linq;
+
+@inherits EnumArrayInput<ENUM>
+@{
+    firstRun();
+}
+
+@if (value!=null){
+    <div>@generator.Count() </div>
+<div class="e-multiselect e-control-wrapper e-control-container e-input-group e-rtl" style="width:100%;" _bl_17="">
+    @if(!ReadOnly){
+        <Button Clicked=" (_) => setNull()" style="position: absolute; z-index: 10; margin: .5rem; left: 0%;">
+                <mat-icon class="material-icons" style="font-size:14px; font-weight:bold; color:red">close</mat-icon>
+        </Button>
+    }
+    <div class="e-multi-select-wrapper e-down-icon" tabindex="-1" _bl_18="">
+        <span class="e-chips-collection" ondragover="event.preventDefault();" style="margin:20px">
+            @if(true){
+                foreach (var t in value){
+                        Action onRemove = async () =>
+                            {
+                                
+                                await remove(t);
+                            };
+                            @if(!ReadOnly){
+                                <span class="e-chips " data-value=@t draggable="true" style="list-style-type:none; height:30px"  tabindex="1"
+                                    @ondrop="@(()=> Drop(t))" @ondragstart="@(()=> StartDrag(t))">
+                                    <span class="e-chipcontsent">
+                                        @t
+                                    </span>
+                                    <span class="e-chips-close" onclick=@onRemove></span>
+                                </span>
+                            }else{
+                                <span class="e-chips " data-value=@t style="list-style-type:none; height:30px"  tabindex="1">
+                                    <span class="e-chipcontsent">
+                                        @t
+                                    </span>
+                                </span>
+                            }
+                        
+                }
+            }
+        </span>
+        <span class="e-multi-searcher">
+
+            @if ( generator != null && generator.Count()>0 && !ReadOnly){
+                    Action<object> onChange = async( x) =>
+                                    {
+                                            Console.WriteLine( $"onClick2 onClick2 00 {x}");
+                                        await Click2((int)x);
+                                    };
+                    <EnumInput3 ENUM=@ENUM  changeRefrence=@onChange optionGenerator=@generator />
+                    
+                    
+                
+            }
+            </span>
+    </div>
+    </div>
+}
+
+@if (value == null && !ReadOnly)
+{
+     <Button Outlined="true" Clicked=@Click     Raised="true" >ایجاد</Button>
+}
+

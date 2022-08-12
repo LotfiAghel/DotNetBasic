@@ -1,0 +1,138 @@
+﻿@typeparam TItem
+
+
+@using Models
+@using System.Collections.Generic
+@using Newtonsoft.Json.Linq;
+@inject NavigationManager NavManager
+@using Blazorise.DataGrid
+@inherits NullableInput2<IEnumerable<TItem>>
+
+@{
+    if(value!=null)
+        Console.WriteLine("data size "+value.Count());
+    else
+        Console.WriteLine("data is null");
+}
+
+@if (itemName != null)
+{
+    <button class="btn btn-primary" @onclick="@ModalShow">Show Dialog!</button>
+    @if (showModal)
+    {
+        <div class="modal fade show" id="myModal" style="display:block" aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm action</h4>
+                <button type="button" class="close" @onclick="@ModalCancel">&times;</button>
+            </div>
+
+            <div>@Program0.CreateDynamicComponent2(this, w, ttvalue)</div>;
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn" @onclick="@ModalCancel">Cancel</button>
+                <button type="button" class="btn btn-danger" @onclick=@ModalOk>Delete</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+    }
+}
+<hr />
+
+
+
+<DataGrid TItem="TItem"
+        Data="@value"
+        RowDoubleClicked=onClick
+        Responsive
+        ShowPager
+        >
+    <DataGridCommandColumn TItem="TItem" />
+    
+    @foreach (var prop in propertis){
+                var persianLabel = prop.GetCustomFirstAttributes<Models.PersianLabel>();
+                <DataGridColumn TItem="TItem" Field=@prop.Name Caption="@(persianLabel != null ? persianLabel.txt : prop.Name)" Editable="true" />
+    }
+</DataGrid>
+
+
+
+@code {
+
+    
+
+    
+    [Parameter]
+    public string itemName { get; set; } = null;
+
+    [Parameter]
+    public int itemValue { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem> ChildContent { get; set; }
+
+
+
+
+    bool widget=true;    
+
+    string EntityName = typeof(TItem).FullName.Replace(".", "__");
+    
+
+    public List<System.Reflection.PropertyInfo> propertis = typeof(TItem).GetProperties()
+        .Where(prop =>
+            {
+
+                if (prop.PropertyType.IsGenericType
+                    && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
+                        return false;
+                    
+                var x = prop.GetCustomFirstAttributes<Models.IgnoreDefultGird>();
+                if (x != null)
+                    return false;
+                return true;
+            }).ToList();
+
+    
+    ComponentBase w = null;
+    TItem ttvalue;
+
+    bool showModal = false;
+
+
+
+    
+
+    void ModalShow()
+    {
+        var pr = typeof(TItem).GetProperty(itemName);
+        ttvalue = (TItem)(typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }));
+        w = Program0.createForm(typeof(TItem), new List<Attribute>());
+        //Data.Add(ttvalue);
+        showModal = true;
+    }
+    void ModalCancel() => showModal = false;
+    void ModalOk()
+    {
+        Console.WriteLine("Modal ok");
+        showModal = false;
+    }
+    public void onClick(DataGridRowMouseEventArgs<TItem> e)
+    {
+        
+        
+            
+            var itemId = (e.Item as Entity).id;
+            NavManager.NavigateTo($"{EntityName}/edit/{itemId}");
+        
+    }
+
+    
+    
+}

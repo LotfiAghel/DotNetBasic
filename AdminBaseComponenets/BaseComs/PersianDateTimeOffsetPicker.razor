@@ -1,0 +1,124 @@
+﻿@using System.Collections.Generic
+@using Blazor.PersianDatePicker
+
+<div class="row pt-2 pb-2">
+    <div class="col-5">
+        <InputPersianDatePicker Id="@($"id-{Guid.NewGuid().ToString()}")" @bind-Value="dateValue" Visible="true"
+            Disabled=@ReadOnly PickerAlign="Align.Right" PickerOffsetTopPositionInPixels="0" InitialValue="false"
+            CalendarType="Calendar.DualModeJalaliDefault" DigitType="DigitType.BasedOnCalendar"
+            DateFormat="DateFormat.yyyy_slash_MM_slash_dd" MinDateSetOnToday="false" Placeholder="انتخاب تاریخ"
+            CssClass="form-control" Theme="PickerTheme.Default"
+            Style="font-family: tahoma; margin-left:20px; float: right" OnChange="@DateValueChangeHandler" />
+    </div>
+
+    
+</div>
+
+@code
+{
+
+    System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
+
+    [Parameter]
+    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
+
+    [Parameter]
+    public bool ReadOnly{get;set;}
+
+    public DateTime? _value;
+    [Parameter]
+    public DateTimeOffset? value
+    {
+        get
+        {
+            return _value;
+        }
+        set
+        {
+            if (value.HasValue)
+                _value = new DateTime(value.Value.Ticks);
+            else
+                _value = null;
+        }
+    }
+
+    private string dateValue { get; set; } = DateTime.Now.ToPersianDateString("yyyy/MM/dd");
+    
+    public DateTime? _timeValue;
+    public DateTimeOffset? timeValue
+    {
+        get
+        {
+            return _timeValue;
+        }
+        set
+        {
+            if (value.HasValue)
+                _timeValue = new DateTime(value.Value.Ticks);
+            else
+                _timeValue = null;
+        }
+    }
+
+    DateTimeOffset? prvValue;
+
+    [Parameter]
+    public EventCallback<object> changeRefrence { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        if (value.HasValue && value.Value != DateTime.MinValue)
+        {
+            dateValue = value.Value.ToPersianDateString("yyyy/MM/dd");
+            timeValue = value;
+        }
+    }
+
+    async Task DateValueChangeHandler()
+    {
+        var date = dateValue.toPersianDate();
+        if (timeValue.HasValue)
+            value = pc.ToDateTime(pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date), timeValue.Value.Hour,
+            timeValue.Value.Minute, timeValue.Value.Second, 0);
+        else
+            value = pc.ToDateTime(pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date), 0, 0, 0, 0);
+
+        Console.WriteLine("value: " + this.value.ToString());
+
+        if (prvValue != value)
+        {
+            await changeRefrence.InvokeAsync(value);
+        }
+        prvValue = value;
+    }
+
+    /*public void TimeValueChangeHandler(Syncfusion.Blazor.Calendars.ChangeEventArgs<DateTime?> args)
+    {
+        timeValue = args.Value;
+        StateHasChanged();
+
+        var date = dateValue.toPersianDate();
+        value = pc.ToDateTime(pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date), timeValue.Value.Hour,
+        timeValue.Value.Minute, timeValue.Value.Second, 0);
+
+        Console.WriteLine("value: " + this.value.ToString());
+
+        if (prvValue != value)
+        {
+            changeRefrence.InvokeAsync(value);
+        }
+        prvValue = value;
+    }/**/
+
+}
+
+<style>
+    .CustomTimePicker {
+        height: 100%;
+    }
+
+    .e-timepicker {
+        height: unset !important;
+    }
+</style>

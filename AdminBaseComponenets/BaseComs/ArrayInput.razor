@@ -1,0 +1,103 @@
+@typeparam TItem
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+@using Microsoft.AspNetCore.Components;
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+@inherits ArrayInputBase<TItem>
+
+
+   
+
+
+
+        @if (value != null)
+        {
+             <Accordion>
+        <Collapse  Visible=@collapse1Visible>
+             <CollapseHeader>
+                  <Row>
+                    <Column ColumnSize="ColumnSize.Is4">
+                        <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)" >toggle</Button>
+                    </Column>
+                   <Column ColumnSize="ColumnSize.Is4">
+                        <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)" >@value.Count</Button>
+                  </Column>
+                  </Row>
+              </CollapseHeader>
+            <CollapseBody>
+                @{
+            int j = 0;
+            foreach(var context in value){
+                int k = j;      
+                Action<object> onChangeRefrence = (x) =>
+                            {
+                                Console.WriteLine("setValue(j, x)");
+                                setValue(k, x);
+                            };
+                            <div class="col-sm-12">
+                                
+                                @{
+                                    if (w != null)
+                                    {
+                                        <div>@Program0.CreateDynamicComponent2(this, w, value[k], onChangeRefrence,null,ReadOnly)</div>;
+                                    }
+                                }
+                </div>
+                ++j;
+
+                        }
+                  
+
+
+            
+            @if(!ReadOnly){
+                <Button Outlined="true" Clicked="@Add">add </Button>
+            }
+             }
+             </CollapseBody>
+              </Collapse>
+    </Accordion>
+        }
+        else
+        {
+            @if(!ReadOnly){
+                <Button Outlined="true" Clicked="@createArray">new </Button>
+            }
+        }
+
+
+
+
+
+@code
+{
+    ComponentBase w = null;
+    bool collapse1Visible = false;
+    async Task createArray()
+    {
+        value = new List<TItem>();
+        await changeRefrence.InvokeAsync(value);
+
+    }
+
+    async Task Add()
+    {
+        value.Add(default(TItem));
+        
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        var tmp = Program0.getCollectionItemAttrs(Attributes);
+        w = Program0.createForm4(typeof(TItem), tmp);
+    }
+}
+

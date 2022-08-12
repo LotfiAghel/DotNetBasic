@@ -1,0 +1,29 @@
+@typeparam TItem 
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+@using Microsoft.AspNetCore.Components.Rendering;
+@using  Newtonsoft.Json;
+@inherits EditBase2<PerimitveContainer<TItem>>
+
+<EditForm Model="@value">
+
+    <h3>view User</h3>
+    <hr />
+   
+
+    <div class="form-group row">
+        <div class="col-sm-4">
+            @autoComp(()=> value.value)
+        </div>
+    </div>
+</EditForm>
+
+@code{
+    
+}

@@ -1,0 +1,65 @@
+@typeparam TItem
+
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Components.Rendering;
+@using AdminBaseComponenets;
+@using Newtonsoft.Json
+@inherits EditBase2<TItem>
+
+<EditForm Model="@value">
+    <!--<h3>@typeof(TItem).Name</h3> -->
+    <hr />
+        @{
+            foreach (var property in propertis)
+            {
+
+                
+                {
+                    var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
+                    if(y!=null)    
+                        continue;
+                        
+                }
+                {
+                    var x = property.GetCustomFirstAttributes<JsonIgnoreAttribute>();
+                    if(x!=null)
+                        continue;
+
+                }
+
+                
+                
+                var z = createProp(property);
+
+                
+                if (z != null)
+                {
+                    
+                    <Row>
+                         <Column ColumnSize=ColumnSize.Is2>
+                            <label for="pass">@property.GetPerisanName()</label>
+                        </Column>
+                    
+
+                    
+                        <Column ColumnSize=ColumnSize.Is10>
+                            @z
+                        </Column>
+                    </Row>
+                
+                }
+
+            }
+        }
+
+
+    
+</EditForm>
+
+
+
+@code{
+    public List<System.Reflection.PropertyInfo> propertis = typeof(TItem).GetProperties().ToList();
+
+
+}

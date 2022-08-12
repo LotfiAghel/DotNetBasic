@@ -1,0 +1,49 @@
+
+@using Microsoft.AspNetCore.Components.Forms
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+
+@inherits ValueInput<string>
+
+
+        <TextEdit 
+                   ReadOnly=@ReadOnly
+                   Text=@value
+                   TextChanged=@Click2
+         />
+
+
+
+
+
+
+@code
+{
+   
+
+    string prvValue;
+   
+    async Task Click2(string  vv)
+    {
+        this.value=vv;
+        if (prvValue != value)
+        {
+
+            await changeRefrence.InvokeAsync(value);
+        }
+        prvValue = value;
+
+    }
+
+}
+

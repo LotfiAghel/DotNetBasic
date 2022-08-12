@@ -1,0 +1,20 @@
+@typeparam TINP
+@typeparam TOUT
+
+
+@using Models
+;
+@using System.ComponentModel;
+@using Tools;
+
+<div>new </div>
+@Program0.CreateDynamicComponent2(this,Program0.createForm4(typeof(TINP)),inp,(x) =>
+                    {
+                        onChange(x);
+                    })
+
+<Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+@if(output!=null){
+    <PointerInput2 TItem="TOUT" value=@output  ReadOnly=true />
+}
+

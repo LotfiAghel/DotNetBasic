@@ -1,0 +1,110 @@
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+
+
+
+
+<div class="row pt-2 pb-2">
+    <div class="col-sm-10">
+        @getText()
+    </div>
+</div>
+
+
+
+
+
+
+@code
+{
+    public string getText2(){
+        long r=value.Value;
+        string res="";
+        if(r>=10000000000){
+            long a=r/10000000000;
+             if(res.Length>0)
+                res+=" و ";
+            res+=a+"ملیارد";
+            r%=10000000;
+        }
+        if(r>=10000000){
+            long a=r/10000000;
+             if(res.Length>0)
+                res+=" و ";
+            res+=a+"ملیون";
+            r%=10000000;
+        }
+        if(r>=10000){
+            long a=r/10000;
+            if(res.Length>0)
+                res+=" و ";
+            res+=a+"هزار";
+            r%=10000;
+        }
+        if(r>=10){
+            long a=r/10;
+            if(res.Length>0)
+                res+=" و ";
+            res+=a;
+            r%=10;
+        }
+        res+="تومن";
+        if(r>0){
+            long a=r;
+            if(res.Length>0)
+                res+=" و ";
+            res+=a+"ریال";
+        }
+        return res;
+
+    }
+    public string getText(){
+        var st=value.ToString();
+        string s="";
+        int j=0;
+        int zeroN=0;
+        bool start=false;
+        for(int i=st.Length-1; i>-1; --i){
+            if(j>0 && j%3==0)
+                s=","+s;
+            
+                s=st[i]+s; 
+                ++j;   
+            
+        }
+        var ex="R";
+        
+        s+=ex;
+        return s;
+    }
+
+    
+
+    [Parameter]
+    public Rial value { get; set; } = 0;
+
+
+     [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
+
+    
+
+    [Parameter]
+    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
+
+   
+    }
+

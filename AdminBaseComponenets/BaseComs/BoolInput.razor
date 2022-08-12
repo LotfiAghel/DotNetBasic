@@ -1,0 +1,55 @@
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@inherits ValueInput<bool>
+
+
+
+<div class="row pt-2 pb-2">
+    <div class="col-sm-10">
+
+        <div>
+            <Check TValue="bool" 
+             ReadOnly=@ReadOnly
+            Checked="@value" CheckedChanged="@Click2"></Check>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+@code
+{
+    
+
+    bool prvValue;
+    
+
+
+    
+
+    
+    async Task Click2(bool value0)
+    {
+        value=value0;
+        if (prvValue != value)
+        {
+
+            await changeRefrence.InvokeAsync(value);
+        }
+        prvValue = value;
+
+    }
+
+}
+

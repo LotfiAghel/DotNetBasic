@@ -1,0 +1,50 @@
+@typeparam TItem 
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+@inherits ValueInput<TItem>
+
+
+
+
+  <TextEdit 
+                   ReadOnly=@ReadOnly
+                   Text=@value.ToString()
+                   TextChanged=@Click2
+         />
+
+
+
+
+
+@code{
+    
+
+    TItem prvValue;
+    
+
+    async Task Click2(string vv  )
+    {
+        //value=(TItem)vv;
+        if (!prvValue.Equals(value))
+        {
+
+            await changeRefrence.InvokeAsync(value);
+        }
+        prvValue = value;
+
+    }
+
+    }
+

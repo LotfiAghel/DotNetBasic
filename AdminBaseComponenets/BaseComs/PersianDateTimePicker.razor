@@ -1,0 +1,131 @@
+﻿@using System.Collections.Generic
+@using Blazor.PersianDatePicker
+
+@{
+    Console.WriteLine($"PersianDateTimepicker {value}");
+}
+<div class="row pt-2 pb-2" @key="@($"id-{Guid.NewGuid().ToString()}")">
+    <div class="col-5" @key="@($"id-{Guid.NewGuid().ToString()}")" >
+        <InputPersianDatePicker Id="@($"id-{Guid.NewGuid().ToString()}")" @key="@($"id-{Guid.NewGuid().ToString()}")"
+                                @bind-Value=@dateValue
+                                Visible="true"
+                                Disabled="@ReadOnly"
+                                PickerAlign="Align.Right"
+                                PickerOffsetTopPositionInPixels="0"
+                                InitialValue="false"
+                                CalendarType="Calendar.DualModeJalaliDefault"
+                                DigitType="DigitType.BasedOnCalendar"
+                                DateFormat="DateFormat.yyyy_slash_MM_slash_dd"
+                                MinDateSetOnToday="false"
+                                Placeholder="انتخاب تاریخ"
+                                CssClass="form-control"
+                                Theme="PickerTheme.Default"
+                                Style="font-family: tahoma; margin-left:20px; float: right"
+                                OnChange="@DateValueChangeHandler" />
+    </div>
+
+    
+</div>
+<div>@($"{dateValue} --> {dateValue2}")</div>
+
+@code
+{
+
+    System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
+
+    [Parameter]
+    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
+
+
+     [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
+    [Parameter]
+    public DateTime? value { get; set; }
+
+    private string dateValue { get; set; } = DateTime.Now.ToPersianDateString("yyyy/MM/dd");
+    private string dateValue2 => value.Value.ToPersianDateString("yyyy/MM/dd");
+    private DateTime? timeValue { get; set; } = DateTime.Now;
+
+    DateTime? prvValue;
+
+    [Parameter] 
+    public EventCallback<object> changeRefrence { get; set; }
+
+     
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine($"PersianDateTimepicker OnInitialized");
+        if (value.HasValue && value.Value != DateTime.MinValue)
+        {
+            Console.WriteLine($"PersianDateTimepicker OnInitialized 1");
+             DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value.Value,  TimeZoneInfo.Local);
+
+            
+            
+
+            dateValue = databaseUtcTime.ToPersianDateString("yyyy/MM/dd");
+            timeValue = databaseUtcTime;
+            Console.WriteLine($"PersianDateTimepicker OnInitialized {dateValue}");
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine($"PersianDateTimepicker OnInitializedAsync");
+        if (value.HasValue && value.Value != DateTime.MinValue)
+        {
+            Console.WriteLine($"PersianDateTimepicker OnInitializedAsync 1");
+             
+
+
+         
+        
+            DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value.Value,  TimeZoneInfo.Local);
+
+            dateValue = databaseUtcTime.ToPersianDateString("yyyy/MM/dd");
+            timeValue = databaseUtcTime;
+            Console.WriteLine($"PersianDateTimepicker OnInitializedAsync {dateValue}");
+        }
+    }
+
+    async Task DateValueChangeHandler()
+    {
+
+        var date = dateValue.toPersianDate();
+        DateTime databaseUtcTime;
+        if (timeValue.HasValue)
+            databaseUtcTime = pc.ToDateTime(pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date), timeValue.Value.Hour, timeValue.Value.Minute, timeValue.Value.Second, 0);
+        else
+            databaseUtcTime = pc.ToDateTime(pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date), 0, 0, 0, 0);
+
+
+
+         
+        //var japaneseTimeZone =;//TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
+        value = TimeZoneInfo.ConvertTimeToUtc(databaseUtcTime,  TimeZoneInfo.Local);
+
+
+        Console.WriteLine("PersianDateTimepicker value: " + this.value.ToString());
+
+        if (prvValue != value)
+        {
+            await changeRefrence.InvokeAsync(value);
+        }
+        prvValue = value;
+    }
+
+   
+
+}
+
+<style>
+    .CustomTimePicker {
+        height: 100%;
+    }
+
+    .e-timepicker {
+        height: unset !important;
+    }
+</style>
+

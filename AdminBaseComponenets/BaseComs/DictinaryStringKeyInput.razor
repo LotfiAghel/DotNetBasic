@@ -1,0 +1,58 @@
+@typeparam TItem
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+@using Microsoft.AspNetCore.Components;
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+@inherits DictinaryStringKeyBase<TItem>
+
+
+
+
+<div class="row pt-2 pb-2">
+    <div class="col-sm-12">
+
+        @if (value != null)
+        {
+            <JsonShow value=@JToken.FromObject(value)></JsonShow>
+            
+        }
+        else
+        {
+            @if(!ReadOnly){
+                <Button Outlined="true" Clicked="@createArray">new </Button>
+            }
+        }
+
+
+
+    </div>
+</div>
+
+
+@code
+{
+    ComponentBase w = null;
+
+    async Task createArray()
+    {
+        value = new Dictionary<string,TItem>();
+        await changeRefrence.InvokeAsync(value);
+
+    }
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var tmp = Program0.getCollectionItemAttrs(Attributes);
+        w = Program0.createForm(typeof(TItem), tmp);
+    }
+}
+

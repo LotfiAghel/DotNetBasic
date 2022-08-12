@@ -1,0 +1,50 @@
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+
+@inherits ValueInput<int>
+
+
+        <NumericEdit    
+                     ReadOnly=@ReadOnly
+                     TValue="int"
+                     Value=value
+                     ValueChanged=@Click22 
+        />
+
+
+
+
+
+
+@code
+{
+    
+    int prvValue;
+    
+
+    async Task Click22(int vv)
+    {
+        value = vv;
+        if (prvValue != value)
+        {
+
+            await changeRefrence.InvokeAsync(value);
+        }
+        prvValue = value;
+
+    }
+
+}
+

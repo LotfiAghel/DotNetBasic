@@ -1,0 +1,65 @@
+﻿@typeparam TEntity
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+@using Newtonsoft.Json.Linq;
+
+@inherits IntegerForeignKeyArrayInput<TEntity>
+@if (itemComponenet != null && value!=null){
+<div class="e-multiselect e-control-wrapper e-control-container e-input-group e-rtl" style="width:100%;" _bl_17="">
+    <Button Clicked=" (_) => setNull()" style="position: absolute; z-index: 10; margin: .5rem; left: 0%;">
+            <mat-icon class="material-icons" style="font-size:14px; font-weight:bold; color:red">close</mat-icon>
+    </Button>
+    <div class="e-multi-select-wrapper e-down-icon" tabindex="-1" _bl_18="">
+        <span class="e-chips-collection" ondragover="event.preventDefault();" style="margin:20px">
+            @if(true){
+                foreach (var t in value){
+                        Action onRemove = async () =>
+                            {
+                                
+                                await remove(t.Value);
+                            };
+
+                            <span class="e-chips " data-value=@t draggable="true" style="list-style-type:none; height:30px" @key=@t tabindex="1"
+                                @ondrop="@(()=> Drop(t.Value))" @ondragstart="@(()=> StartDrag(t.Value))">
+                                <span class="e-chipcontsent">
+                                    @Program0.CreateDynamicComponent2(this, itemComponenet, t)
+                                </span>
+                                <span class="e-chips-close" onclick=@onRemove></span>
+                            </span>
+                        
+                }
+            }
+        </span>
+        <span class="e-multi-searcher">
+
+        @if ( generator != null && generator.Count()>0 && !ReadOnly){
+
+                        Action<object> onClick22 = async (object x) =>
+                                    {
+
+                                        await Click3((ForeignKey<TEntity>)x);
+                                    };
+                    <IntegerFInput TEntity=@TEntity changeRefrence=@onClick22 generator=@generator></IntegerFInput>
+
+            }
+            </span>
+    </div>
+    </div>
+    <div>@generator.GetHashCode()</div>
+}
+
+@if (value == null)
+{
+     <Button  Outlined="true" Clicked=@Click     Raised="true" >ایجاد</Button>
+}
+
+
+

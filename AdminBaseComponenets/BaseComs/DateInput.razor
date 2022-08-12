@@ -1,0 +1,159 @@
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+@using System.Globalization;
+
+
+
+
+<div class="row">
+<Select TValue="int" class="col-2" SelectedValue=@Years
+                    SelectedValueChanged=@Click2  >
+    @for(int y=1399 ; y<1410; ++y){
+        var localVariable = y;
+        <SelectItem TValue="int" Value=@localVariable>
+        @localVariable
+        </SelectItem>
+    }
+</Select>
+<p style="width: 0px;line-height: 50px; font-size: 30px;">/</p>
+<Select class="col-2"  
+                    TValue="int"
+                    SelectedValue=@Months
+                    SelectedValueChanged=@Click2 
+>
+    @for(int t=1 ; t<13; ++t){
+        var localVariable = t;
+        <SelectItem TValue="int" Value=@localVariable>
+        @localVariable
+        </SelectItem>
+    }
+</Select>
+<p style="width: 0px;line-height: 50px; font-size: 30px;">/</p>
+
+<Select class="col-2" 
+                    TValue="int"
+                    SelectedValue=@Days
+                    SelectedValueChanged=@Click2 
+>
+
+    @if(Months<7){
+        @for(int t=1 ; t<31; ++t){
+            var localVariable = t;
+        <SelectItem TValue="int" Value=@localVariable>
+        @localVariable
+        </SelectItem>
+        }
+    }else{
+        @for(int t=1 ; t<30; ++t){
+           var localVariable = t;
+        <SelectItem TValue="int" Value=@localVariable>
+        @localVariable
+        </SelectItem>
+        }
+    }
+   
+</Select>
+
+<Select class="col-2"   
+
+                TValue="int"
+                    SelectedValue=@Hours
+                    SelectedValueChanged=@Click2 
+>
+    @for(int t=0 ; t<24; ++t){
+       var localVariable = t;
+        <SelectItem TValue="int" Value=@localVariable>
+        @localVariable
+        </SelectItem>
+    }
+</Select>
+<p style="width: 0px;line-height: 50px; font-size: 30px;">:</p>
+
+<Select TValue="int"  SelectedValue=@Minutes  SelectedValueChanged=@Click2>
+    @for(int t=0 ; t<60; ++t){
+        var localVariable = t;
+        <SelectItem TValue="int" Value=@localVariable>
+        @localVariable
+        </SelectItem>
+    }
+</Select>
+<p style="width: 0px;line-height: 50px; font-size: 30px;">:</p>
+
+<Select class="col-2"  
+                TValue="int" SelectedValue=@Seconds
+                SelectedValueChanged=@Click2
+>
+    @for(int t=0 ; t<60; ++t){
+        var localVariable = t;
+        <SelectItem TValue="int" Value=@localVariable>
+        @localVariable
+        </SelectItem>
+    }
+</Select>
+</div>
+
+
+
+@code
+{
+    PersianCalendar pc = new PersianCalendar();
+
+    [Parameter]
+    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
+
+
+    [Parameter]
+    public DateTime value { get; set; }
+    
+    public int Years {
+        get{
+            try{
+                return pc.GetYear(value);
+            }catch{
+                value=DateTime.UtcNow;
+                return pc.GetYear(value);
+            }
+            }
+         set{this.value=pc.ToDateTime(value,Months,Days,Hours,Minutes,Seconds,0);}}
+
+    public int Months {
+        get=>pc.GetMonth(value);
+         set{this.value=pc.ToDateTime(Years,value,Days,Hours,Minutes,Seconds,0);}}
+    public int Days {
+        get=>pc.GetDayOfMonth(value);
+         set{this.value=pc.ToDateTime(Years,Months,value,Hours,Minutes,Seconds,0);}}
+    public int Hours {
+        get=>pc.GetHour(value);
+         set{this.value=pc.ToDateTime(Years,Months,Days,value,Minutes,Seconds,0);}}
+    public int Minutes {
+        get=>pc.GetMinute(value);
+         set{this.value=pc.ToDateTime(Years,Months,Days,Hours,value,Seconds,0);}}
+    public int Seconds {
+        get=>pc.GetSecond(value);
+         set{this.value=pc.ToDateTime(Years,Months,Days,Hours,Minutes,value,0);}}
+    DateTime prvValue= new DateTime();
+    
+    [Parameter] public EventCallback<object> changeRefrence { get; set; }
+
+    async Task Click2()
+    {
+        if (prvValue != value)
+        {
+            prvValue = pc.ToDateTime(Years,Months,Days,Hours,Minutes,Seconds,0);
+            await changeRefrence.InvokeAsync(pc.ToDateTime(Years,Months,Days,Hours,Minutes,Seconds,0));
+        }
+    }
+
+    }
+

@@ -1,0 +1,99 @@
+@using System.Linq
+@using Microsoft.Extensions.Logging
+@using System;
+@using System.Net;
+@using Newtonsoft.Json.Linq;
+@using Newtonsoft.Json;
+
+
+
+@using System.Collections.Generic;
+@using System.ComponentModel.DataAnnotations;
+@using System.ComponentModel.DataAnnotations.Schema;
+@using Tools;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@using System.Collections;
+@using AdminBaseComponenets;
+
+
+@if (value != null)
+{
+    Action<object> onClick2 = async (x) =>
+    {
+        await Click();
+    };
+    if (value is TreeNode trNode)
+    {
+        <a class="nav-link" href="javascript:" @onclick="()=>openOject = !openOject">
+            <span class="oi oi-list-rich" title="Fetch data"></span>
+            <span class="e-text pr-2" title="Fetch data">@trNode.Name</span>
+            <span class="position-absolute" style="left:5px"><i class="arrow @(openOject ? "up" : "down")"></i></span>
+        </a>
+        @if (openOject)
+        {
+            <div style="margin-right:10px;">
+                @foreach (var line in trNode.children)
+                {
+                    <MenuTreeView value=@line />
+                }
+            </div>
+        }
+    }
+    else if (value is EntityModel eM)
+    {
+        var link = $"page/{eM.Type.FullName.Replace(".","__")}";
+        var name = eM.Type.GetPerisanName();
+        if (eM.Name != null)
+            name = eM.Name;
+
+        <a class="nav-link" href=@link>
+            <span class="oi oi-list-rich" title=@name></span>
+            <span class="e-text pr-2" title=@name>@name</span>
+        </a>
+    }else if (value is PageViewNode t)
+                {
+                    var link = $"{t.url}";
+                    var name = t.name;
+                    if (t.Name != null)
+                        name = t.Name;
+                    
+                    <a class="nav-link" href=@link>
+                        <span class="oi oi-list-rich" title=@name></span>
+                        <span class="e-text pr-2" title=@name>@name</span>
+                    </a>
+                    
+                }else if(value is ApiViewNode t2 ){
+
+                    var link = $"apiPage/{Program0.ConvertUrl(t2.url)}";
+                    var name = t2.name;
+                    if (t2.name != null)
+                        name = t2.name;
+                    
+                    <a class="nav-link" href=@link>
+                        <span class="oi oi-list-rich" title=@name></span>
+                        <span class="e-text pr-2" title=@name>@name</span>
+                    </a>
+
+                }
+            
+}
+
+
+@code {
+
+    [Parameter]
+    public ATreeNode value { get; set; }
+
+    public bool openOject = false;
+    async Task Click()
+    {
+        openOject = !openOject;
+    }
+
+
+
+
+
+
+}

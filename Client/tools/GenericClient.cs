@@ -1,0 +1,360 @@
+using System;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json.Linq;
+using System.Text;
+using Newtonsoft.Json;
+
+
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using Tools;
+using Models;
+
+namespace ClTool
+{
+
+
+
+    public class WebClient
+    {
+        public static WebClient webClient = null;
+        public static string pass;
+        public string baseUrl;//"http://testserver.karafsgym.com:5001/"
+        public Action onLogout;
+        public void setUrl(string s)
+        {
+            baseUrl = s;
+        }
+        
+
+
+        public JsonSerializer settings1;
+        CookieCollection cookie = null;
+        public WebClient(string baseurl)
+        {
+
+            this.baseUrl = baseurl;
+            //ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+
+
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                MetadataPropertyHandling = MetadataPropertyHandling.ReadAhead,
+                SerializationBinder = TypeNameSerializationBinder.gloabl,
+                DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                ContractResolver = MyContractResolver.admin,
+
+            };
+
+
+            settings1 = JsonSerializer.Create(settings);
+            settings1.Converters.Add(new RialConverter());
+            settings1.Converters.Add(new PerimitveContainerConvertor());
+            settings1.Converters.Add(new ForeignKeyConverter());
+
+
+
+        }
+        private static void fixCookies(HttpWebRequest request, HttpWebResponse response)
+        {
+            for (int i = 0; i < response.Headers.Count; i++)
+            {
+                string name = response.Headers.GetKey(i);
+                if (name != "Set-Cookie")
+                    continue;
+                string value = response.Headers.Get(i);
+                foreach (var singleCookie in value.Split(','))
+                {
+                    System.Text.RegularExpressions.Match match = Regex.Match(singleCookie, "(.+?)=(.+?);");
+                    if (match.Captures.Count == 0)
+                        continue;
+                    response.Cookies.Add(
+                        new Cookie(
+                            match.Groups[1].ToString().Replace(" ", ""),
+                            match.Groups[2].ToString(),
+                            "/",
+                            request.Host.Split(':')[0]));
+                }
+            }
+        }
+
+
+        public virtual async Task<string> fetch(string url, string payload, HttpMethod method)
+        {
+            Console.WriteLine("fetch url " + url);
+            HttpWebRequest request = HttpWebRequest.Create(baseUrl + url) as HttpWebRequest;
+            request.Method = method.ToString();
+            if (request.CookieContainer == null && cookie != null)
+            {
+                request.CookieContainer = new CookieContainer();
+                request.CookieContainer.Add(cookie);
+            }
+
+            if (payload != null)
+            {
+                request.ContentType = "application/json";
+                request.ContentLength = payload.Length;
+                byte[] sentData = Encoding.UTF8.GetBytes(payload);
+                request.ContentLength = sentData.Length;
+                request.Headers["adminToken"] = pass;
+
+
+
+
+
+
+
+                using (System.IO.Stream sendStream = request.GetRequestStream())
+                {
+                    sendStream.Write(sentData, 0, sentData.Length);
+                    sendStream.Close();
+
+                }
+            }
+
+
+            var response = request.GetResponse();
+            HttpWebResponse responseWithLoginCookies = (HttpWebResponse)response;
+            cookie = responseWithLoginCookies.Cookies;
+            Console.WriteLine("---- " + responseWithLoginCookies.Headers.Count);
+
+            fixCookies(request, responseWithLoginCookies);
+            {
+                Console.WriteLine($"Cookie  : {responseWithLoginCookies.Headers["Set-Cookie"]}");
+
+
+            }
+            foreach (Cookie cook in cookie)
+            {
+                Console.WriteLine("Cookie:");
+                Console.WriteLine("{0} = {1}", cook.Name, cook.Value);
+                Console.WriteLine("Domain: {0}", cook.Domain);
+                Console.WriteLine("Path: {0}", cook.Path);
+                Console.WriteLine("Port: {0}", cook.Port);
+                Console.WriteLine("Secure: {0}", cook.Secure);
+                Console.WriteLine("When issued: {0}", cook.TimeStamp);
+                Console.WriteLine("Expires: {0} (expired? {1})",
+                    cook.Expires, cook.Expired);
+                Console.WriteLine("Don't save: {0}", cook.Discard);
+                Console.WriteLine("Comment: {0}", cook.Comment);
+                Console.WriteLine("Uri for comments: {0}", cook.CommentUri);
+                Console.WriteLine("Version: RFC {0}", cook.Version == 1 ? "2109" : "2965");
+                // Show the string representation of the cookie.
+                Console.WriteLine("String: {0}", cook.ToString());
+            }
+
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+            string returnString = await reader.ReadToEndAsync();
+            return returnString;
+        }
+
+
+        public virtual async Task<string> fetchW(string url, string payload, HttpMethod method)
+        {
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            Console.WriteLine("fetch url " + url);
+            using (var client = new HttpClient(handler))
+            {
+
+
+                client.BaseAddress = new Uri(baseUrl);
+                HttpContent content = null;
+                if (payload != null)
+                {
+                    content = new StringContent(payload, Encoding.UTF8, "application/json");
+                }
+
+                var request = new HttpRequestMessage(method, baseUrl + url)
+                {
+                    Content = content
+                };
+                request.Headers.Add("adminToken", WebClient.pass);
+
+
+
+
+                var result = await client.SendAsync(request);
+
+
+                {
+
+                    Console.WriteLine("------headers-------" + result.Headers.Count());
+                    Console.WriteLine("------headers-------" + result.Headers.ToString());
+                    foreach (var z in result.Headers)
+                    {
+                        Console.WriteLine("..");
+                        Console.WriteLine(z.Key + " : " + z.Value.ToString());
+                    }
+
+
+                }
+
+                string resultContent = await result.Content.ReadAsStringAsync();
+                return resultContent;
+            }
+
+
+        }
+        public virtual async Task<UploadResult> sendFile(string url, MultipartFormDataContent content)
+        {
+            HttpClientHandler handler = new HttpClientHandler();
+            //handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            Console.WriteLine("fetch url " + url);
+            using (var client = new HttpClient(handler))
+            {
+
+
+                client.BaseAddress = new Uri(baseUrl);
+
+
+
+
+
+                var request = new HttpRequestMessage(HttpMethod.Post, baseUrl + url)
+                {
+                    Content = content
+                };
+                request.Headers.Add("adminToken", WebClient.pass);
+
+
+                var result = await client.SendAsync(request);
+
+                string resultContent = await result.Content.ReadAsStringAsync();
+                return JToken.Parse(resultContent).ToObject<UploadResult>();
+
+            }
+
+
+        }
+
+        public async Task<JToken> fetch0<TIN>(string url, TIN payload, HttpMethod method)
+        {
+            var x = await fetch(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
+            return JToken.Parse(x);
+        }
+
+        public async Task<object> fetch00(Type tout, string url, HttpMethod method, object payload)
+        {
+            var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
+            return x.ToObject(tout, settings1);
+        }
+        public async Task<TOUT> fetch<TIN, TOUT>(string url, HttpMethod method, TIN payload)
+        {
+            var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
+            return x.ToObject<TOUT>(settings1);
+        }
+        public async Task<object> fetch(string url, HttpMethod method, Type TOUT, object payload)
+        {
+            var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
+            return x.ToObject(TOUT, settings1);
+
+        }
+
+        public async Task<TOUT> fetch2<TIN, TOUT>(string url, HttpMethod method, TIN payload)
+        {
+            var x = await fetch(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
+            return JToken.Parse(x).ToObject<TOUT>(settings1);
+        }
+
+        internal Task<object> fetch<T1, T2>(string name, object pOST, object t)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class GenericClient00
+    {
+        public WebClient webClient;
+        public async Task<object> get00(Type T, int id)
+        {
+            return await webClient.fetch00(T, T.Name + "/" + id, HttpMethod.Get, null);
+        }
+
+    }
+
+    public class GenericClient0<T> : GenericClient00
+    where T : class
+    {
+        public string additinalUrl;
+
+        public GenericClient0(WebClient webClient, string additinalUrl = null)
+        {
+            this.webClient = webClient;
+            this.additinalUrl = additinalUrl;
+
+        }
+
+        public async Task<List<T>> getAll()
+        {
+            if (cash != null)
+                return cash;
+            return cash = await webClient.fetch<T, List<T>>(additinalUrl + typeof(T).Name, HttpMethod.Get, null);
+        }
+        public async Task<List<T>> getAll2(IQuery<T> inp)
+        {
+            return await webClient.fetch<IQuery<T>, List<T>>(additinalUrl + typeof(T).Name + "/getAll", HttpMethod.Post, inp);
+        }
+        public async Task<T> sendAction(int entityId, IAction<T> inp)
+        {
+            return await webClient.fetch<IAction<T>, T>($"{additinalUrl}{typeof(T).Name}/{entityId}/runAction", HttpMethod.Post, inp);
+        }
+        public async Task<List<T>> getAll3(string masterEntityName, string collectionName, int masterId)
+        {
+            return await webClient.fetch<T, List<T>>($"{masterEntityName}/{masterId}/{collectionName}", HttpMethod.Get, null);
+        }
+        public async Task<List<T>> getAll(string itemName, int value)
+        {
+            var filter = JToken.FromObject(new
+            {
+                int_eq = new
+                {
+                    field = itemName,
+                    value = value
+                }
+            }).ToString();
+            return cash = await webClient.fetch<T, List<T>>(additinalUrl + typeof(T).Name + $"?filter={filter}", HttpMethod.Get, null);
+        }
+        List<T> cash = null;
+        public async Task<List<object>> getAll2()
+        {
+
+
+            var ga = await getAll();
+            return ga.ConvertAll<object>(x => x); ;
+        }
+        public async Task<T> get(int id)
+        {
+            return await webClient.fetch<T, T>(additinalUrl + typeof(T).Name + "/" + id, HttpMethod.Get, null);
+        }
+
+
+        public async Task<T> put(object id, T t)
+        {
+            return await webClient.fetch<T, T>(additinalUrl + typeof(T).Name + "/" + id, HttpMethod.Put, t);
+
+        }
+
+
+        public async Task<T> post(T t)
+        {
+            return await webClient.fetch<T, T>(additinalUrl + typeof(T).Name, HttpMethod.Post, t);
+        }
+
+    }
+    public class GenericClientInt<T> : GenericClient0<T>
+    where T : class
+    {
+        public GenericClientInt(ClTool.WebClient w, string additinalUrl = null) : base(w, additinalUrl) { }
+    }
+   
+
+}

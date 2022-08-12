@@ -1,0 +1,41 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+<div style="border-radius: 10px; border: 2px solid #00aa77;">
+    <button class="accordion" @onclick="@(()=>onClick(@content))">@title</button>
+    <div @ref=content class="panel" >
+        @ChildContent
+    </div>
+</div>
+
+
+
+
+@code {
+    [Parameter] public String title { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    bool ph = false;
+    private ElementReference content;
+
+    private bool shouldRender=false;
+    protected override void OnParametersSet() => shouldRender = true;
+
+    protected override bool ShouldRender()
+    {
+        if (shouldRender)
+        {
+            shouldRender = false;
+            return true;
+        }
+        else
+            return false;
+    }
+    public async Task onClick(ElementReference element)
+    {
+        shouldRender=false;
+        ph = !ph;
+        if (!ph)
+            await JSRuntime.InvokeVoidAsync("setStyleHeight", element, "0px");
+        else
+            await JSRuntime.InvokeVoidAsync("setStyleHeight", element, "200vh");
+    }
+}

@@ -1,0 +1,29 @@
+﻿@typeparam TItem
+
+
+
+
+@code{
+
+    public class SelectListItem
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
+    }
+
+    [Parameter]
+    public List<TItem> Items { get; set; } = new List<TItem>();
+
+    private List<SelectListItem> _items;
+
+    protected override void OnInitialized()
+    {
+        _items = new List<SelectListItem>();
+        foreach (var item in Items)
+        {
+            var itemValue = item.GetType().GetProperty("id").GetValue(item).ToString();
+            var itemText = item.GetType().GetProperty("name").GetValue(item).ToString();
+            _items.Add(new SelectListItem() { Value = itemValue, Text = itemText });
+        }
+    }
+}

@@ -1,0 +1,34 @@
+@typeparam TItem
+
+;
+@inherits DisplayInSelectBaseInt<TItem>
+@if (value == null)
+{
+    <div class="spinner"></div>
+}
+else
+{
+
+    var tt=typeof(TItem);
+    
+    <div class="empimg">
+        @{
+            Dictionary<string,string> color=new Dictionary<string,string>();
+            color["id"]    ="blue";
+            color["name"]    ="black";
+            color["title"]    ="black";
+            foreach(var name in new string[]{"id","name","title"}){
+                
+                var t=tt.GetProperty(name);
+                string style=$"font-size:14px;color:{color[name]};";
+                //TODO fix this, RTL not correct proprtis blend ech other
+                if(t!=null){
+                    <span class="font-weight-bold pl-1"   style=@style>@t.GetValue(value)</span>    
+                }
+            }
+        }
+        
+        
+        
+    </div>
+}

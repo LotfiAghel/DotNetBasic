@@ -1,0 +1,336 @@
+
+@using System.Linq
+@using Microsoft.Extensions.Logging
+@using ClTool
+@using MyRefelctionMirror;
+@inject HttpClient Http
+@using System;
+@using System.Net;
+@using Newtonsoft.Json.Linq;
+@using Newtonsoft.Json;
+
+
+
+@using System.Collections.Generic;
+@using System.ComponentModel.DataAnnotations;
+@using System.ComponentModel.DataAnnotations.Schema;
+@using Tools;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@using System.Collections;
+@using Tools
+
+@functions {
+
+    //<DataList TItem2=@Coach TItem=@Coach url="/old/" url2=@entityName >
+    RenderFragment CreateDynamicComponent2(Type typeClass) => builder =>
+   {
+       
+
+       var gt = typeof(AdminBaseComponenets.BaseComs.TypeShow<>).MakeGenericType(new Type[] {  typeClass });
+
+       builder.OpenComponent(0, gt);
+
+
+       Action<Type> onRedirect=(url)=>{
+            //Console.WriteLine("constructor is nullllllllllllllllllll " + tt);
+            Console.WriteLine("onRedirect "+url);
+            var typeName=url.GetName().Replace(".","__");
+            StateHasChanged();
+            //Click();
+            var link="/typeshow/"+typeName;
+            NavigationManager.NavigateTo(link, false);
+       };
+       var callback = EventCallback.Factory.Create<Type>(this, onRedirect);
+       builder.AddAttribute(1, "onRedirect", callback);
+       
+
+       builder.CloseComponent();
+   };
+}
+
+
+@{
+
+    
+    Action onChangeRefrence = async () =>
+    {
+        
+        await send(baseUrl+"/"+item.url,item.methods[0],datadata);
+        StateHasChanged();
+
+    };
+    var url=$"/{baseUrl}/{item.url}";
+
+    <div class="row pt-2 pb-2">
+    <div class="col-sm-10">
+
+    <Accordion title=@url>
+        
+
+                <Tabs>
+                <Content>
+                    <TabPanel Name="schema">
+                        <div style="text-align:left;width:100%;direction:ltr">
+                        @foreach (var parm in item.parms) if (parm != null)
+                                    {
+                                        Console.WriteLine("type of parm is " + parm.type);
+                                        Type tt2 = TypeNameSerializationBinder2.global.BindToType(null, parm.type);
+                                        if (!formData.ContainsKey(parm.name))
+                                        {
+                                            Console.WriteLine("type of parm is " + tt2);
+                                            var cons = tt2.GetConstructor(new Type[] { });
+                                            object vv = null;
+                                            if (cons != null)
+                                            {
+                                                vv = cons.Invoke(new object[] { });
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("constructor is nullllllllllllllllllll " + tt2);
+                                            }
+                                            if (tt2 == typeof(string))
+                                            {
+                                                vv = "empty";
+                                            }
+                                            if (tt2 == typeof(int))
+                                            {
+                                                vv = 0;
+                                            }
+                                            datadata=vv;
+                                            formData[parm.name] = vv;
+                                        }
+                                            <div>@CreateDynamicComponent2(tt2)</div>
+                                        
+                                        
+
+                                    }
+                        </div>
+                    </TabPanel>
+                    <TabPanel Name="try">
+                        @foreach (var parm in item.parms) if (parm != null)
+                                    {
+                                        Console.WriteLine("type of parm is " + parm.type);
+                                        Type tt = TypeNameSerializationBinder2.global.BindToType(null, parm.type);
+                                        if(tt==null){
+                                            Console.WriteLine("type not found " +  parm.type);
+                                            continue;
+                                        }
+                                        if (!formData.ContainsKey(parm.name))
+                                        {
+                                         
+                                            var cons = tt.GetConstructor(new Type[] { });
+                                            object vv = null;
+                                            if (cons != null)
+                                            {
+                                                vv = cons.Invoke(new object[] { });
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("constructor is nullllllllllllllllllll " + tt);
+                                            }
+                                            if (tt == typeof(string))
+                                            {
+                                                vv = "empty";
+                                            }
+                                            if (tt == typeof(int))
+                                            {
+                                                vv = 0;
+                                            }
+                                            if ( !tt.IsClass){
+                                                vv=typeof(PerimitveContainer<>).MakeGenericType(new Type[] {  tt }).GetConstructor(new Type[]{tt}).Invoke(new object[]{});
+                                            }
+                                            datadata=vv;
+                                            formData[parm.name] = vv;
+                                        }
+
+
+
+                                        
+                                        
+                                        if ( (tt.IsClass || tt.IsAbstract || tt.IsInterface) && tt!=typeof(string))
+                                        {
+                                            Action<object> onChangeRefrence0 = (x) =>
+                                            {
+                                                Console.WriteLine("setValue(x)");
+                                                datadata=formData[parm.name]=x;
+                                                Console.WriteLine("setValue(x) done ");
+                                                Console.WriteLine("setValue(x) "+x);
+                                            };
+                                             
+                                             
+                                            ComponentBase widget2=Program0.createForm3(tt);
+                                            if(widget2!=null){
+                                                <div>@Program0.CreateDynamicComponent2(this, widget2, formData[parm.name],onChangeRefrence0)</div>
+                                            }
+                                        }
+                                        ComponentBase widget = Program0.createForm(tt, parm.attrubites!=null?parm.attrubites.SelectTypeOf<Attribute>():null);
+                                        if ( tt==typeof(string) )
+                                        {
+                                            
+                                            Action<object> onChangeRefrence0 = (x) =>
+                                            {
+                                                Console.WriteLine("setValue(x)");
+                                                datadata=formData[parm.name]=x;
+                                                Console.WriteLine("setValue(x) done ");
+                                                Console.WriteLine("setValue(x) "+x);
+                                            };
+                                            <EditForm Model=@formData[parm.name]>
+                                            <div>@Program0.CreateDynamicComponent2(this, widget, formData[parm.name],onChangeRefrence0)</div>
+                                            </EditForm>
+                                        }
+                                        if ( tt==typeof(int) && false)
+                                        {
+                                            PerimitveContainer <int> v=new PerimitveContainer <int>((int)formData[parm.name]);
+                                            tt = typeof(PerimitveContainer<int>);
+                                            datadata=formData[parm.name]=v;
+                                            widget = Program0.createForm(tt, parm.attrubites!=null?parm.attrubites.SelectTypeOf<Attribute>():null);
+                                             <div>@Program0.CreateDynamicComponent2(this, widget, v)</div>
+                                        }
+                                        if ( !tt.IsClass){
+                                            var v=typeof(PerimitveContainer<>).MakeGenericType(new Type[] {  tt }).GetConstructor(new Type[]{tt}).Invoke(new object[]{formData[parm.name]});
+                                            //new PerimitveContainer<{tt}>(formData[parm.name]);
+
+                                            
+                                            widget = Program0.createForm(
+                                                            typeof(PerimitveContainer<>).MakeGenericType(new Type[] {  tt }),
+                                                            parm.attrubites!=null?parm.attrubites.SelectTypeOf<Attribute>():null
+                                                         );
+                                             <div>@Program0.CreateDynamicComponent2(this, widget, v)</div>
+                                        }
+                                        
+
+                                    }
+                                <Button class="btn btn-primary" @onclick=onChangeRefrence>@sendCaption</Button>
+                                @if(datadata!=null){
+                                
+                                           
+                                    var jVal2=JToken.FromObject(datadata,webClient.settings1);
+                                    <AdminBaseComponenets.BaseComs.JsonShow value=@jVal2></AdminBaseComponenets.BaseComs.JsonShow>
+                                
+                                    
+                                }
+                                @if(result!=null){
+                                    var val=JToken.FromObject(result,webClient.settings1);    
+                                     <Accordion title="ResultData">
+                                        <Tabs>
+                                            <Content>
+                                                <TabPanel Name="json" >
+                                                    <div style="text-align:left;width:100%;direction:ltr">
+                                                        <AdminBaseComponenets.BaseComs.JsonShow value=@result></AdminBaseComponenets.BaseComs.JsonShow>
+                                                    </div>
+                                                </TabPanel>
+                                                <TabPanel Name="txt">
+                                                    @foreach(var line in val){
+                                                        <p style="text-align:left;width:100%;direction:ltr">
+                                                            &emsp;@line
+                                                        </p>
+                                                    }
+                                                </TabPanel>
+                                            </Content>
+                                        </Tabs>    
+                                                
+                                    </Accordion>
+                                }
+                            </TabPanel>
+                            @if(datadata!=null){
+                                
+                                
+                                <TabPanel Name="data">
+                                    <div style="text-align:left;width:100%;direction:ltr">
+                                        @{
+                                            jVal=JToken.FromObject(datadata);
+                                            <AdminBaseComponenets.BaseComs.JsonShow value=@jVal></AdminBaseComponenets.BaseComs.JsonShow>
+                                        }
+                                    </div>
+                                    
+                                    
+                                    
+                                </TabPanel>
+                            }
+
+                            <TabPanel Name="result-schema" >
+                                    <div style="text-align:left;width:100%;direction:ltr">
+                                    @{
+                                        
+                                        Type tt = TypeNameSerializationBinder2.global.BindToType(null, item.resultType);
+                                        
+                                            <div>@CreateDynamicComponent2(tt)</div>
+                                        
+
+                                    }
+                                    </div>
+                            </TabPanel>
+                            @if(result!=null){
+                                <TabPanel Name="result-data">
+                                
+                                    
+                                    @{
+                                    
+                                    
+                                        
+                                        <div style="text-align:left;width:100%;direction:ltr">
+                                        <AdminBaseComponenets.BaseComs.JsonShow value=@result></AdminBaseComponenets.BaseComs.JsonShow>
+                                        </div>
+                                        
+                                    
+                                }
+                                    
+                                </TabPanel>
+                            }
+
+                        </Content>
+                        </Tabs>
+
+
+
+
+            </Accordion>
+        </div>
+    </div>
+}
+
+
+@code{
+    
+
+
+    [Parameter]
+    public RouteInfo item{get;set;}
+
+    [Parameter]
+    public string baseUrl{get;set;}
+
+    [Parameter]
+    public ClTool.WebClient webClient{get;set;}
+
+    
+    JToken result=null;
+    string sendCaption="send";
+    @inject NavigationManager NavigationManager;
+
+    JToken jVal;
+    
+
+    System.Collections.Generic.Dictionary<string,object> formData = null;
+    protected override async Task OnInitializedAsync()
+    {
+        formData = Program0.getRouteParm(baseUrl+"/"+item.url);
+    }
+    object datadata=null;
+
+    private async Task send(string url,string httpMethod, object data)
+    {
+        sendCaption="sending";
+        
+       
+        
+
+
+        result = await webClient.fetch0<object>(url, data, new HttpMethod(httpMethod));
+        Console.WriteLine(result);
+        sendCaption="send";
+        //oldBase.fetch2
+    }
+
+}

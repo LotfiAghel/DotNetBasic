@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <UseBlazorWebAssembly>true</UseBlazorWebAssembly>
+    <!-- <RunAOTCompilation>true</RunAOTCompilation> -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BaseComs\IntegerFSmallView .razor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+<ItemGroup>
+  
+  
+    <PackageReference Include="Blazor.PersianDatePicker" Version="1.0.1" />
+  
+  
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.0.6" />
+  
+  
+    <PackageReference Include="Blazorise.Material" Version="1.0.6" />
+    <PackageReference Include="Blazorise.DataGrid" Version="1.0.6" />
+    <PackageReference Include="Blazorise.Sidebar" Version="1.0.6" />
+    <PackageReference Include="Blazorise.Components" Version="1.0.6" />
+    
+
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0" PrivateAssets="all" />
+    <PackageReference Include="MudBlazor" Version="6.0.14" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+    
+
+
+
+    
+
+
+
+    
+
+  </ItemGroup>
+  
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdminClientViewModels\AdminClientViewModels.csproj" />
+    <ProjectReference Include="..\BaseModels\BaseModels.csproj" />
+    <ProjectReference Include="..\Client\Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="tools\" />
+  </ItemGroup>
+
+</Project>

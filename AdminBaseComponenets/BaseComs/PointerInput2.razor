@@ -1,0 +1,124 @@
+@typeparam TItem
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+
+@inherits PointerInputBase2<TItem>
+
+
+
+        <Accordion>
+        <Collapse  Visible=@collapse1Visible>
+             <CollapseHeader>
+            <Heading Size="HeadingSize.Is6">
+                <Row>
+                <Column ColumnSize="ColumnSize.Is4">
+                    <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)" >toggle</Button>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is8">
+               @if(classess.Count() >1 ){
+                if(!ReadOnly){
+                    <Select TValue="string" SelectedValue=@typeName SelectedValueChanged=@Click2  >
+                        <SelectItem TValue="string" value="null">null</SelectItem>
+                        @foreach (var t in classess)
+                        {
+                            <SelectItem TValue="string" value=@t.Name>@t.GetPerisanName()</SelectItem>
+                        }
+                    </Select>
+                }else if(value!=null){
+                    <div>@(value.GetType().Name)</div>;
+                }
+            }
+            </Column>
+            </Row>
+            </Heading>
+            </CollapseHeader>
+            <CollapseBody>
+            @if (w != null){
+                <div>@Program0.CreateDynamicComponent2(this,w,value,null,new List<System.Attribute>(),ReadOnly)</div>;
+            }
+            </CollapseBody>
+        </Collapse >
+        </Accordion>
+
+ 
+
+@code
+{
+
+    ElementReference MyElementReference;
+    ComponentBase w = null;
+    bool collapse1Visible = false;
+    async Task Click2(string typeName)
+    {
+
+        collapse1Visible = true;
+        this.typeName = typeName;
+        Console.WriteLine("Click2 " + typeName);
+        if(String.IsNullOrEmpty(typeName))
+            return;
+        var bv = value;
+        var vv = await Click();
+        Console.WriteLine("Click2 <>");
+        Console.WriteLine(bv!=null?bv.GetHashCode():"null");
+        Console.WriteLine(vv!=null?vv.GetHashCode():"null");
+        
+        if (bv != null&& value!=null && bv.GetHashCode() == vv.GetHashCode())
+            return;
+        if(bv==null && value==null)
+            return;
+        
+
+        await changeRefrence.InvokeAsync(value);            
+        w = Program0.createForm(vv.GetType(), new List<Attribute>() { });
+        Console.WriteLine("Click2 <3>");
+
+
+        Console.WriteLine("Click2 <4>");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (typeName == null && value != null)
+        {
+            typeName = value.GetType().Name;
+            w = Program0.createForm(value.GetType(), new List<Attribute>() { });
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        if (value != null && typeName != value.GetType().Name)
+        {
+            typeName = value.GetType().Name;
+
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+
+        if (value != null && typeName != value.GetType().Name)
+        {
+            typeName = value.GetType().Name;
+
+        }
+    }
+
+
+
+
+}
+
