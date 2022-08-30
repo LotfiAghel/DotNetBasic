@@ -440,7 +440,22 @@ namespace AdminBaseComponenets
 
             return null;
         }
+        public static Type[] getValueKeyPair(string entityName)
+        {
+            Type[] genericArgs = new Type[] { null, null };
+            genericArgs[0] =  resources.FirstOrDefault(x => x.FullName.Replace(".", "__") == entityName);
 
+
+            if (genericArgs[0].IsSubclassOf(typeof(IdMapper<string>)))
+                genericArgs[1] = typeof(string);
+            if (genericArgs[0].IsSubclassOf(typeof(IdMapper<Guid>)))
+                genericArgs[1] = typeof(Guid);
+
+            if (genericArgs[0].IsSubclassOf(typeof(IdMapper<int>)))
+                genericArgs[1] = typeof(int);
+
+            return genericArgs;
+        }
 
         public static void GenerateWidgetsFunctions()
         {
@@ -772,7 +787,7 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, GridShow>();
                     if (x != null)
                     {
-                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<>).MakeGenericType(type.GetGenericArguments()[0]);
+                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0]);
                     }
                 }
 
@@ -800,7 +815,7 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, GridShow>();
                     if (x != null)
                     {
-                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<>).MakeGenericType(type.GetGenericArguments()[0]);
+                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0]);
                     }
                 }
 

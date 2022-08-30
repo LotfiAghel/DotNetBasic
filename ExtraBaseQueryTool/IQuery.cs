@@ -18,4 +18,8 @@ namespace Models
         //public ForeignKey<T> foreignKey;       
         public Task<T> run(T entity, IMyServiceManager ims);
     }
+
+    public class IQueryContainer<T>{
+        public IQuery<T> query { get; set; }
+    }
 }

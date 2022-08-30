@@ -597,40 +597,7 @@ namespace AdminBaseComponenets
         }
     }
 
-    public class EditBaseContainer : ComponentBase
-    {
-        [Parameter]
-        public string entityName { get; set; }
-
-        [Parameter]
-        public string Id { get; set; }
-
-
-        public Type entityMetaClass { get; set; }
-
-        [Parameter]
-        public object value { get; set; }
-
-        public static async Task<object> getValue<TItem>(int Id)
-             where TItem : class, Models.IIdMapper<int>
-        {
-            return await Program0.getEntityManager<TItem, int>().get(Id);
-        }
-        public static object getValueFast<TItem>(string Id)
-        {
-            return Program0.getEntityManager01<TItem>().getFast(Id);
-        }
-
-        public static async Task<object> postValue<TItem>(TItem Id)
-        {
-            return await Program0.getEntityManager01<TItem>().post(Id);
-        }
-
-        public static async Task<object> updateValue<TItem>(TItem Id)
-        {
-            return await Program0.getEntityManager01<TItem>().update(Id);
-        }
-    }
+    
 
 
     public class EditBase<TKEY, T> : ComponentBase where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable where T : IdMapper<TKEY>

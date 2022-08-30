@@ -1,0 +1,20 @@
+@typeparam TItem
+@typeparam TKEY
+
+
+
+@using Models
+@using AdminBaseComponenets
+@using System.ComponentModel;
+@using Tools;
+
+@if(typeof(Models.IAction<TItem>).GetSubClasses().Count>0){
+    <div>actions</div>
+    <AdminBaseComponenets.BaseComs.PointerInput2 TItem="Models.IAction<TItem>" value=@value   changeRefrence=onChange>
+        
+    </AdminBaseComponenets.BaseComs.PointerInput2>
+
+    <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+}
+
+

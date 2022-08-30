@@ -1,0 +1,19 @@
+@typeparam TItem
+@typeparam TKEY
+@inherits NullableInput2<IEnumerable<TItem>>
+
+@using Models
+@using AdminBaseComponenets
+@using System.ComponentModel;
+@using Tools;
+
+<Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+@if(value!=null){
+    <DataListSyncfusion TItem=TItem TKEY=TKEY value=@value> </DataListSyncfusion>
+    ;
+}else{
+    if(ButtonState.Length<3)
+        ButtonState="click to load";
+}
+
+

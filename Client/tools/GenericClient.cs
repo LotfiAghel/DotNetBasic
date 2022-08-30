@@ -301,7 +301,7 @@ namespace ClTool
         }
         public async Task<List<T>> getAll2(IQuery<T> inp)
         {
-            return await webClient.fetch<IQuery<T>, List<T>>(additinalUrl + typeof(T).Name + "/getAll", HttpMethod.Post, inp);
+            return await webClient.fetch<IQueryContainer<T>, List<T>>(additinalUrl + typeof(T).Name + "/getAll", HttpMethod.Post, new IQueryContainer<T>() {query= inp });
         }
         public async Task<T> sendAction(int entityId, IAction<T> inp)
         {

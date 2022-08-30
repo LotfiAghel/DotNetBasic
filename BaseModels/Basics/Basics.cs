@@ -11,7 +11,7 @@ namespace Models
 
     public interface IEntity0
     {
-
+        object getId();
     }
 
     public class CUAT
@@ -36,7 +36,7 @@ namespace Models
         [Models.PersianLabel("تاریخ حذف")]
         public DateTimeOffset? deletedAt { get; set; }
     }
-
+    
 
     [ShowClassHirarci]
     public interface IIdMapper<T> : IEntity0 where T : IEquatable<T>, IComparable<T>, IComparable
@@ -64,6 +64,12 @@ namespace Models
         {
             return false;
         }
+
+        public object getId()
+        {
+            return id;
+        }
+
         [JsonIgnore]
         [NotMapped]
         public ChangeEventList onChanges { get; set; }
