@@ -1,5 +1,5 @@
 ﻿@typeparam TEntity
-
+@typeparam TKEY
 
 
 
@@ -11,7 +11,7 @@
 @using System.Collections.Generic
 @using Newtonsoft.Json.Linq;
 
-@inherits IntegerForeignKeyArrayInput<TEntity>
+@inherits IntegerForeignKeyArrayInput<TEntity,TKEY>
 @if (itemComponenet != null && value!=null){
 <div class="e-multiselect e-control-wrapper e-control-container e-input-group e-rtl" style="width:100%;" _bl_17="">
     <Button Clicked=" (_) => setNull()" style="position: absolute; z-index: 10; margin: .5rem; left: 0%;">
@@ -45,9 +45,9 @@
                         Action<object> onClick22 = async (object x) =>
                                     {
 
-                                        await Click3((ForeignKey<TEntity>)x);
+                        await Click3((ForeignKey2<TEntity, TKEY>)x);
                                     };
-                    <IntegerFInput TEntity=@TEntity changeRefrence=@onClick22 generator=@generator></IntegerFInput>
+                    <IntegerFInput TEntity=@TEntity TKEY=@TKEY changeRefrence=@onClick22 generator=@generator></IntegerFInput>
 
             }
             </span>

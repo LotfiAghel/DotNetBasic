@@ -114,6 +114,14 @@ namespace Tools
             }
             return null;
         }
+
+        public static bool IsGenericInstanceOf(this Type t,Type T)
+        {
+            if (!t.IsGenericType)
+                return false;
+            return t.GetGenericTypeDefinition() == T;
+        }
+
         public static string GetName(this Type t)
         {
             if (t == null)

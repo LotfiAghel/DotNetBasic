@@ -11,12 +11,13 @@ namespace AdminBaseComponenets.BaseComs
 {
 
 
-    public partial class IntegerFMultiSelect<TEntity> : IntegerForeignKeyArrayInput<TEntity>
-         where TEntity : class, Models.IIdMapper<int>
+    public partial class IntegerFMultiSelect<TEntity,TKEY> : IntegerForeignKeyArrayInput<TEntity, TKEY>
+          where TEntity : class, Models.IIdMapper<TKEY>
+            where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
 
-        ComponentBase itemComponenet = Program0.createWidget(typeof(ForeignKey<TEntity>), null);
+        ComponentBase itemComponenet = Program0.createWidget(typeof(ForeignKey2<TEntity,TKEY>), null);
 
         
 
@@ -37,20 +38,20 @@ namespace AdminBaseComponenets.BaseComs
         
 
 
-        protected async Task Click3(ForeignKey<TEntity> vs)
+        protected async Task Click3(ForeignKey2<TEntity,TKEY> vs)
         {
             
 
-            value.Add(new ForeignKey<TEntity>(vs));
+            value.Add(new ForeignKey2<TEntity,TKEY>(vs));
             generator.onAdd(vs);    
 
             
 
         }
-        protected async Task remove(int vs)
+        protected async Task remove(TKEY vs)
         {
             Console.WriteLine("remove " + vs);
-            value.RemoveAll(x => x.Value == vs);
+            value.RemoveAll(x => x.Value.Equals(vs));
             generator.onRemove(vs); 
 
 
@@ -64,11 +65,11 @@ namespace AdminBaseComponenets.BaseComs
 
             if (generator == null)
             {
-                generator = new MarkedGenerator<ForeignKey<TEntity>>();
-                var tmp = Program0.getEntityManager<TEntity,int>();
+                generator = new MarkedGenerator<ForeignKey2<TEntity,TKEY>>();
+                var tmp = Program0.getEntityManager<TEntity,TKEY>();
                 var x = (await tmp.getAll()).ToList();
                 
-                generator.initList(x.ConvertAll(x => new ForeignKey<TEntity>(x.id)));
+                generator.initList(x.ConvertAll(x => new ForeignKey2<TEntity, TKEY>(x.id)));
                 generator.load(value);
             }
 
@@ -80,7 +81,7 @@ namespace AdminBaseComponenets.BaseComs
 
         int currentIndex;
 
-        void StartDrag(int itemId)
+        void StartDrag(TKEY itemId)
         {
             currentIndex = GetIndex(itemId);
             Console.WriteLine($"DragStart for {itemId} index {currentIndex}");
@@ -88,14 +89,14 @@ namespace AdminBaseComponenets.BaseComs
 
 
 
-        int GetIndex(int itemId)
+        int GetIndex(TKEY itemId)
         {
 
 
-            return value.FindIndex(x => x == itemId);
+            return value.FindIndex(x => x .Equals(itemId));
         }
 
-        void Drop(int itemId)
+        void Drop(TKEY itemId)
         {
 
             {
@@ -119,4 +120,10 @@ namespace AdminBaseComponenets.BaseComs
         }
 
     }
+
+
+    public class IntegerFMultiSelect<TEntity> : IntegerFMultiSelect<TEntity, int>
+            where TEntity : class, Models.IIdMapper<int>
+              
+    { }
 }

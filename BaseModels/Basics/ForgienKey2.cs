@@ -6,17 +6,22 @@ using ModelsManager;
 using Newtonsoft.Json;
 using Tools;
 
-public interface IForeignKey2<TKEY>
+
+public interface IForeignKey2<TKEY>: IForeignKey20
 {
     public TKEY Value { get; }
     public void setValue(TKEY x);
 }
 
 
-public struct ForeignKey2<T,TKEY> : IComparable<ForeignKey2<T,TKEY>>, IEquatable<TKEY>, IForeignKey2<TKEY> where T : Models.IIdMapper<TKEY>
+public struct ForeignKey2<T,TKEY> : IComparable<ForeignKey2<T,TKEY>>, IEquatable<TKEY>, IForeignKey2<TKEY> 
+    where T : class,Models.IIdMapper<TKEY>
      where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
 {
-
+    public object getFValue()
+    {
+        return Value;
+    }
     public ForeignKey2(TKEY value)
     {
         Value = value;
@@ -120,7 +125,8 @@ public struct ForeignKey2<T,TKEY> : IComparable<ForeignKey2<T,TKEY>>, IEquatable
 }
 
 
-public class ForeignKey2Converter0<T, TKEY> : JsonConverter<ForeignKey2<T,TKEY>> where T : Models.IIdMapper<TKEY>
+public class ForeignKey2Converter0<T, TKEY> : JsonConverter<ForeignKey2<T,TKEY>> 
+    where T :class, Models.IIdMapper<TKEY>
     where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
 {
     public override void WriteJson(JsonWriter writer, ForeignKey2<T,TKEY> value, JsonSerializer seForeignKey2izer)

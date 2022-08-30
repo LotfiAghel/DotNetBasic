@@ -72,11 +72,19 @@ namespace Models
 public class ForeignKeyAttr : Attribute
 {
     public Type type;
-    public ForeignKeyAttr(Type t)
+    public Type tkey = typeof(int);
+    public ForeignKeyAttr(Type t, Type tkey=null )
     {
         type = t;
+        if (tkey!=null)
+            this.tkey = tkey;
+    }
+    public Type[] getTypes()
+    {
+        return new Type[]{ type,tkey};
     }
 }
+
 
 
 public class CollectionAttr : Attribute

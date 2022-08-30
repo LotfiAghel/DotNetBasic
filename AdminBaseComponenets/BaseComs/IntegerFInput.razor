@@ -1,5 +1,5 @@
 @typeparam TEntity
-
+@typeparam TKEY
 
 
 
@@ -14,20 +14,20 @@
 
 @using Newtonsoft.Json.Linq;
 
-@inherits IntegerForeignKeyInput<TEntity>
+@inherits IntegerForeignKeyInput<TEntity,TKEY>
 
 
 
 @if(!ReadOnly){
     @if(generator!=null ){
-        <Select TValue="int" SelectedValue=@value
+        <Select TValue=TKEY SelectedValue=@value
                 SelectedValueChanged=@Click2
                 ReadOnly=@ReadOnly>
             @if (generator != null)
                 foreach (var t in  generator)
                 {
                             
-                    <SelectItem TValue="int" Value=@t.Value>
+                    <SelectItem TValue=TKEY Value=@t.Value>
                         @if (ItemComponenet != null)
                         {
                             <div>@Program0.CreateDynamicComponent2(this, ItemComponenet, t))</div>
@@ -38,6 +38,7 @@
     }
 }
 <div>@generator.GetHashCode()</div>
+<div>@generator.Count()</div>
 
        
 

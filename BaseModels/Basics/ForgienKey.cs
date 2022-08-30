@@ -5,18 +5,20 @@ using ModelsManager;
 #endif
 using Newtonsoft.Json;
 
-
-public interface IForeignKey
+public interface IForeignKey20
 {
-    public int Value { get; }
-    public void setValue(int x);
+    object getFValue();
 }
 
 
-public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IForeignKey 
+public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IForeignKey2<int>
     where T : Models.IIdMapper<int>
 {
 
+    public object getFValue()
+    {
+        return Value;
+    }
     public ForeignKey(int value)
     {
         Value = value;
@@ -160,30 +162,30 @@ public class ForeignKeyConverter0<T> : JsonConverter<ForeignKey<T>> where T : Mo
 }
 
 
-public class ForeignKeyConverter : JsonConverter<IForeignKey>
+public class ForeignKeyConverter : JsonConverter<IForeignKey2<int>>
 {
-    public override void WriteJson(JsonWriter writer, IForeignKey value, JsonSerializer seForeignKeyizer)
+    public override void WriteJson(JsonWriter writer, IForeignKey2<int> value, JsonSerializer seForeignKeyizer)
     {
         writer.WriteValue(value.Value);
     }
 
-    public override IForeignKey ReadJson(JsonReader reader, Type objectType, IForeignKey existingValue, bool hasExistingValue, JsonSerializer seForeignKeyizer)
+    public override IForeignKey2<int> ReadJson(JsonReader reader, Type objectType, IForeignKey2<int> existingValue, bool hasExistingValue, JsonSerializer seForeignKeyizer)
     {
 
         if (reader.Value is int intV)
         {
-            return objectType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { intV }) as IForeignKey;
+            return objectType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { intV }) as IForeignKey2<int>;
         }
         if (reader.Value is Int64 intV64)
         {
-            return objectType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { (int)intV64 }) as IForeignKey;
+            return objectType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { (int)intV64 }) as IForeignKey2<int>;
         }
 
         if (reader.Value is string stringV)
         {
-            return objectType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { Int32.Parse(stringV) }) as IForeignKey;
+            return objectType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { Int32.Parse(stringV) }) as IForeignKey2<int>;
         }
-        return objectType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { -1 }) as IForeignKey;
+        return objectType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { -1 }) as IForeignKey2<int>;
 
 
     }

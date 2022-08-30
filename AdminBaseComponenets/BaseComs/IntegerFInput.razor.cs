@@ -11,20 +11,21 @@ namespace AdminBaseComponenets.BaseComs
 {
 
 
-    public partial class IntegerFInput<TEntity> : IntegerForeignKeyInput<TEntity>
-        where TEntity : class, Models.IIdMapper<int>
+    public partial class IntegerFInput<TEntity,TKEY> : IntegerForeignKeyInput<TEntity,TKEY>
+         where TEntity : class, Models.IIdMapper<TKEY>
+         where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
         ComponentBase ItemComponenet = null;
         bool panelOpenState;
 
         [Parameter]
-        public IEnumerable<ForeignKey<TEntity>> generator { get; set; } =null;
+        public IEnumerable<ForeignKey2<TEntity, TKEY>> generator { get; set; } =null;
 
         
         
 
 
-        public int vvv
+        public TKEY vvv
         {
             get => value.Value;
             set
@@ -37,12 +38,12 @@ namespace AdminBaseComponenets.BaseComs
 
         protected override async Task OnInitializedAsync()
         {
-            ItemComponenet = Program0.createWidget(typeof(ForeignKey<TEntity>), new List<Attribute>());
+            ItemComponenet = Program0.createWidget(typeof(ForeignKey2<TEntity, TKEY>), new List<Attribute>());
             await load();
         }
 
 
-        protected async Task Click2(int vs)
+        protected async Task Click2(TKEY vs)
         {
             Console.WriteLine($"onChange integerFUnput  {vs} ");
             value = vs;
@@ -64,11 +65,11 @@ namespace AdminBaseComponenets.BaseComs
         }
         public async Task load()
         {
-            var tmp = Program0.getEntityManager<TEntity,int>();
+            var tmp = Program0.getEntityManager<TEntity, TKEY> ();
 
 
             if(generator==null)
-                generator = (await tmp.getAll()).ToList().ConvertAll(x => new ForeignKey<TEntity>(x.id)); 
+                generator = (await tmp.getAll()).ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id)); 
             // StateHasChanged();
 
 
@@ -76,4 +77,10 @@ namespace AdminBaseComponenets.BaseComs
         }
 
     }
+
+
+    public class IntegerFInputInt<TEntity> : IntegerFInput<TEntity, int>
+          where TEntity : class, Models.IIdMapper<int>
+         
+    { }
 }

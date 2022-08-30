@@ -280,8 +280,9 @@ namespace AdminBaseComponenets
         }
     }
 
-    public class IntegerForeignKeyInput<CT> : ValueInput<ForeignKey<CT>>
-        where CT : class,Models.IIdMapper<int>
+    public class IntegerForeignKeyInput<CT, TKEY> : ValueInput<ForeignKey2<CT,TKEY>>
+       where CT : class, Models.IIdMapper<TKEY>
+         where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
 
@@ -289,30 +290,30 @@ namespace AdminBaseComponenets
 
         public CT fValue { get; set; }
 
-        public static int getOptionValue(CT t)
+        public static TKEY getOptionValue(CT t)
         {
             if (t == null)
-                return -1;
-            return (t as IIdMapper<int>).id;
+                return default(TKEY);
+            return t.id;
         }
         public void setValue(object t)
         {
-            if (t is int)
+            /*if (t is int)
             {
-                value = new ForeignKey<CT>((int)t);
-            }
-            value = (ForeignKey<CT>)t;
+                value = new ForeignKey2<CT,TKEY>(t);//TODO what is this ?!!!!
+            }/**/
+            value = (ForeignKey2<CT,TKEY>)t;
         }
-        private int pvalue = -1;
+        private TKEY pvalue = default(TKEY);
         public override async Task<CT> Click()
         {
             Console.WriteLine($"onChange integerFInput click {pvalue} {value} ");
-            if (pvalue != value)
+            if (!pvalue.Equals(value))
             {
                 await changeRefrence.InvokeAsync(value);
                 pvalue = value;
             }
-            fValue = (CT)(await Program0.getEntityManager<CT,int>().get(value.Value));
+            fValue = (CT)(await Program0.getEntityManager<CT,TKEY>().get(value.Value));
             return fValue;
 
         }
@@ -323,11 +324,13 @@ namespace AdminBaseComponenets
 
 
     
-    public class IntegerForeignKeyArrayInput<CT> : EnumArrayInput<ForeignKey<CT>> where CT: Models.IIdMapper<int>
+    public class IntegerForeignKeyArrayInput<CT, TKEY> : EnumArrayInput<ForeignKey2<CT,TKEY>>
+        where CT : class, Models.IIdMapper<TKEY>
+     where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
 
-        public int value0 { get; set; }
+        //public int value0 { get; set; }
 
         
         
@@ -699,11 +702,15 @@ namespace AdminBaseComponenets
                     property.SetValue(value, x);
                 };
                 var prVal = property.GetValue(value);
-                if (property.PropertyType == typeof(int) && w.GetType().IsGenericType && w.GetType().GetGenericTypeDefinition() == typeof(AdminBaseComponenets.BaseComs.IntegerFInput<>))
+                if (w.GetType().IsGenericInstanceOf(typeof(AdminBaseComponenets.BaseComs.IntegerFInput<,>))
+                    
+                    && ! property.PropertyType.IsGenericInstanceOf(typeof(ForeignKey2<,>)) 
+                    
+                    )
                 {
                     onChange = (x) =>
                     {
-                        property.SetValue(value, ((IForeignKey)x).Value);
+                        property.SetValue(value, ((IForeignKey20)x).getFValue());
                     };
 
 
@@ -715,7 +722,33 @@ namespace AdminBaseComponenets
                         Console.WriteLine("formRenderer[typeof(int)] ");
                         var ct = a.type;
                         Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{ct}>");
-                        prVal = typeof(ForeignKey<>).MakeGenericType(ct).GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { prVal });
+                        prVal = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes()).GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { prVal });
+                        //var gtc = gt.GetConstructor(new[] { typeof(int) });
+
+
+
+                    }
+
+
+                }
+                if (property.PropertyType == typeof(int)
+                    && w.GetType().IsGenericInstanceOf ( typeof(AdminBaseComponenets.BaseComs.IntegerFInputInt<>)) )
+                {
+                    onChange = (x) =>
+                    {
+                        property.SetValue(value, ((IForeignKey20)x).getFValue());
+                    };
+
+
+
+                    var a = property.GetCustomFirstAttributes<ForeignKeyAttr>();
+
+                    if (a != null)
+                    {
+                        Console.WriteLine("formRenderer[typeof(int)] ");
+                        
+                        Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{a.type}>");
+                        prVal = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes()).GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { prVal });
                         //var gtc = gt.GetConstructor(new[] { typeof(int) });
 
 
@@ -737,7 +770,7 @@ namespace AdminBaseComponenets
                             property.SetValue(value, null);
                             return;
                         }
-                        property.SetValue(value, ((IForeignKey)x).Value);
+                        property.SetValue(value, ((IForeignKey20)x).getFValue());
                     };
                 }
 

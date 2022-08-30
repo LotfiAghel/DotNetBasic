@@ -472,11 +472,9 @@ namespace AdminBaseComponenets
                 if (a != null)
                 {
                     Console.WriteLine("defultRenderer[typeof(int)]");
-                    var ct = a.type;
-                    var gt = typeof(ForeignKey<>).MakeGenericType(ct);
+                    
+                    var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
                     var gtc = gt.GetConstructor(new[] { typeof(int) });
-
-
 
                     return createWidget(
                             gt,
@@ -533,9 +531,16 @@ namespace AdminBaseComponenets
                 return typeof(AdminBaseComponenets.BaseComs.IntegerFSmallView<>).MakeGenericType(type.GetGenericArguments());
 
             };
-           
-           
-            
+            defultRenderer2[typeof(ForeignKey2<,>)] = (type, prps) =>
+            {
+                Console.WriteLine("defultRenderer2[ForeignKey<>]");
+                Console.WriteLine($"defultRenderer2[ForeignKey<>] IntegerFSmallView<{type.GetGenericArguments()}>");
+                return typeof(AdminBaseComponenets.BaseComs.IntegerFSmallView<>).MakeGenericType(type.GetGenericArguments());
+
+            };
+
+
+
 
 
             defultRenderer[typeof(List<int>)] = (prps) =>
@@ -633,9 +638,8 @@ namespace AdminBaseComponenets
                 if (a != null)
                 {
                     Console.WriteLine("formRenderer[typeof(int)] ");
-                    var ct = a.type;
-                    Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{ct}>");
-                    var gt = typeof(ForeignKey<>).MakeGenericType(ct);
+                    Console.WriteLine($"formRenderer[typeof(int)] ForeignKey2<{a.getTypes()}>");
+                    var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
                     //var gtc = gt.GetConstructor(new[] { typeof(int) });
 
                     return createForm(
@@ -715,10 +719,16 @@ namespace AdminBaseComponenets
             {
                 Console.WriteLine("formRenderer2(ForeignKey<>)");
                 Console.WriteLine($"formRenderer2(ForeignKey<>) IntegerFInput<{type.GetGenericArguments()[0]}>");
-                return typeof(AdminBaseComponenets.BaseComs.IntegerFInput<>).MakeGenericType(type.GetGenericArguments()); ;
+                return typeof(AdminBaseComponenets.BaseComs.IntegerFInputInt<>).MakeGenericType(type.GetGenericArguments()); ;
             };
-          
-            
+            formRenderer2[typeof(ForeignKey2<,>)] = (type, prps) =>
+            {
+                Console.WriteLine("formRenderer2(ForeignKey<>)");
+                Console.WriteLine($"formRenderer2(ForeignKey<>) IntegerFInput<{type.GetGenericArguments()[0]}>");
+                return typeof(AdminBaseComponenets.BaseComs.IntegerFInput<,>).MakeGenericType(type.GetGenericArguments()); ;
+            };
+
+
 
 
 
@@ -801,6 +811,24 @@ namespace AdminBaseComponenets
 
                 return typeof(AdminBaseComponenets.BaseComs.ArrayInput<>).MakeGenericType(type.GetGenericArguments()[0]);
             };
+
+            formRenderer2[typeof(Dictionary<,>)] = (type, prps) =>
+            {
+                Console.WriteLine("Program0.formRenderer2(Dictionary<,>)");
+                var ItemType = type.GetGenericArguments()[1];
+
+                {
+                    var x = prps.GetFirst<Attribute, GridShow>();
+                    if (x != null)
+                    {
+                        return typeof(AdminBaseComponenets.BaseComs.DictinaryStringKeyInput<>).MakeGenericType(type.GetGenericArguments()[1]);
+                    }
+                }
+
+                return typeof(AdminBaseComponenets.BaseComs.ArrayInput<>).MakeGenericType(type.GetGenericArguments()[0]);
+            };
+
+
 
 
 
