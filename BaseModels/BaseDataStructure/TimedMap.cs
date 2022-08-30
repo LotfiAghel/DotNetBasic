@@ -545,7 +545,7 @@ namespace BaseDataStructure
 		{
 			if (v!=null && revers.ContainsKey(v))
 			{
-				var l = revers[v];//TODO The given key 'GCS-Bankrupt-1168' was not present in the dictionary in faghat mitune bekhatere chand thearde budan pish biyad
+				var l = revers[v];//TODO The given key 'SGS-Bankrupt-1168' was not present in the dictionary in faghat mitune bekhatere chand thearde budan pish biyad
 				revers.Remove(v);
 				foreach (var entry in l)
 				{
