@@ -311,7 +311,7 @@ namespace AdminBaseComponenets
                 await changeRefrence.InvokeAsync(value);
                 pvalue = value;
             }
-            fValue = (CT)(await Program0.getEntityManager<CT>().get(value.Value));
+            fValue = (CT)(await Program0.getEntityManager<CT,int>().get(value.Value));
             return fValue;
 
         }
@@ -611,21 +611,21 @@ namespace AdminBaseComponenets
 
         public static async Task<object> getValue<TItem>(int Id)
         {
-            return await Program0.getEntityManager<TItem>().get(Id);
+            return await Program0.getEntityManager<TItem,int>().get(Id);
         }
         public static object getValueFast<TItem>(string Id)
         {
-            return Program0.getEntityManager<TItem>().getFast(Id);
+            return Program0.getEntityManager<TItem, int>().getFast(Id);
         }
 
         public static async Task<object> postValue<TItem>(TItem Id)
         {
-            return await Program0.getEntityManager<TItem>().post(Id);
+            return await Program0.getEntityManager<TItem, int>().post(Id);
         }
 
         public static async Task<object> updateValue<TItem>(TItem Id)
         {
-            return await Program0.getEntityManager<TItem>().update(Id);
+            return await Program0.getEntityManager<TItem, int>().update(Id);
         }
     }
 
@@ -642,7 +642,7 @@ namespace AdminBaseComponenets
         {
 
             if (typeof(TKEY) == typeof(int))
-                value = await Program0.getEntityManager<T>().get(int.Parse(Id));
+                value = await Program0.getEntityManager<T, TKEY>().get(Id);
             
         }
     }
@@ -810,7 +810,7 @@ namespace AdminBaseComponenets
 
 
 
-            value = await Program0.getEntityManager<T>().getAll();
+            value = await Program0.getEntityManager<T, TKEY>().getAll();
 
 
         }
@@ -830,7 +830,7 @@ namespace AdminBaseComponenets
             Id = Id ?? "1";
 
             if (typeof(TKEY) == typeof(int))
-                value = await Program0.getEntityManager<T>().get(int.Parse(Id));
+                value = await Program0.getEntityManager<T, TKEY>().get(Id);
             
         }
     }

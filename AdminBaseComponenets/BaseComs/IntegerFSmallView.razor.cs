@@ -33,7 +33,7 @@ namespace AdminBaseComponenets.BaseComs
             Console.WriteLine("load");
 
 
-            var tmp = Program0.getEntityManager<TEntity>();
+            var tmp = Program0.getEntityManager<TEntity,int>();
 
             Data = (await tmp.get(value.Value));
             if (Data == null)

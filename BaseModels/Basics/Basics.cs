@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace Models
 {
@@ -44,7 +45,8 @@ namespace Models
         [Models.IgnoreDefultForm]
         public T id { get; set; }
 
-
+        [JsonIgnore]
+        public ChangeEventList onChanges { get; set; }
 
     }
 
@@ -60,6 +62,8 @@ namespace Models
         {
             return false;
         }
+        [JsonIgnore]
+        public ChangeEventList onChanges { get; set; }
     }
 
 

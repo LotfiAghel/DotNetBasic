@@ -64,7 +64,7 @@ namespace AdminBaseComponenets.BaseComs
             if (generator == null)
             {
                 generator = new MarkedGenerator<ForeignKey<TEntity>>();
-                var tmp = Program0.getEntityManager<TEntity>();
+                var tmp = Program0.getEntityManager<TEntity,int>();
                 var x = (await tmp.getAll()).ToList();
                 
                 generator.initList(x.ConvertAll(x => new ForeignKey<TEntity>(x.id)));

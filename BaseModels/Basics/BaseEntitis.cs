@@ -60,11 +60,11 @@ namespace Models
                 return true;
             return id.ToString().Contains(txt);
         }
+
         [JsonIgnore]
-        public ChangeEventList onChanges;
+        public ChangeEventList onChanges { get; set; }
 
 
-        
     }
 
 

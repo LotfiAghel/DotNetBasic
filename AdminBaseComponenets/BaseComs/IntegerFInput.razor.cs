@@ -63,7 +63,7 @@ namespace AdminBaseComponenets.BaseComs
         }
         public async Task load()
         {
-            var tmp = Program0.getEntityManager<TEntity>();
+            var tmp = Program0.getEntityManager<TEntity,int>();
 
 
             if(generator==null)

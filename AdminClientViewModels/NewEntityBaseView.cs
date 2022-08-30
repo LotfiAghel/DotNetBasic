@@ -11,11 +11,11 @@ using System.Collections;
 namespace AdminClientViewModels
 {
 
-    public class PartCollectionProxy<T>: IEntityService0<T> {
+    public class PartCollectionProxy<T, TKEY> : IEntityService0<T,TKEY> {
         public List<T> data;
         public System.Reflection.PropertyInfo pr;
         public int masterId;
-        public IEntityService0<T> masterManager;
+        public IEntityService0<T,TKEY> masterManager;
 
         public int Count => ((ICollection<T>)data).Count;
 
@@ -27,7 +27,7 @@ namespace AdminClientViewModels
             return t;
         }
 
-        public Task<T> get(int id)
+        public Task<T> get(TKEY id)
         {
             return masterManager.get(id);
         }
@@ -35,7 +35,7 @@ namespace AdminClientViewModels
             return masterManager.getFast(id);
            
         }
-        public T getFromLoaded(int id)
+        public T getFromLoaded(TKEY id)
         {
             return masterManager.getFromLoaded(id);
         }
@@ -56,14 +56,14 @@ namespace AdminClientViewModels
         }
 
 
-        public IEntityService0<T> getFiltered(string itemName, int masterId)
+        public IEntityService0<T,TKEY> getFiltered(string itemName, int masterId)
         {
             return masterManager.getFiltered(itemName,masterId);
         }
 
-        public Task<object> getObject(int id)
+        public Task<object> getObject(object id)
         {
-            return masterManager.getObject(id);
+            return masterManager.getObject((TKEY)id);
         }
 
         public Task<T> post(T t)
@@ -95,20 +95,27 @@ namespace AdminClientViewModels
                 
            return data;
         }
+
+        public Task<T> get(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 
-    public class NewEntityService<T> : IEntityService0<T>,Models.IEntityManagerW<T> where T : Entity
+    public class NewEntityService<T, TKEY> : IEntityService0<T,TKEY>,Models.IEntityManagerW<T,TKEY>
+        where T : class, Models.IIdMapper<TKEY>
+        where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
         
         
         public List<T> data = new List<T>();
-        Dictionary<int, T> id2En = new Dictionary<int, T>();
-        GenericClientInt<T> _ocg=null;
-        GenericClientInt<T> ocg{get{
+        Dictionary<TKEY, T> id2En = new ();
+        GenericClientInt<T, TKEY> _ocg = null;
+        GenericClientInt<T, TKEY> ocg{get{
             if(_ocg==null)
-                _ocg = new GenericClientInt<T>(WebClient.webClient);   
+                _ocg = new GenericClientInt<T,TKEY>(WebClient.webClient);   
             return _ocg;
         } }
         public T insertOrUpdate( T inp)
@@ -176,10 +183,10 @@ namespace AdminClientViewModels
             return res;
         }
 
-        public IEntityService0<T> getFiltered(string itemName,int masterId)//TODO in function khafan tar az ina bayad bashe
+        public IEntityService0<T,TKEY> getFiltered(string itemName,int masterId)//TODO in function khafan tar az ina bayad bashe
         {
             
-            var res=new PartCollectionProxy<T>();
+            var res=new PartCollectionProxy<T, TKEY>();
             res.masterManager = this;
             
             var pr=res.pr=typeof(T).GetProperty(itemName);
@@ -190,13 +197,20 @@ namespace AdminClientViewModels
         public T getFast(string id){
             T res=null;
             System.Console.WriteLine("getFast :" + id.ToString());
-            
-            
 
-            id2En.TryGetValue(Int32.Parse(id),out res);
+
+            if (typeof(TKEY) == typeof(string))
+            {
+                id2En.TryGetValue((TKEY)((object)id), out res);
+            }
+            if (typeof(TKEY) == typeof(int))
+            {
+                id2En.TryGetValue((TKEY)((object)Int32.Parse( (string)((object)id)  )), out res);
+            }
+            
             return res;
         }
-        public async Task<T> get(int id)
+        public async Task<T> get(TKEY id)
         {
 
             T res=null;
@@ -229,7 +243,7 @@ namespace AdminClientViewModels
             
         }
         
-        public T get0(int id)
+        public T get0(TKEY id)
         {
             T res= default(T);
             id2En.TryGetValue(id, out res);
@@ -253,10 +267,10 @@ namespace AdminClientViewModels
             return await get((int)id);
             
         }
-        public T getFromLoaded(int id)
+        public T getFromLoaded(TKEY id)
         {
             T res = null;
-            id2En.TryGetValue((int)id, out res);
+            id2En.TryGetValue(id, out res);
                 
             
             return res;
@@ -264,7 +278,7 @@ namespace AdminClientViewModels
             
         }
 
-        public async Task<object> getObject(int id){
+        public async Task<object> getObject(object id){
             return await get(id);
         }
         public async Task<T> post(T t)
@@ -299,7 +313,7 @@ namespace AdminClientViewModels
             return data.GetEnumerator();
         }
 
-        T IEntityService0<T>.Add(T t)
+        T IEntityService0<T,TKEY>.Add(T t)
         {
             throw new NotImplementedException();
         }
@@ -310,6 +324,9 @@ namespace AdminClientViewModels
             
         }
 
-       
+        public Task<T> get(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

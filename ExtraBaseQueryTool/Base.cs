@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static System.Net.Mime.MediaTypeNames;
+
 namespace Models
 {
 
@@ -25,20 +28,23 @@ namespace Models
         {
             return t.Find(id.Value);
         }
-
-
     }
    
-    public interface IEntityManagerW<T> where T:Entity{
-        Task<T> get(int id);
-        T get0(int id);
+    public interface IEntityManagerW<T,TKEY> 
+        where T : Models.IIdMapper<TKEY>
+        where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
+    {
+        Task<T> get(TKEY id);
+        T get0(TKEY id);
     }
 
 
     public interface IAssetManager{
 
 
-        IEntityManagerW<T> getManager<T>()where T:Entity; 
+        IEntityManagerW<T, TKEY> getManager<T, TKEY>()
+            where T: Models.IIdMapper<TKEY> 
+            where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable; 
         IQueryable<T> getDbSet<T>()where T : class;
 
         T2 getDbSet2<T2>()where T2 : class;

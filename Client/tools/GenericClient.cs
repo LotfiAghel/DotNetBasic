@@ -281,7 +281,7 @@ namespace ClTool
 
     }
 
-    public class GenericClient0<T> : GenericClient00
+    public class GenericClient0<T, TKEY> : GenericClient00
     where T : class
     {
         public string additinalUrl;
@@ -331,7 +331,7 @@ namespace ClTool
             var ga = await getAll();
             return ga.ConvertAll<object>(x => x); ;
         }
-        public async Task<T> get(int id)
+        public async Task<T> get(TKEY id)
         {
             return await webClient.fetch<T, T>(additinalUrl + typeof(T).Name + "/" + id, HttpMethod.Get, null);
         }
@@ -350,8 +350,9 @@ namespace ClTool
         }
 
     }
-    public class GenericClientInt<T> : GenericClient0<T>
-    where T : class
+    public class GenericClientInt<T,TKEY> : GenericClient0<T, TKEY>
+        where T :class, Models.IIdMapper<TKEY>
+        where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
         public GenericClientInt(ClTool.WebClient w, string additinalUrl = null) : base(w, additinalUrl) { }
     }

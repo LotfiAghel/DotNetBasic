@@ -7,23 +7,36 @@ using System;
 namespace AdminClientViewModels
 {
 
+    public interface IEntityService000
+    {
+
+        Task<object> getObject(object id);
+
+        Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName, string collectionName, int masterEnityId);
+    }
     public interface IEntityService00
     {
 
-        Task<object> getObject(int id);
+        Task<object> getObject(object id);
         Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName,string collectionName,int masterEnityId);
     }
 
-    public interface IEntityService0<T> : IEntityService00, IEnumerable<T>
+    public interface IEntityService01<T>: IEntityService00
+    {
+        Task<IEnumerable<T>> getAll(bool froceFromServer = false);
+
+    }
+
+    public interface IEntityService0<T, TKEY> : IEntityService01<T>, IEnumerable<T>
     {
 
 
 
 
-        Task<IEnumerable<T>> getAll(bool froceFromServer=false);
-        Task<T> get(int id);
+        
+        Task<T> get(TKEY id);
         T getFast(string id);
-        T getFromLoaded(int id);
+        T getFromLoaded(TKEY id);
 
 
         Task<T> post(T t);
@@ -31,13 +44,13 @@ namespace AdminClientViewModels
 
         T Add(T t);
 
-        IEntityService0<T> getFiltered(string itemName, int masterId);
+        IEntityService0<T, TKEY> getFiltered(string itemName, int masterId);
 
         Task<IEnumerable<T>> fetchFiltered(string itemName, int masterId);
-        
+        Task<T> get(string id);
     }
 
-    public interface IEntityService<TKEY, T> : IEntityService0<T> where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable where T : IdMapper<TKEY>
+    public interface IEntityService<TKEY, T> : IEntityService0<T, TKEY> where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable where T : IdMapper<TKEY>
     {
 
         Task<T> get(TKEY id);
@@ -49,10 +62,10 @@ namespace AdminClientViewModels
     {
 
 
-        GenericClientInt<T> ocg;
+        GenericClientInt<T, TKEY> ocg;
         public EntityService()
         {
-            ocg = new GenericClientInt<T>(ClTool.WebClient.webClient, "old/");
+            ocg = new GenericClientInt<T, TKEY>(ClTool.WebClient.webClient, "old/");
         }
 
         public List<T> data = null;
@@ -84,16 +97,9 @@ namespace AdminClientViewModels
         {
             await getAll();
 
-            return data.First(x => x.id.Equals(id));
-        }
-        public async Task<T> get(int id)
-        {
-            
-            await getAll();
             return getFromLoaded(id);
-
-
         }
+       
          public T getFast(string id){
             
             System.Console.WriteLine("getFast :" + id.ToString());
@@ -103,11 +109,11 @@ namespace AdminClientViewModels
             return data.First(x => x.id.Equals(id));
             
         }
-        public T getFromLoaded(int id)
+        public T getFromLoaded(TKEY id)
         {
             if (id.GetType() == typeof(string))
             {
-                if (id == -11)
+                if (id as string == "new")
                 {
                     var newI = typeof(T).GetConstructor(new Type[] { }).Invoke(new object[] { }) as T;
                     return newI;
@@ -121,9 +127,9 @@ namespace AdminClientViewModels
             return res;
 
         }
-        public async Task<object> getObject(int id)
+        public async Task<object> getObject(object id)
         {
-            return await get(id);
+            return await get((TKEY)id);
         }
         public async Task<T> post(T input)
         {
@@ -149,7 +155,7 @@ namespace AdminClientViewModels
             return t;
         }
 
-        public IEntityService0<T> getFiltered(string itemName, int masterId)
+        public IEntityService0<T,TKEY> getFiltered(string itemName, int masterId)
         {
             throw new NotImplementedException();
         }
@@ -174,12 +180,17 @@ namespace AdminClientViewModels
             throw new NotImplementedException();
         }
 
-        T IEntityService0<T>.Add(T t)
+        T IEntityService0<T, TKEY>.Add(T t)
         {
             throw new NotImplementedException();
         }
 
-        Task<IEnumerable<T>> IEntityService0<T>.fetchFiltered(string itemName, int masterId)
+        Task<IEnumerable<T>> IEntityService0<T, TKEY>.fetchFiltered(string itemName, int masterId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> get(string id)
         {
             throw new NotImplementedException();
         }

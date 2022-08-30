@@ -17,7 +17,7 @@
 
 @{
     Data =default(TEntity);
-     var tmp = Program0.getEntityManager<TEntity>();
+     var tmp = Program0.getEntityManager<TEntity,int>();
 
      Data = tmp.getFromLoaded(value.Value);
      if(Data!=null)

@@ -114,16 +114,22 @@ namespace AdminBaseComponenets
             }
             if (ty.IsAssignableTo(typeof(Models.Entity)))
             {
-                b = typeof(NewEntityService<>).MakeGenericType(new Type[] { ty }).GetConstructor(new Type[] { }).Invoke(new object[] { });
+                b = typeof(NewEntityService<,>).MakeGenericType(new Type[] { ty }).GetConstructor(new Type[] { }).Invoke(new object[] { });
             }
             if (b != null)
                 entityManagers[ty] = b as IEntityService00;
 
             return b as IEntityService00;
         }
-        public static IEntityService0<T> getEntityManager<T>()
+
+
+        public static IEntityService01<T> getEntityManager01<T>()
         {
-            return getEntityManager0(typeof(T)) as IEntityService0<T>;
+            return getEntityManager0(typeof(T)) as IEntityService01<T>;
+        }
+        public static IEntityService0<T,TKEY> getEntityManager<T, TKEY>()
+        {
+            return getEntityManager0(typeof(T)) as IEntityService0<T, TKEY>;
         }
 
         public static RenderFragment CreateDynamicComponent2(object thiz, ComponentBase c, object vv, Action<object> changeRefrence = null, List<Attribute> Attributes = null, bool ReadOnly = false) => builder =>
