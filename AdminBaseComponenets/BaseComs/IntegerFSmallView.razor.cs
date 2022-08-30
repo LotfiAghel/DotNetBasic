@@ -11,15 +11,18 @@ namespace AdminBaseComponenets.BaseComs
 {
 
 
-    public partial class IntegerFSmallView<TEntity> : IntegerForeignKeyInput<TEntity,int>
-         where TEntity : class, Models.IIdMapper<int>
+    public partial class IntegerFSmallView<TEntity, TKEY> : IntegerForeignKeyInput<TEntity, TKEY>
+         where TEntity : class, Models.IIdMapper<TKEY>
+         where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
         [Parameter]
-        public ComponentBase w { get; set; } = null;
+        public ComponentBase viewComponenet { get; set; } = null;
+
         [Parameter]
         public TEntity Data { get; set; } = default(TEntity);
+
         [Parameter]
-        public int dataId { get; set; } = -1;
+        public TKEY dataId { get; set; } = default(TKEY);
 
 
         protected override async Task OnInitializedAsync()
@@ -34,22 +37,22 @@ namespace AdminBaseComponenets.BaseComs
             Console.WriteLine("load");
 
 
-            var tmp = Program0.getEntityManager<TEntity,int>();
+            var tmp = Program0.getEntityManager<TEntity, TKEY>();
 
             Data = (await tmp.get(value.Value));
             if (Data == null)
             {
-                w = null;
+                viewComponenet = null;
                 return;
             }
             //TODO not correct 
             dataId = Data.id;
-            if (dataId != value.Value)
+            if (!dataId.Equals( value.Value) )
             {
                 Console.WriteLine("bug");
             }
 
-            w = Program0.createWidget(Data.GetType(), new List<Attribute>() { });
+            viewComponenet = Program0.createWidget(Data.GetType(), new List<Attribute>() { });
             StateHasChanged();
 
 

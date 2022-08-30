@@ -10,9 +10,8 @@ public interface IForeignKey20
     object getFValue();
 }
 
-
-public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IForeignKey2<int>
-    where T : Models.IIdMapper<int>
+    public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IForeignKey2<int>
+    where T : class, Models.IIdMapper<int>
 {
 
     public object getFValue()
@@ -118,10 +117,24 @@ public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IFore
     }
 
 
+    public ForeignKey(ForeignKey2<T, int> value)
+    {
+        Value = value.Value;
+    }
 
     public static implicit operator ForeignKey<T>(int amount) => Parse(amount);
-
-
+    public static implicit operator ForeignKey<T>(T vl)
+    {
+        return Parse(vl.id);
+    }
+    public static implicit operator ForeignKey<T>(ForeignKey2<T, int> amount)
+    {
+        return Parse(amount.Value);
+    }
+    public static implicit operator ForeignKey2<T,int>(ForeignKey<T> amount)
+    {
+        return new ForeignKey2<T, int>(amount.Value);
+    }
 
     public static bool operator >(ForeignKey<T> left, ForeignKey<T> right)
     {
@@ -146,7 +159,8 @@ public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IFore
 }
 
 
-public class ForeignKeyConverter0<T> : JsonConverter<ForeignKey<T>> where T : Models.IIdMapper<int>
+public class ForeignKeyConverter0<T> : JsonConverter<ForeignKey<T>> 
+    where T :class, Models.IIdMapper<int>
 {
     public override void WriteJson(JsonWriter writer, ForeignKey<T> value, JsonSerializer seForeignKeyizer)
     {

@@ -53,8 +53,8 @@ namespace AdminBaseComponenets.BaseComs
                 return;
             if (vv == null)
                 return;
-            //w= new AdminBaseComponenets.BaseComs.IntegerFSmallView<Models.Coach>() { };
-            //w = Program0.createWidget(vv.GetType(),  new List<Attribute>() { new ForeignKeyAttr(typeof(TEntity)) });
+            //viewComponenet= new AdminBaseComponenets.BaseComs.IntegerFSmallView<Models.Coach>() { };
+            //viewComponenet = Program0.createWidget(vv.GetType(),  new List<Attribute>() { new ForeignKeyAttr(typeof(TEntity)) });
             //StateHasChanged();
 
         }

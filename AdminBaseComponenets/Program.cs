@@ -528,14 +528,16 @@ namespace AdminBaseComponenets
             {
                 Console.WriteLine("defultRenderer2[ForeignKey<>]");
                 Console.WriteLine($"defultRenderer2[ForeignKey<>] IntegerFSmallView<{type.GetGenericArguments()[0]}>");
-                return typeof(AdminBaseComponenets.BaseComs.IntegerFSmallView<>).MakeGenericType(type.GetGenericArguments());
+                var z = type.GetGenericArguments().ToList();
+                z.Add(typeof(int));
+                return typeof(AdminBaseComponenets.BaseComs.IntegerFSmallView<,>).MakeGenericType(z.ToArray());
 
             };
             defultRenderer2[typeof(ForeignKey2<,>)] = (type, prps) =>
             {
                 Console.WriteLine("defultRenderer2[ForeignKey<>]");
                 Console.WriteLine($"defultRenderer2[ForeignKey<>] IntegerFSmallView<{type.GetGenericArguments()}>");
-                return typeof(AdminBaseComponenets.BaseComs.IntegerFSmallView<>).MakeGenericType(type.GetGenericArguments());
+                return typeof(AdminBaseComponenets.BaseComs.IntegerFSmallView<,>).MakeGenericType(type.GetGenericArguments());
 
             };
 
