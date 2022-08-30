@@ -22,4 +22,7 @@
     
     <PackageReference Include="Npgsql.Json.NET" Version="6.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BaseDataAnottaions\BaseDataAnottaions.csproj" />
+  </ItemGroup>
 </Project>
