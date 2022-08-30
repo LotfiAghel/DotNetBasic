@@ -139,7 +139,7 @@ public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IFore
     {
         return left.Value <= right.Value;
     }
-
+    public static explicit operator ForeignKey<T>(Int64 b) => new ForeignKey<T>((int)b);
 }
 
 
