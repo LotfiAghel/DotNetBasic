@@ -41,7 +41,7 @@ namespace AdminBaseComponenets
         public static Dictionary<string, Dictionary<string, object>> parms = new Dictionary<string, Dictionary<string, object>>();
         public static Dictionary<string, object> getRouteParm(string url)
         {
-            Console.WriteLine("get url data " + url);
+            Console.WriteLine("get0s url data " + url);
             if (!parms.ContainsKey(url))
             {
                 Console.WriteLine("create " + url);
@@ -106,15 +106,15 @@ namespace AdminBaseComponenets
             object b = null;
             if (ty.IsAssignableTo(typeof(IdMapper<int>)))
             {
-                b = typeof(EntityService<,>).MakeGenericType(new Type[] { typeof(int), ty }).GetConstructor(new Type[] { }).Invoke(new object[] { });
+                b = typeof(EntityService<,>).MakeGenericType(new Type[] {  ty, typeof(int) }).GetConstructor(new Type[] { }).Invoke(new object[] { });
             }
             if (ty.IsAssignableTo(typeof(IdMapper<System.Guid>)))
             {
-                b = typeof(EntityService<,>).MakeGenericType(new Type[] { typeof(System.Guid), ty }).GetConstructor(new Type[] { }).Invoke(new object[] { });
+                b = typeof(EntityService<,>).MakeGenericType(new Type[] { ty, typeof(System.Guid) }).GetConstructor(new Type[] { }).Invoke(new object[] { });
             }
             if (ty.IsAssignableTo(typeof(Models.Entity)))
             {
-                b = typeof(NewEntityService<,>).MakeGenericType(new Type[] { ty }).GetConstructor(new Type[] { }).Invoke(new object[] { });
+                b = typeof(NewEntityService<,>).MakeGenericType(new Type[] { ty, typeof(int) }).GetConstructor(new Type[] { }).Invoke(new object[] { });
             }
             if (b != null)
                 entityManagers[ty] = b as IEntityService00;
@@ -127,9 +127,11 @@ namespace AdminBaseComponenets
         {
             return getEntityManager0(typeof(T)) as IEntityService01<T>;
         }
-        public static IEntityService0<T,TKEY> getEntityManager<T, TKEY>()
+        public static IEntityService<T,TKEY> getEntityManager<T, TKEY>()
+             where T : class, Models.IIdMapper<TKEY>
+            where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
         {
-            return getEntityManager0(typeof(T)) as IEntityService0<T, TKEY>;
+            return getEntityManager0(typeof(T)) as IEntityService<T, TKEY>;
         }
 
         public static RenderFragment CreateDynamicComponent2(object thiz, ComponentBase c, object vv, Action<object> changeRefrence = null, List<Attribute> Attributes = null, bool ReadOnly = false) => builder =>

@@ -280,7 +280,8 @@ namespace AdminBaseComponenets
         }
     }
 
-    public class IntegerForeignKeyInput<CT> : ValueInput<ForeignKey<CT>> where CT : Models.IIdMapper<int>
+    public class IntegerForeignKeyInput<CT> : ValueInput<ForeignKey<CT>>
+        where CT : class,Models.IIdMapper<int>
     {
 
 
@@ -391,7 +392,7 @@ namespace AdminBaseComponenets
         public void initList(IEnumerable<CT> enumValues) {
 
 
-            // I will get all values and iterate through them
+            // I will get0s all values and iterate through them
 
             if (enumList == null) {
                 enumList = new List<CT>();
@@ -593,8 +594,6 @@ namespace AdminBaseComponenets
         }
     }
 
-
-
     public class EditBaseContainer : ComponentBase
     {
         [Parameter]
@@ -610,24 +609,26 @@ namespace AdminBaseComponenets
         public object value { get; set; }
 
         public static async Task<object> getValue<TItem>(int Id)
+             where TItem : class, Models.IIdMapper<int>
         {
-            return await Program0.getEntityManager<TItem,int>().get(Id);
+            return await Program0.getEntityManager<TItem, int>().get(Id);
         }
         public static object getValueFast<TItem>(string Id)
         {
-            return Program0.getEntityManager<TItem, int>().getFast(Id);
+            return Program0.getEntityManager01<TItem>().getFast(Id);
         }
 
         public static async Task<object> postValue<TItem>(TItem Id)
         {
-            return await Program0.getEntityManager<TItem, int>().post(Id);
+            return await Program0.getEntityManager01<TItem>().post(Id);
         }
 
         public static async Task<object> updateValue<TItem>(TItem Id)
         {
-            return await Program0.getEntityManager<TItem, int>().update(Id);
+            return await Program0.getEntityManager01<TItem>().update(Id);
         }
     }
+
 
     public class EditBase<TKEY, T> : ComponentBase where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable where T : IdMapper<TKEY>
     {
@@ -642,7 +643,7 @@ namespace AdminBaseComponenets
         {
 
             if (typeof(TKEY) == typeof(int))
-                value = await Program0.getEntityManager<T, TKEY>().get(Id);
+                value = await Program0.getEntityManager<T, TKEY>().get1s(Id);
             
         }
     }
@@ -817,24 +818,7 @@ namespace AdminBaseComponenets
     }
 
 
-    public class DetailsBase<TKEY, T> : ComponentBase where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable where T : IdMapper<TKEY>
-    {
-        public T value { get; set; } = null;
-
-
-        [Parameter]
-        public string Id { get; set; }
-
-        protected async override Task OnInitializedAsync()
-        {
-            Id = Id ?? "1";
-
-            if (typeof(TKEY) == typeof(int))
-                value = await Program0.getEntityManager<T, TKEY>().get(Id);
-            
-        }
-    }
-
+ 
 
 
 }

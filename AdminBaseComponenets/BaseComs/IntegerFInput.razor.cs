@@ -11,7 +11,8 @@ namespace AdminBaseComponenets.BaseComs
 {
 
 
-    public partial class IntegerFInput<TEntity> : IntegerForeignKeyInput<TEntity> where TEntity:Models.IIdMapper<int>
+    public partial class IntegerFInput<TEntity> : IntegerForeignKeyInput<TEntity>
+        where TEntity : class, Models.IIdMapper<int>
     {
         ComponentBase ItemComponenet = null;
         bool panelOpenState;

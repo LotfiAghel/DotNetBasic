@@ -13,7 +13,8 @@ public interface IForeignKey
 }
 
 
-public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IForeignKey where T : Models.IIdMapper<int>
+public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IForeignKey 
+    where T : Models.IIdMapper<int>
 {
 
     public ForeignKey(int value)

@@ -66,7 +66,7 @@ namespace AdminBaseComponenets.BaseComs
             Console.WriteLine($"load load load0 ");
             Type enumType = typeof(ENUM);
 
-            // I will get all values and iterate through them
+            // I will get0s all values and iterate through them
             var enumValues = enumType.GetEnumValues();
 
             if (optionGenerator == null)

@@ -11,99 +11,7 @@ using System.Collections;
 namespace AdminClientViewModels
 {
 
-    public class PartCollectionProxy<T, TKEY> : IEntityService0<T,TKEY> {
-        public List<T> data;
-        public System.Reflection.PropertyInfo pr;
-        public int masterId;
-        public IEntityService0<T,TKEY> masterManager;
-
-        public int Count => ((ICollection<T>)data).Count;
-
-        public bool IsReadOnly => ((ICollection<T>)data).IsReadOnly;
-
-        public T Add(T t){
-            pr.SetValue(t, masterId);
-            data.Add(t);
-            return t;
-        }
-
-        public Task<T> get(TKEY id)
-        {
-            return masterManager.get(id);
-        }
-        public T getFast(string id){
-            return masterManager.getFast(id);
-           
-        }
-        public T getFromLoaded(TKEY id)
-        {
-            return masterManager.getFromLoaded(id);
-        }
-        public void refresh()
-        {
-            data = new List<T>();
-            foreach (var row in masterManager)
-            {
-                if (pr.GetValue(row).Equals(masterId))
-                    data.Add(row);
-            }
-        }
-        public async Task<IEnumerable<T>> getAll(bool froceReloadFromServer)
-        {
-            await masterManager.fetchFiltered(pr.Name,masterId);
-            refresh();
-            return data;
-        }
-
-
-        public IEntityService0<T,TKEY> getFiltered(string itemName, int masterId)
-        {
-            return masterManager.getFiltered(itemName,masterId);
-        }
-
-        public Task<object> getObject(object id)
-        {
-            return masterManager.getObject((TKEY)id);
-        }
-
-        public Task<T> post(T t)
-        {
-            return masterManager.post(t);
-        }
-
-        public Task<T> update(T t)
-        {
-            return masterManager.update(t);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return data.GetEnumerator();
-        }
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return data.GetEnumerator();
-        }
-
-        public async Task<IEnumerable<T>> fetchFiltered(string itemName, int masterId)
-        {
-            return data;
-        }
-        public async Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName,string collectionName,int masterEnityId)
-        {      
-                
-           return data;
-        }
-
-        public Task<T> get(string id)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-    public class NewEntityService<T, TKEY> : IEntityService0<T,TKEY>,Models.IEntityManagerW<T,TKEY>
+    public class NewEntityService<T, TKEY> : IEntityService<T,TKEY>,Models.IEntityManagerW<T,TKEY>
         where T : class, Models.IIdMapper<TKEY>
         where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
@@ -183,7 +91,7 @@ namespace AdminClientViewModels
             return res;
         }
 
-        public IEntityService0<T,TKEY> getFiltered(string itemName,int masterId)//TODO in function khafan tar az ina bayad bashe
+        public IEntityService<T,TKEY> getFiltered(string itemName,int masterId)//TODO in function khafan tar az ina bayad bashe
         {
             
             var res=new PartCollectionProxy<T, TKEY>();
@@ -214,7 +122,7 @@ namespace AdminClientViewModels
         {
 
             T res=null;
-            System.Console.WriteLine("get :" + id.ToString());
+            System.Console.WriteLine("get0s :" + id.ToString());
             bool bigTable=typeof(T).GetCustomAttributes(typeof(Attribute),true).ToList().GetFirst<object, Models.BigTable>()!=null;
             
             
@@ -278,7 +186,7 @@ namespace AdminClientViewModels
             
         }
 
-        public async Task<object> getObject(object id){
+        public async Task<object> get00(object id){
             return await get(id);
         }
         public async Task<T> post(T t)
@@ -313,7 +221,7 @@ namespace AdminClientViewModels
             return data.GetEnumerator();
         }
 
-        T IEntityService0<T,TKEY>.Add(T t)
+        public T Add(T t)
         {
             throw new NotImplementedException();
         }
@@ -324,7 +232,27 @@ namespace AdminClientViewModels
             
         }
 
-        public Task<T> get(string id)
+        
+        public async Task<object> get0s(string id)
+        {
+            if (typeof(TKEY) == typeof(string))
+            {
+                return await get(id);
+            }
+            if (typeof(TKEY) == typeof(int))
+            {
+                return await get(Int32.Parse(id));
+            }
+            throw new Exception($"can not ahndle type {typeof(TKEY).Name}");
+            
+        }
+
+        public async Task<T> get01(object id)
+        {
+            return (await get00((TKEY)id)) as T;
+        }
+
+        public Task<T> get1s(string id)
         {
             throw new NotImplementedException();
         }

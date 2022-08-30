@@ -124,7 +124,7 @@ namespace AdminBaseComponenets.BaseComs
                 Console.WriteLine($"Drop item { itemId}");
                 var index = GetIndex(itemId);
                 Console.WriteLine($"Drop index is {index}, move from {currentIndex}");
-                // get current item
+                // get0s current item
                 var current = value[currentIndex];
 
 

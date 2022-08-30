@@ -7,34 +7,36 @@ using System;
 namespace AdminClientViewModels
 {
 
-    public interface IEntityService000
-    {
-
-        Task<object> getObject(object id);
-
-        Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName, string collectionName, int masterEnityId);
-    }
+   
     public interface IEntityService00
     {
 
-        Task<object> getObject(object id);
+        Task<object> get0s(string id);
+
+        Task<object> get00(object id);
         Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName,string collectionName,int masterEnityId);
     }
 
     public interface IEntityService01<T>: IEntityService00
     {
-        Task<IEnumerable<T>> getAll(bool froceFromServer = false);
 
+        Task<T> get01(object id);
+        Task<IEnumerable<T>> getAll(bool froceFromServer = false);
+        T getFast(string id);
+        Task<T> post(T id);
+        Task<T> update(T id);
     }
 
-    public interface IEntityService0<T, TKEY> : IEntityService01<T>, IEnumerable<T>
+    public interface IEntityService<T, TKEY> : IEntityService01<T>, IEnumerable<T>
+         where T : class, Models.IIdMapper<TKEY>
+            where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
 
 
 
-        
         Task<T> get(TKEY id);
+        //Task<T> get0s(TKEY id);
         T getFast(string id);
         T getFromLoaded(TKEY id);
 
@@ -42,23 +44,22 @@ namespace AdminClientViewModels
         Task<T> post(T t);
         Task<T> update(T t);
 
+        
+        Task<T> get1s(string id);
+
         T Add(T t);
 
-        IEntityService0<T, TKEY> getFiltered(string itemName, int masterId);
+        IEntityService<T, TKEY> getFiltered(string itemName, int masterId);
 
         Task<IEnumerable<T>> fetchFiltered(string itemName, int masterId);
-        Task<T> get(string id);
     }
 
-    public interface IEntityService<TKEY, T> : IEntityService0<T, TKEY> where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable where T : IdMapper<TKEY>
-    {
-
-        Task<T> get(TKEY id);
-
-    }
+    
 
 
-    public class EntityService<TKEY, T> : IEntityService<TKEY, T> where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable where T : IdMapper<TKEY>
+    public class EntityService< T,TKEY> : IEntityService<T,TKEY> 
+        where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable 
+        where T : IdMapper<TKEY>
     {
 
 
@@ -127,7 +128,11 @@ namespace AdminClientViewModels
             return res;
 
         }
-        public async Task<object> getObject(object id)
+        public async Task<object> get00(object id)
+        {
+            return await get((TKEY)id);
+        }
+        public async Task<T> get01(object id)
         {
             return await get((TKEY)id);
         }
@@ -155,7 +160,7 @@ namespace AdminClientViewModels
             return t;
         }
 
-        public IEntityService0<T,TKEY> getFiltered(string itemName, int masterId)
+        public IEntityService<T,TKEY> getFiltered(string itemName, int masterId)
         {
             throw new NotImplementedException();
         }
@@ -180,19 +185,26 @@ namespace AdminClientViewModels
             throw new NotImplementedException();
         }
 
-        T IEntityService0<T, TKEY>.Add(T t)
+        public T Add(T t)
         {
             throw new NotImplementedException();
         }
 
-        Task<IEnumerable<T>> IEntityService0<T, TKEY>.fetchFiltered(string itemName, int masterId)
+        public Task<IEnumerable<T>> fetchFiltered(string itemName, int masterId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<T> get(string id)
+        public Task<object> get0s(string id)
         {
             throw new NotImplementedException();
         }
+
+        public Task<T> get1s(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+       
     }
 }

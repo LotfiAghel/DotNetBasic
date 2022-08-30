@@ -31,10 +31,10 @@ namespace Models
     }
    
     public interface IEntityManagerW<T,TKEY> 
-        where T : Models.IIdMapper<TKEY>
+        where T : class,Models.IIdMapper<TKEY>
         where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
-        Task<T> get(TKEY id);
+
         T get0(TKEY id);
     }
 
@@ -43,7 +43,7 @@ namespace Models
 
 
         IEntityManagerW<T, TKEY> getManager<T, TKEY>()
-            where T: Models.IIdMapper<TKEY> 
+            where T: class,Models.IIdMapper<TKEY> 
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable; 
         IQueryable<T> getDbSet<T>()where T : class;
 

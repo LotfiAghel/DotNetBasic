@@ -11,7 +11,8 @@ namespace AdminBaseComponenets.BaseComs
 {
 
 
-    public partial class IntegerFMultiSelect<TEntity> : IntegerForeignKeyArrayInput<TEntity> where TEntity:Models.IIdMapper<int>
+    public partial class IntegerFMultiSelect<TEntity> : IntegerForeignKeyArrayInput<TEntity>
+         where TEntity : class, Models.IIdMapper<int>
     {
 
 
@@ -101,7 +102,7 @@ namespace AdminBaseComponenets.BaseComs
                 Console.WriteLine($"Drop item { itemId}");
                 var index = GetIndex(itemId);
                 Console.WriteLine($"Drop index is {index}, move from {currentIndex}");
-                // get current item
+                // get0s current item
                 var current = value[currentIndex];
 
 

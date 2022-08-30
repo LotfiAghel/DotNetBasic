@@ -11,7 +11,8 @@ namespace AdminBaseComponenets.BaseComs
 {
 
 
-    public partial class IntegerFSmallView<TEntity> : IntegerForeignKeyInput<TEntity> where TEntity:Models.IIdMapper<int>
+    public partial class IntegerFSmallView<TEntity> : IntegerForeignKeyInput<TEntity>
+         where TEntity : class, Models.IIdMapper<int>
     {
         [Parameter]
         public ComponentBase w { get; set; } = null;
