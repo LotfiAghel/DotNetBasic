@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Models;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
+
 public class IgnoreDocAttribute : Attribute
 {
 
@@ -47,13 +49,10 @@ namespace Models
     }
 
     [ShowClassHirarci]
-    public abstract class Entity : IIdMapper<int>
+    public abstract class Entity : IdMapper<int>
     {
-        [Key]
-        [PersianLabel("شناسه")]
-        [ReadOnly(true)]
-        public int id { get; set; }/**/
-        //ID        uuid.UUID  `gorm:"primary_key" sql:"type:uuid;default:uuid_generate_v4()"json:"id"`
+        
+        
         public virtual bool containsText(string txt)
         {
             if (txt == null)
@@ -61,8 +60,7 @@ namespace Models
             return id.ToString().Contains(txt);
         }
 
-        [JsonIgnore]
-        public ChangeEventList onChanges { get; set; }
+        
 
 
     }

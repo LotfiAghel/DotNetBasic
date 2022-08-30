@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
@@ -57,12 +58,14 @@ namespace Models
         [PersianLabel("شناسه")]
         [ReadOnly(true)]
         public T id { get; set; }
+        //ID        uuid.UUID  `gorm:"primary_key" sql:"type:uuid;default:uuid_generate_v4()"json:"id"`
 
         bool Equals(T? other)
         {
             return false;
         }
         [JsonIgnore]
+        [NotMapped]
         public ChangeEventList onChanges { get; set; }
     }
 
