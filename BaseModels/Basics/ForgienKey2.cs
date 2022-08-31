@@ -1,24 +1,43 @@
 using System;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models;
 #if SERVER
 using ModelsManager;
 #endif
 using Newtonsoft.Json;
 using Tools;
+public interface IForeignKey20
+{
+    object getFValue0();
+    void setFValue0(object a);
+}
 
 
 public interface IForeignKey2<TKEY>: IForeignKey20
 {
-    public TKEY Value { get; }
-    public void setValue(TKEY x);
+    //public TKEY Value { get; set; }
+    public void setFValue(TKEY x);
+    public TKEY getFValue();
+
+
+}
+public interface IForeignKey10<T>
+    where T : class, Models.IEntity0
+{
+
+}
+public interface IForeignKey11<T, TKEY> :  IEquatable<TKEY>, IForeignKey2<TKEY>,  IForeignKey10<T>
+    where T : class, Models.IIdMapper<TKEY>
+     where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
+{
+
 }
 
-
-public struct ForeignKey2<T,TKEY> : IComparable<ForeignKey2<T,TKEY>>, IEquatable<TKEY>, IForeignKey2<TKEY> 
+public struct ForeignKey2<T,TKEY> : IComparable<ForeignKey2<T,TKEY>>, IEquatable<TKEY>, IForeignKey2<TKEY> , IForeignKey11<T, TKEY>
     where T : class,Models.IIdMapper<TKEY>
      where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
 {
-    public object getFValue()
+    public object getFValue0()
     {
         return Value;
     }
@@ -30,7 +49,7 @@ public struct ForeignKey2<T,TKEY> : IComparable<ForeignKey2<T,TKEY>>, IEquatable
     {
         Value = value.id;
     }
-    public void setValue(TKEY x)
+    public void setFValue(TKEY x)
     {
         Value = x;
     }
@@ -83,13 +102,26 @@ public struct ForeignKey2<T,TKEY> : IComparable<ForeignKey2<T,TKEY>>, IEquatable
 
     public static ForeignKey2<T,TKEY> Parse(TKEY amount) => new ForeignKey2<T,TKEY>(amount);
 
+    public TKEY getFValue()
+    {
+        return Value;
+    }
+
+    public void setFValue0(object v)
+    {
+        Value = (TKEY)v;
+        
+    }
+
+   
+
 
 
     /// <exception cref="Exception"></exception>
-   
-   
 
-   
+
+
+
 
     public static implicit operator TKEY(ForeignKey2<T,TKEY> money)
     {
@@ -158,7 +190,7 @@ public class ForeignKey2Converter<TKEY> : JsonConverter<IForeignKey2<TKEY>>
 {
     public override void WriteJson(JsonWriter writer, IForeignKey2<TKEY> value, JsonSerializer seForeignKey2izer)
     {
-        writer.WriteValue(value.Value);
+        writer.WriteValue(value.getFValue());
     }
 
     public override IForeignKey2<TKEY> ReadJson(JsonReader reader, Type objectType, IForeignKey2<TKEY> existingValue, bool hasExistingValue, JsonSerializer seForeignKey2izer)

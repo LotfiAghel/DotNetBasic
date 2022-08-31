@@ -17,13 +17,13 @@
 @inherits IntegerForeignKeyInput<TEntity,TKEY>
 
 @{
-    Data =default(TEntity);
+    fValue =default(TEntity);
     var tmp = Program0.getEntityManager<TEntity, TKEY>();
 
-     Data = tmp.getFromLoaded(value.Value);
-     if(Data!=null){
-        viewComponenet = Program0.createWidget(Data.GetType(), new List<Attribute>() {  });
-        dataId = Data.id;
+     fValue = tmp.getFromLoaded(value.getFValue());
+     if(fValue!=null){
+        viewComponenet = Program0.createWidget(fValue.GetType(), new List<Attribute>() {  });
+        dataId = fValue.id;
      }
 
     
@@ -31,12 +31,13 @@
 
 
 <div class="row pt-2 pb-2" @key=@dataId>
-    @if(Data!=null && viewComponenet != null){
+    @if (fValue != null && viewComponenet != null)
+    {
         <div class="col-sm-10">
-            <div  @key=@dataId>@Program0.CreateDynamicComponent2(this, viewComponenet, Data)</div>
+            <div @key=@dataId>@Program0.CreateDynamicComponent2(this, viewComponenet, fValue)</div>
         </div>
     }else{
-        <div>@value.Value</div>
+        <div>@value.getFValue()</div>
     }
     
 </div>

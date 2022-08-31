@@ -1,20 +1,19 @@
 using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Models;
 #if SERVER
 using ModelsManager;
 #endif
 using Newtonsoft.Json;
 
-public interface IForeignKey20
-{
-    object getFValue();
-}
 
-    public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IForeignKey2<int>
+
+
+public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IForeignKey2<int>,  IForeignKey10<T>
     where T : class, Models.IIdMapper<int>
 {
 
-    public object getFValue()
+    public object getFValue0()
     {
         return Value;
     }
@@ -26,7 +25,7 @@ public interface IForeignKey20
     {
         Value = value.id;
     }
-    public void setValue(int x)
+    public void setFValue(int x)
     {
         Value = x;
     }
@@ -111,6 +110,16 @@ public interface IForeignKey20
         }
     }
 
+    public int getFValue()
+    {
+        return Value;
+    }
+
+    public void setFValue0(object a)
+    {
+        Value = (int)a;
+    }
+
     public static implicit operator int(ForeignKey<T> money)
     {
         return money.Value;
@@ -180,7 +189,7 @@ public class ForeignKeyConverter : JsonConverter<IForeignKey2<int>>
 {
     public override void WriteJson(JsonWriter writer, IForeignKey2<int> value, JsonSerializer seForeignKeyizer)
     {
-        writer.WriteValue(value.Value);
+        writer.WriteValue(value.getFValue());
     }
 
     public override IForeignKey2<int> ReadJson(JsonReader reader, Type objectType, IForeignKey2<int> existingValue, bool hasExistingValue, JsonSerializer seForeignKeyizer)

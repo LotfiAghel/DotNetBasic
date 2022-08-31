@@ -126,8 +126,20 @@ namespace AdminBaseComponenets
         {
             return getEntityManager0(typeof(T)) as IEntityService<T, TKEY>;
         }
-
-        public static RenderFragment CreateDynamicComponent2(object thiz, ComponentBase c, object vv, Action<object> changeRefrence = null, List<Attribute> Attributes = null, bool ReadOnly = false) => builder =>
+        public static RenderFragment CreateDynamicComponent2(object thiz, ComponentBase c, object vv, Action<object> changeRefrence = null, List<Attribute> Attributes = null, bool ReadOnly = false)
+        {
+            try
+            {
+                return CreateDynamicComponent20(thiz, c as ValueInput0, vv, changeRefrence, Attributes, ReadOnly);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine( e.StackTrace);
+                throw e;
+            }
+            
+        }
+        public static RenderFragment CreateDynamicComponent20(object thiz, ValueInput0 c, object vv, Action<object> changeRefrence = null, List<Attribute> Attributes = null, bool ReadOnly = false) => builder =>
               {
 
 
@@ -163,8 +175,16 @@ namespace AdminBaseComponenets
                   
                   if (vv != null)
                   {
-                      var valuePr = gt.GetProperty("value");
-                      if (vv.GetType() == typeof(int) && valuePr != null && valuePr.PropertyType.IsGenericType && valuePr.PropertyType.GetGenericTypeDefinition() == typeof(ForeignKey<>))
+                      var valuePr = gt.GetProperty(nameof(ValueInput<int>.value));
+                      var vt = vv.GetType();
+                      Console.WriteLine("valuePr.PropertyType == " + vt.GetName());
+                      if (vt == typeof(int) && valuePr != null && valuePr.PropertyType.IsGenericInstanceOf(typeof(ForeignKey<>)))
+                      {
+                          Console.WriteLine("valuePr.PropertyType == " + c.GetType().GetName());
+                          Console.WriteLine("valuePr.PropertyType == " + valuePr.PropertyType.GetName());
+                          vv = valuePr.PropertyType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { vv });
+                      }
+                      if (vt == typeof(int) && valuePr != null && valuePr.PropertyType.IsGenericInstanceOf(typeof(ForeignKey2<,>)))
                       {
                           Console.WriteLine("valuePr.PropertyType == " + c.GetType().GetName());
                           Console.WriteLine("valuePr.PropertyType == " + valuePr.PropertyType.GetName());
@@ -173,7 +193,7 @@ namespace AdminBaseComponenets
 
 
 
-                      builder.AddAttribute(1, "value", vv);
+                      builder.AddAttribute(1, "value0", vv);
                       PropertyInfo pr = gt.GetProperty("__valueIsNull");
                       if (pr != null)
                       {

@@ -108,29 +108,54 @@ namespace AdminBaseComponenets
     }
 
 
-    public class NullableComp : ComponentBase
-    {
-        [Parameter] public EventCallback<object> changeRefrence { get; set; }
-
-    }
-
-    public class ValueInput<T> : ComponentBase
+    
+    public class ValueInput0 : ComponentBase
     {
         [Parameter]
         public List<Attribute> Attributes { get; set; } = new List<Attribute>();
 
+        [Parameter]
+        public bool ReadOnly { get; set; }
 
+        [Parameter]
+        public EventCallback<object> changeRefrence { get; set; }
+
+        [Parameter]
+        public virtual object value0
+        {
+            get;set;
+        }
+
+    }
+    public class ValueInput<T> : ValueInput0
+    {
+
+
+        [Parameter]
+        public override object value0
+        {
+            get => this.value; set
+            {
+                try
+                {
+                    this.value = (T)value;
+                }catch(Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                    Console.WriteLine(typeof(T));
+                    Console.WriteLine(value.GetType());
+                }
+            }
+        }
 
         [Parameter]
         public T value { get; set; }
 
-        [Parameter]
-        public bool ReadOnly { get; set; }
+        
 
 
 
-        [Parameter]
-        public EventCallback<object> changeRefrence { get; set; }
+        
 
         public virtual async Task Click()
         {
@@ -146,11 +171,29 @@ namespace AdminBaseComponenets
 
     }
 
-    public class NullableInput2<T> : NullableComp //where T : struct
+    public class NullableInput2<T> : ValueInput0  //where T : struct
     {
 
         [Parameter]
-        public List<Attribute> Attributes { get; set; } = new List<Attribute>();
+        public override object value0
+        {
+            get => this.value; set
+            {
+                
+                
+                try
+                {
+                    this.value = (T)value;
+                    __valueIsNull = (value == null);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                    Console.WriteLine(typeof(T));
+                    Console.WriteLine(value.GetType());
+                }
+            }
+        }
 
         public static NullableInput2<T> create(PropertyInfo prop)
         {
@@ -160,8 +203,7 @@ namespace AdminBaseComponenets
         [Parameter]
         public T value { get; set; }
 
-        [Parameter]
-        public bool ReadOnly { get; set; }
+       
 
 
 
@@ -280,7 +322,7 @@ namespace AdminBaseComponenets
         }
     }
 
-    public class IntegerForeignKeyInput<CT, TKEY> : ValueInput<ForeignKey2<CT,TKEY>>
+    public class IntegerForeignKeyInput<CT, TKEY> : ValueInput<IForeignKey11<CT,TKEY>>
        where CT : class, Models.IIdMapper<TKEY>
          where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
@@ -296,14 +338,11 @@ namespace AdminBaseComponenets
                 return default(TKEY);
             return t.id;
         }
-        public void setValue(object t)
-        {
-            /*if (t is int)
-            {
-                value = new ForeignKey2<CT,TKEY>(t);//TODO what is this ?!!!!
-            }/**/
-            value = (ForeignKey2<CT,TKEY>)t;
-        }
+        /*public void setFValue0(object t)
+       {
+          
+        //value = (ForeignKey2<CT,TKEY>)t;
+        }/**/
         private TKEY pvalue = default(TKEY);
         public override async Task<CT> Click()
         {
@@ -311,9 +350,9 @@ namespace AdminBaseComponenets
             if (!pvalue.Equals(value))
             {
                 await changeRefrence.InvokeAsync(value);
-                pvalue = value;
+                pvalue = value.getFValue();
             }
-            fValue = (CT)(await Program0.getEntityManager<CT,TKEY>().get(value.Value));
+            fValue = (CT)(await Program0.getEntityManager<CT,TKEY>().get(value.getFValue()));
             return fValue;
 
         }
@@ -480,7 +519,7 @@ namespace AdminBaseComponenets
         public T tmp = default(T);
         public void setValue(int idx, object x)
         {
-            Console.WriteLine("setValue --------" + idx + "/" + value.Count + " <= " + JToken.FromObject(x));
+            Console.WriteLine("setFValue0 --------" + idx + "/" + value.Count + " <= " + JToken.FromObject(x));
 
 
             value[idx] = (T)x;
@@ -501,7 +540,7 @@ namespace AdminBaseComponenets
         public T tmp = default(T);
         public void setValue(string idx, object x)
         {
-            Console.WriteLine("setValue --------" + idx + "/" + value.Count + " <= " + JToken.FromObject(x));
+            Console.WriteLine("setFValue0 --------" + idx + "/" + value.Count + " <= " + JToken.FromObject(x));
 
 
             value[idx] = (T)x;
@@ -677,7 +716,7 @@ namespace AdminBaseComponenets
                 {
                     onChange = (x) =>
                     {
-                        property.SetValue(value, ((IForeignKey20)x).getFValue());
+                        property.SetValue(value, ((IForeignKey20)x).getFValue0());
                     };
 
 
@@ -703,7 +742,7 @@ namespace AdminBaseComponenets
                 {
                     onChange = (x) =>
                     {
-                        property.SetValue(value, ((IForeignKey20)x).getFValue());
+                        property.SetValue(value, ((IForeignKey20)x).getFValue0());
                     };
 
 
@@ -737,7 +776,7 @@ namespace AdminBaseComponenets
                             property.SetValue(value, null);
                             return;
                         }
-                        property.SetValue(value, ((IForeignKey20)x).getFValue());
+                        property.SetValue(value, ((IForeignKey20)x).getFValue0());
                     };
                 }
 

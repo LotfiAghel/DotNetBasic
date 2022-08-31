@@ -2,6 +2,7 @@
 @using System.Collections.Generic
 @using Blazor.PersianDatePicker
 
+@inherits ValueInput<DateTime>
 
 @{
     Console.WriteLine($"persian Date picker {value}");
@@ -71,15 +72,7 @@
 
     System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
 
-    [Parameter]
-    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
-
-    [Parameter]
-    public DateTime value { get; set; }
-
-     [Parameter]
-    public bool ReadOnly { get; set; } = false;
-
+  
 
 
     public DateTime dayTime

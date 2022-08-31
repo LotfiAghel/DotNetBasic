@@ -25,14 +25,7 @@ namespace AdminBaseComponenets.BaseComs
         
 
 
-        public TKEY vvv
-        {
-            get => value.Value;
-            set
-            {
-
-            }
-        }
+        
 
 
 
@@ -46,7 +39,8 @@ namespace AdminBaseComponenets.BaseComs
         protected async Task Click2(TKEY vs)
         {
             Console.WriteLine($"onChange integerFUnput  {vs} ");
-            value = vs;
+            value.setFValue(vs);
+            Console.WriteLine($"onChange integerFUnput  {value.getFValue} ");
             var bv = fValue;
             var vv = await Click();
             if (bv != null && bv.Equals(vv))
@@ -60,7 +54,7 @@ namespace AdminBaseComponenets.BaseComs
         }
         protected async Task Click3()
         {
-            Click2(vvv);
+            Click2(value.getFValue());
 
         }
         public async Task load()

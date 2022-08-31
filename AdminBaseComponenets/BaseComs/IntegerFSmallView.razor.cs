@@ -19,9 +19,6 @@ namespace AdminBaseComponenets.BaseComs
         public ComponentBase viewComponenet { get; set; } = null;
 
         [Parameter]
-        public TEntity Data { get; set; } = default(TEntity);
-
-        [Parameter]
         public TKEY dataId { get; set; } = default(TKEY);
 
 
@@ -39,20 +36,22 @@ namespace AdminBaseComponenets.BaseComs
 
             var tmp = Program0.getEntityManager<TEntity, TKEY>();
 
-            Data = (await tmp.get(value.Value));
-            if (Data == null)
+            fValue = (await tmp.get(value.getFValue()));
+            if (fValue == null)
             {
                 viewComponenet = null;
                 return;
             }
             //TODO not correct 
-            dataId = Data.id;
-            if (!dataId.Equals( value.Value) )
+            dataId = fValue.id;
+            if (!dataId.Equals( value.getFValue()) )
             {
                 Console.WriteLine("bug");
             }
-
-            viewComponenet = Program0.createWidget(Data.GetType(), new List<Attribute>() { });
+            if (viewComponenet == null)
+            {
+                viewComponenet = Program0.createWidget(fValue.GetType(), new List<Attribute>() { });
+            }
             StateHasChanged();
 
 

@@ -20,7 +20,7 @@
 
 @if(!ReadOnly){
     @if(generator!=null ){
-        <Select TValue=TKEY SelectedValue=@value
+        <Select TValue=TKEY SelectedValue=@value.getFValue()
                 SelectedValueChanged=@Click2
                 ReadOnly=@ReadOnly>
             @if (generator != null)
@@ -30,7 +30,8 @@
                     <SelectItem TValue=TKEY Value=@t.Value>
                         @if (ItemComponenet != null)
                         {
-                            <div>@Program0.CreateDynamicComponent2(this, ItemComponenet, t))</div>
+                            <div>@Program0.CreateDynamicComponent2(this, ItemComponenet, t))</div> 
+                            <IntegerFSmallView TKEY=@TKEY TEntity=@TEntity viewComponenet=ItemComponenet dataId=@t.Value></IntegerFSmallView>
                         }
                     </SelectItem>
                 }

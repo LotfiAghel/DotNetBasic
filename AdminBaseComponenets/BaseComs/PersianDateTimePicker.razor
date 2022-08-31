@@ -1,6 +1,6 @@
 ﻿@using System.Collections.Generic
 @using Blazor.PersianDatePicker
-
+@inherits ValueInput<DateTime>
 @{
     Console.WriteLine($"PersianDateTimepicker {value}");
 }
@@ -33,12 +33,7 @@
 
     System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
 
-    [Parameter]
-    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
 
-
-     [Parameter]
-    public bool ReadOnly { get; set; } = false;
 
     [Parameter]
     public DateTime? value { get; set; }
@@ -49,9 +44,7 @@
 
     DateTime? prvValue;
 
-    [Parameter] 
-    public EventCallback<object> changeRefrence { get; set; }
-
+    
      
 
     protected override void OnInitialized()
