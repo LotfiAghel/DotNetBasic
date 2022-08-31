@@ -11,7 +11,7 @@ namespace AdminBaseComponenets.BaseComs
 {
 
 
-    public partial class IntegerFSmallView<TEntity, TKEY> : IntegerForeignKeyInput<TEntity, TKEY>
+    public partial class IntegerFSmallView<TEntity, TKEY> : ForeignKeyEditeBase<TEntity, TKEY>
          where TEntity : class, Models.IIdMapper<TKEY>
          where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {

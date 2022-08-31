@@ -322,7 +322,8 @@ namespace AdminBaseComponenets
         }
     }
 
-    public class IntegerForeignKeyInput<CT, TKEY> : ValueInput<IForeignKey11<CT,TKEY>>
+
+    public class ForeignKeyEditeBase<CT, TKEY> : ValueInput<IForeignKey11<CT,TKEY>>
        where CT : class, Models.IIdMapper<TKEY>
          where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
@@ -708,7 +709,7 @@ namespace AdminBaseComponenets
                     property.SetValue(value, x);
                 };
                 var prVal = property.GetValue(value);
-                if (w.GetType().IsGenericInstanceOf(typeof(AdminBaseComponenets.BaseComs.IntegerFInput<,>))
+                if (w.GetType().IsGenericInstanceOf(typeof(AdminBaseComponenets.BaseComs.ForeignKeyEdite<,>))
                     
                     && ! property.PropertyType.IsGenericInstanceOf(typeof(ForeignKey2<,>)) 
                     
@@ -738,7 +739,7 @@ namespace AdminBaseComponenets
 
                 }
                 if (property.PropertyType == typeof(int)
-                    && w.GetType().IsGenericInstanceOf ( typeof(AdminBaseComponenets.BaseComs.IntegerFInputInt<>)) )
+                    && w.GetType().IsGenericInstanceOf ( typeof(AdminBaseComponenets.BaseComs.ForeignKeyEditeInt<>)) )
                 {
                     onChange = (x) =>
                     {

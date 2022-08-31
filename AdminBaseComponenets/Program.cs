@@ -748,14 +748,14 @@ namespace AdminBaseComponenets
             formRenderer2[typeof(ForeignKey<>)] = (type, prps) =>
             {
                 Console.WriteLine("formRenderer2(ForeignKey<>)");
-                Console.WriteLine($"formRenderer2(ForeignKey<>) IntegerFInput<{type.GetGenericArguments()[0]}>");
-                return typeof(AdminBaseComponenets.BaseComs.IntegerFInputInt<>).MakeGenericType(type.GetGenericArguments()); ;
+                Console.WriteLine($"formRenderer2(ForeignKey<>) ForeignKeyEdite<{type.GetGenericArguments()[0]}>");
+                return typeof(AdminBaseComponenets.BaseComs.ForeignKeyEditeInt<>).MakeGenericType(type.GetGenericArguments()); ;
             };
             formRenderer2[typeof(ForeignKey2<,>)] = (type, prps) =>
             {
                 Console.WriteLine("formRenderer2(ForeignKey<>)");
-                Console.WriteLine($"formRenderer2(ForeignKey<>) IntegerFInput<{type.GetGenericArguments()[0]}>");
-                return typeof(AdminBaseComponenets.BaseComs.IntegerFInput<,>).MakeGenericType(type.GetGenericArguments()); ;
+                Console.WriteLine($"formRenderer2(ForeignKey<>) ForeignKeyEdite<{type.GetGenericArguments()[0]}>");
+                return typeof(AdminBaseComponenets.BaseComs.ForeignKeyEdite<,>).MakeGenericType(type.GetGenericArguments()); ;
             };
 
 

@@ -11,7 +11,7 @@ namespace AdminBaseComponenets.BaseComs
 {
 
 
-    public partial class IntegerFInput<TEntity,TKEY> : IntegerForeignKeyInput<TEntity,TKEY>
+    public partial class ForeignKeyEdite<TEntity,TKEY> : ForeignKeyEditeBase<TEntity,TKEY>
          where TEntity : class, Models.IIdMapper<TKEY>
          where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
@@ -73,7 +73,7 @@ namespace AdminBaseComponenets.BaseComs
     }
 
 
-    public class IntegerFInputInt<TEntity> : IntegerFInput<TEntity, int>
+    public class ForeignKeyEditeInt<TEntity> : ForeignKeyEdite<TEntity, int>
           where TEntity : class, Models.IIdMapper<int>
          
     { }
