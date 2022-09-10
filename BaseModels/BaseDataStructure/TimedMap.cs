@@ -301,7 +301,7 @@ namespace BaseDataStructure
 	}
 
 
-	class FastList<Tkey, T> : IEnumerable<T>
+	public class FastList<Tkey, T> : IEnumerable<T>
 	{
 		public class DData
 		{
@@ -338,7 +338,7 @@ namespace BaseDataStructure
 			//data.Remove(o);
 		}
 
-		internal bool ContainsKey(Tkey id)
+		public bool ContainsKey(Tkey id)
 		{
 			return index.ContainsKey(id);
 		}
