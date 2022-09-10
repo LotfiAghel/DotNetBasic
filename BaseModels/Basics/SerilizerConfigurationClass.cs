@@ -29,23 +29,7 @@ namespace Models
         }
 
     }
-    public static class TypeExten
-    {
-        public static string getBeautyName(this Type serializedType)
-        {
-            if (!serializedType.IsGenericType)
-                return serializedType.FullName;
-            string typeName = serializedType.GetGenericTypeDefinition().FullName;
-            typeName = typeName.Substring(0, typeName.Length);
-            typeName += "<";// + serializedType.GetGenericArguments().Length+";";
-            foreach (var i in serializedType.GetGenericArguments())
-                typeName += i.getBeautyName() + ";";
-            typeName += ">";
-            return typeName;
-        }
-    }
-  
-
+ 
     public class MyContractResolver : DefaultContractResolver
     {
 
