@@ -126,18 +126,18 @@ namespace Tools
             return typeName;
         }
     }
-    public class TypeNameSerializationBinder0 : ISerializationBinder
+    public class TypeNameSerializationBinder : ISerializationBinder
     {
 
         public static TypeNameSerializationBinder gloabl;
-        static TypeNameSerializationBinder0()
+        static TypeNameSerializationBinder()
         {
             gloabl = new TypeNameSerializationBinder();
             //gloabl.Map2<NpgsqlTypes.NpgsqlRange<DateTime>>("Range<Date>");
 
             //gloabl.Map2<Microsoft.AspNetCore.Mvc.FromBodyAttribute>("Microsoft.AspNetCore.Mvc.FromBodyAttribute");
         }
-        public TypeNameSerializationBinder0(Dictionary<Type, string> typeNames = null)
+        public TypeNameSerializationBinder(Dictionary<Type, string> typeNames = null)
         {
             if (typeNames != null)
             {
@@ -153,8 +153,8 @@ namespace Tools
 
         public void Map(Type type, string name)
         {
-            this.typeToName.Add(type, name);
-            this.nameToType.Add(name, type);
+            this.typeToName.TryAdd(type, name);
+            this.nameToType.TryAdd(name, type);
         }
         public void Map2<T>()
         {
@@ -224,8 +224,8 @@ namespace Tools
             if (tmp == -1)
                 return nameToType[typeName] = findType(typeName);
 
-            var gtypename = typeName.Substring(0, tmp);
-            Type res = findType(gtypename);
+            var gtypename = typeName.Substring(0, tmp+1);
+            
             var gtArgs = typeName.Substring(tmp + 1, typeName.Length - tmp - 2);
             int openLt = 0;
             string par = "";
@@ -239,6 +239,7 @@ namespace Tools
                     --openLt;
                 if (ch == ';' && openLt == 0)
                 {
+                    gtypename += ";";
                     var z = getTypeWithName(par);
                     args.Add(z);
                     par = "";
@@ -248,6 +249,8 @@ namespace Tools
                     par += ch;
                 }
             }
+            gtypename += ">";
+            Type res = findType(gtypename);
             return nameToType[typeName] = res.MakeGenericType(args.ToArray());
 
 
@@ -263,11 +266,11 @@ namespace Tools
             return Type.GetType(string.Format("{0}, {1}", typeName, assemblyName), false);
         }
     }
-    public class TypeNameSerializationBinder : ISerializationBinder
+    public class TypeNameSerializationBinder22 : ISerializationBinder
     {
 
         public static TypeNameSerializationBinder gloabl;
-        static TypeNameSerializationBinder(){
+        static TypeNameSerializationBinder22(){
             gloabl=new TypeNameSerializationBinder();
             //gloabl.Map2<NpgsqlTypes.NpgsqlRange<DateTime> >("Range<Date>");
             //gloabl.Map2<Microsoft.AspNetCore.Mvc.FromBodyAttribute>("Microsoft.AspNetCore.Mvc.FromBodyAttribute");
@@ -280,7 +283,7 @@ namespace Tools
             name = serializedType.getBeautyName();
             return typeToName[serializedType] = name;
         }
-        public TypeNameSerializationBinder(Dictionary<Type, string> typeNames = null)
+        public TypeNameSerializationBinder22(Dictionary<Type, string> typeNames = null)
         {
             if (typeNames != null)
             {
