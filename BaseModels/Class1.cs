@@ -6,6 +6,11 @@ using Tools;
 
 namespace SGSStandalone.Core.ClientMessage
 {
+
+    public class GossipMsg
+    {
+    }
+
     public class DataContainer
     {
         public object body;
@@ -18,13 +23,16 @@ namespace SGSStandalone.Core.ClientMessage
         public static DataContainer Deserialize(string data)
         {
             var js = JToken.Parse(data);
-            return new DataContainer(JToken.FromObject(js, DataContainer2.clientSerilizer));
+            return js.ToObject<DataContainer>(DataContainer2.clientSerilizer);
         }
 
-
+        
         public string Serialize()
         {
-            var j = new JObject() { { "protocolVersion", 0 }, { "metaVersion", 0 }, { "body", JToken.FromObject(body, DataContainer2.clientSerilizer) } };
+            return JToken.FromObject(this, DataContainer2.clientSerilizer).ToString();
+            JTokenWriter writer = new JTokenWriter();
+            DataContainer2.clientSerilizer.Serialize(writer, body, body.GetType());
+            var j = new JObject() { { "protocolVersion", 0 }, { "metaVersion", 0 }, { "body", writer.Token } };
             return j.ToString();
         }
 
