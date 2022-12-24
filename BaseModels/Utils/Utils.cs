@@ -13,6 +13,10 @@ namespace SGSStandalone.Core
         {
             return (long)(dt - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
         }
+        public static long totalStep(this System.DateTime dt)
+        {
+            return (long)(dt - new System.DateTime(1970, 1, 1)).TotalMilliseconds/100;
+        }
         public static long totalSeconds(this System.DateTime dt)
         {
             return (long)(dt - new System.DateTime(1970, 1, 1)).TotalSeconds;

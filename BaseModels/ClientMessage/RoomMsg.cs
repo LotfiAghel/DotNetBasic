@@ -8,8 +8,6 @@ namespace SGSStandalone.Core.ClientMessage
     {
         public string roomId { get; set; }
         public string senderId { get; set; }
-
-
-
+        public object msg { get; set; }
     }
 }
