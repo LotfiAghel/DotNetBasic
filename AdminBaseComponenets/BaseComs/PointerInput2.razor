@@ -27,7 +27,7 @@
                     <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)" >toggle</Button>
                 </Column>
                 <Column ColumnSize="ColumnSize.Is8">
-               @if(classess.Count() >1 ){
+               @if(classess.Count() >0 ){
                 if(!ReadOnly){
                     <Select TValue="string" SelectedValue=@typeName SelectedValueChanged=@Click2  >
                         <SelectItem TValue="string" value="null">null</SelectItem>

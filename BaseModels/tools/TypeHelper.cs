@@ -165,9 +165,13 @@ namespace Tools
             return "";
 
         }
+        public static Dictionary<Type, List<Type>> cache=new ();
         public static List<Type> GetSubClasses(this Type T, bool evenAbstracts = true)
         {
+            if (cache.ContainsKey(T))
+                return cache[T];
             List<Type> classess = new List<Type>();
+            cache[T] = classess;
             var assms = AppDomain.CurrentDomain.GetAssemblies();
             if (!T.IsAbstract)
                 classess.Add(T);
