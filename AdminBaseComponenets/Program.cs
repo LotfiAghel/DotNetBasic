@@ -21,6 +21,7 @@ using AdminClientViewModels;
 using Models;
 using Tools;
 using Tools;
+using AdminBaseComponenets.BaseComs;
 
 public static class ExtensionMethods
 {
@@ -141,12 +142,13 @@ namespace AdminBaseComponenets
         }
         public static RenderFragment CreateDynamicComponent20(object thiz, ValueInput0 c, object vv, Action<object> changeRefrence = null, List<Attribute> Attributes = null, bool ReadOnly = false) => builder =>
               {
-
+                  if (c == null)
+                      return ;
 
                   var gt = c.GetType();
 
 
-
+                  
                   builder.OpenComponent(0, gt);
                   foreach (var gti in gt.GetProperties())
                   {
@@ -393,8 +395,10 @@ namespace AdminBaseComponenets
 
         }
 
-        public static ComponentBase createForm(Type type, List<Attribute> attrs)
-        {
+        public static ComponentBase createForm(Type type, List<Attribute> attrs) { 
+        
+            if(type==null)
+                return null;
 
             Console.WriteLine("createForm " + type.Name);
             if (attrs == null)
@@ -599,7 +603,7 @@ namespace AdminBaseComponenets
         {
             defultCunstroctor[typeof(String)] = () => new String("");
 
-            formRenderer2[typeof(Func<,>)] = (type, prps) =>
+            formRenderer2[typeof(FuncV<,>)] = (type, prps) =>
             {
                 return typeof(AdminBaseComponenets.BaseComs.AFunc<,>).MakeGenericType(type.GetGenericArguments());
             };

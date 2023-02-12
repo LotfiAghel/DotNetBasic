@@ -5,9 +5,22 @@
 @using Models
 @using System.ComponentModel;
 @using Tools;
+@inherits EditBase2< FuncV< TINP , TOUT> >
 
 
-@Program0.CreateDynamicComponent2(this,Program0.createForm(typeof(FuncV<TINP, TOUT>),new List<Attribute>() { }),inpOut)
-<Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+
+@{
+    reload();
+ 
+}
+<EditForm Model=@value >
+    <div>
+        @autoComp( () => value.inp)
+    </div>
+    <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+    @if(value!=null){
+        Program0.CreateDynamicComponent2(this, Program0.createForm(typeof(TOUT), new List<Attribute>() { }), value.output, null, new List<Attribute>() { }, true);
+    }
+</EditForm>
 <div>actions</div>
 

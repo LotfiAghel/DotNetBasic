@@ -30,7 +30,7 @@ namespace AdminBaseComponenets.BaseComs
         [Parameter]
         public string method{get;set;}
 
-        
+        public object methodValue;
         public string ButtonState="send Action";
         public ComponentBase comp;
         public Type type;
@@ -38,6 +38,8 @@ namespace AdminBaseComponenets.BaseComs
         public void reload(){
             type=Program0.getFuncType(url);
             comp=Program0.createForm(type, new List<Attribute>() { });
+            ((dynamic)comp).url = url;
+            methodValue = type.GetConstructor(new Type[] {}).Invoke(new object[] { });
         }
         
         

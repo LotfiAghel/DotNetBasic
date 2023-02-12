@@ -25,6 +25,10 @@ namespace AdminBaseComponenets.BaseComs
         [Parameter]
         public string itemName { get; set; } = null;
 
+
+        [Parameter]
+        public string Url { get; set; } = null;
+
         [Parameter]
         public TKEY itemValue { get; set; }
 
@@ -83,7 +87,10 @@ namespace AdminBaseComponenets.BaseComs
 
 
             var itemId = (e.Item as IIdMapper<TKEY>).id;
-            NavManager.NavigateTo($"{EntityName}/edit/{itemId}");
+            if(Url is null)
+                NavManager.NavigateTo($"{EntityName}/edit/{itemId}");
+            else
+                NavManager.NavigateTo($"{Url}/{itemId}");
 
         }
 
