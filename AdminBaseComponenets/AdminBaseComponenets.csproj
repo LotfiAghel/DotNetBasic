@@ -15,12 +15,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Blazorise\Shared\Blazorise.Shared\Blazorise.Shared.csproj" />
-    <ProjectReference Include="..\Blazorise\Source\Blazorise.Bootstrap\Blazorise.Bootstrap.csproj" />
+    <!-- <ProjectReference Include="..\Blazorise\Source\Blazorise.Bootstrap\Blazorise.Bootstrap.csproj" /> -->
+    <ProjectReference Include="..\Blazorise\Source\Blazorise.Material\Blazorise.Material.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Blazorise\Blazorise.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Components\Blazorise.Components.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Sidebar\Blazorise.Sidebar.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.DataGrid\Blazorise.DataGrid.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Icons.FontAwesome\Blazorise.Icons.FontAwesome.csproj" />
+    <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Icons.Material\Blazorise.Icons.Material.csproj" />
   </ItemGroup>
   
 <ItemGroup>
@@ -41,7 +43,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0" PrivateAssets="all" />
     
-    <PackageReference Include="MudBlazor" Version="6.0.14" />
+    
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
     
 
