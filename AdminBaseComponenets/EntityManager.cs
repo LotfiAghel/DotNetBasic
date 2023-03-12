@@ -535,6 +535,31 @@ namespace AdminBaseComponenets
 
     }
 
+
+
+
+    public class PArrayInputBase<T> : NullableInput2<T[]>
+    {
+
+
+
+
+
+
+
+        public T tmp = default(T);
+        public void setValue(int idx, object x)
+        {
+            Console.WriteLine("setFValue0 --------" + idx + "/" + value.Length + " <= " + JToken.FromObject(x));
+
+
+            value[idx] = (T)x;
+
+        }
+
+    }
+
+
     public class DictinaryStringKeyBase<T> : NullableInput2<Dictionary<string, T>>
     {
 
