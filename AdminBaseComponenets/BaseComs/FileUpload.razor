@@ -54,7 +54,7 @@
     public string value { get; set; } = "";
 
     [Parameter] 
-    public EventCallback<object> changeRefrence { get; set; }
+    public Action<object> OnChange { get; set; }
 
     private File files = null;
     private UploadResult uploadResults = null;
@@ -117,7 +117,7 @@
             value = uploadResults.StoredFileName;
             value=ClTool.WebClient.webClient.baseUrl + "StaticFiles/" + uploadResults.StoredFileName;
             uploadResults=null;
-            await changeRefrence.InvokeAsync(value);
+            OnChange(value);
 
 
 

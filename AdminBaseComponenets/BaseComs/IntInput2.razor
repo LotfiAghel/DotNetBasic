@@ -1,4 +1,4 @@
-
+@typeparam TItem 
 
 
 
@@ -13,14 +13,14 @@
 @using Newtonsoft.Json.Linq;
 
 
-@inherits ValueInput<int>
+@inherits ValueInput<TItem>
 
 
         <NumericEdit    
-                     ReadOnly=@ReadOnly
-                     TValue="int"
-                     Value=value
-                     ValueChanged=@Click22 
+             ReadOnly=@ReadOnly
+             TValue=TItem
+             Value=value
+             ValueChanged=@Click22 
         />
 
 
@@ -31,13 +31,13 @@
 @code
 {
     
-    int prvValue;
+    TItem prvValue;
     
 
-    async Task Click22(int vv)
+    async Task Click22(TItem vv)
     {
         value = vv;
-        if (prvValue != value)
+        if (!prvValue.Equals(value))
         {
 
             OnChange(value);

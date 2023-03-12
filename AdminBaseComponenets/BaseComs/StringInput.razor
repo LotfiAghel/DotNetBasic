@@ -39,7 +39,7 @@
         if (prvValue != value)
         {
 
-            await changeRefrence.InvokeAsync(value);
+            OnChange(value);
         }
         prvValue = value;
 

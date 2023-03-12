@@ -97,7 +97,7 @@
     }
 
     DateTime prvValue;
-    [Parameter] public EventCallback<object> changeRefrence { get; set; }
+    public Action<object> OnChange { get; set; }
 
     public string strValue { get { return value.ToPersianDateString(); } set { this.value = value.toPersianDate(); } }
 
@@ -110,7 +110,7 @@
         if (prvValue != value)
         {
 
-            await changeRefrence.InvokeAsync(value);
+            OnChange(value);
         }
         prvValue = value;
 

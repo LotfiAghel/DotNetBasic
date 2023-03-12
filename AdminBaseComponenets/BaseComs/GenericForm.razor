@@ -9,27 +9,37 @@
 <EditForm Model="@value">
     <h3>@typeof(TItem).Name</h3>
     <hr />
-        @{
-            foreach (var property in propertis)
+    @{
+        if (typeof(TItem).IsValueType && OnChange==null)
+        {
+            OnChange = (x) =>
             {
+                Console.WriteLine("mis onchange");
 
-                
-                {
-                    var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
-                    if(y!=null)    
-                        continue;
-                        
-                }
-                {
-                    var x = property.GetCustomFirstAttributes<JsonIgnoreAttribute>();
-                    if(x!=null)
-                        continue;
 
-                }
+            };
+        }
 
-                
-                
-                var z = createProp(property);
+        foreach (var property in propertis)
+        {
+
+
+            {
+                var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
+                if(y!=null)    
+                    continue;
+
+            }
+            {
+                var x = property.GetCustomFirstAttributes<JsonIgnoreAttribute>();
+                if(x!=null)
+                    continue;
+
+            }
+            
+
+
+            var z = createProp(property);
 
                 
                 if (z != null)

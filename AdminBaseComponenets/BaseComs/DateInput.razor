@@ -144,14 +144,14 @@
          set{this.value=pc.ToDateTime(Years,Months,Days,Hours,Minutes,value,0);}}
     DateTime prvValue= new DateTime();
     
-    [Parameter] public EventCallback<object> changeRefrence { get; set; }
+    [Parameter] public Action<object> OnChange { get; set; }
 
     async Task Click2()
     {
         if (prvValue != value)
         {
             prvValue = pc.ToDateTime(Years,Months,Days,Hours,Minutes,Seconds,0);
-            await changeRefrence.InvokeAsync(pc.ToDateTime(Years,Months,Days,Hours,Minutes,Seconds,0));
+            OnChange(pc.ToDateTime(Years,Months,Days,Hours,Minutes,Seconds,0));
         }
     }
 

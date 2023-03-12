@@ -21,8 +21,19 @@
 
         @if (value != null)
         {
-            <JsonShow value=@JToken.FromObject(value)></JsonShow>
-            
+            //<JsonShow value=@JToken.FromObject(value)></JsonShow>
+            ComponentBase strF = Program0.createForm(typeof(string),new (){ });
+            ComponentBase valueF = Program0.createForm(typeof(TItem), new() { });
+            foreach(var entry in value)
+            {
+                <div>
+                @Program0.CreateDynamicComponent2(this, strF, entry.Key, null, null, ReadOnly );
+                </div>
+                <div>
+                @Program0.CreateDynamicComponent2(this, valueF, entry.Value, null, null, ReadOnly );
+                </div>
+            }
+
         }
         else
         {
@@ -44,7 +55,7 @@
     async Task createArray()
     {
         value = new Dictionary<string,TItem>();
-        await changeRefrence.InvokeAsync(value);
+        OnChange(value);
 
     }
 

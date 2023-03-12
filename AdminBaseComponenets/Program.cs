@@ -87,7 +87,7 @@ namespace AdminBaseComponenets
                   if (v != null)
                   {
                       var callback = EventCallback.Factory.Create<object>(thiz, v);
-                      builder.AddAttribute(1, "changeRefrence", callback);
+                      builder.AddAttribute(1, "OnChange", callback);
                   }
                   if (v != null)
                   {
@@ -140,7 +140,7 @@ namespace AdminBaseComponenets
             }
             
         }
-        public static RenderFragment CreateDynamicComponent20(object thiz, ValueInput0 c, object vv, Action<object> changeRefrence = null, List<Attribute> Attributes = null, bool ReadOnly = false) => builder =>
+        public static RenderFragment CreateDynamicComponent20(object thiz, ValueInput0 c, object vv, Action<object> OnChange = null, List<Attribute> Attributes = null, bool ReadOnly = false) => builder =>
               {
                   if (c == null)
                       return ;
@@ -163,10 +163,10 @@ namespace AdminBaseComponenets
                       }/**/
                   }
                   
-                  if (changeRefrence != null)
+                  if (OnChange != null)
                   {
-                      var callback = EventCallback.Factory.Create<object>(thiz, changeRefrence);
-                      builder.AddAttribute(1, "changeRefrence", callback);
+                      var callback = EventCallback.Factory.Create<object>(thiz, OnChange);
+                      builder.AddAttribute(1, "OnChange", OnChange);
                   }
                   
                   if (Attributes != null)
@@ -446,6 +446,14 @@ namespace AdminBaseComponenets
                 var wc = wt.GetConstructor(new Type[] { });
                 return wc.Invoke(new object[] { }) as ComponentBase;
             }
+            if (type.IsArray)
+            {
+
+                var wt= typeof(AdminBaseComponenets.BaseComs.ArrayInput<>).MakeGenericType(type.GetElementType());
+                //var wt = typeof(AdminBaseComponenets.BaseComs.EnumInput3<>).MakeGenericType(type);
+                var wc = wt.GetConstructor(new Type[] { });
+                return wc.Invoke(new object[] { }) as ComponentBase;
+            }
 
             try
             {
@@ -690,7 +698,7 @@ namespace AdminBaseComponenets
             formRenderer[typeof(long)] = (prps) =>
             {
 
-                return new AdminBaseComponenets.BaseComs.PrimitiveInput<long>();
+                return new AdminBaseComponenets.BaseComs.IntInput2<long>();
             };
 
 
@@ -700,7 +708,7 @@ namespace AdminBaseComponenets
 
             formRenderer[typeof(ulong)] = (prps) =>
             {
-                return new AdminBaseComponenets.BaseComs.PrimitiveInput<ulong>();
+                return new AdminBaseComponenets.BaseComs.IntInput2<ulong>();
             };
 
 
@@ -817,6 +825,28 @@ namespace AdminBaseComponenets
 
                 return typeof(AdminBaseComponenets.BaseComs.ArrayInput<>).MakeGenericType(type.GetGenericArguments()[0]);
             };
+            formRenderer2[typeof(Array)] = (type, prps) =>
+            {
+                Console.WriteLine("formRenderer2(Array<>)");
+                var ItemType = type.GetGenericArguments()[0];
+                
+
+                if (ItemType.IsEnum)
+                {
+                    var x = prps.GetFirst<Attribute, MultiSelect>();
+                    if (x != null)
+                        return typeof(AdminBaseComponenets.BaseComs.EnumMultiSelectInput<>).MakeGenericType(type.GetGenericArguments()[0]);
+                }
+                {
+                    var x = prps.GetFirst<Attribute, GridShow>();
+                    if (x != null)
+                    {
+                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0]);
+                    }
+                }
+
+                return typeof(AdminBaseComponenets.BaseComs.ArrayInput<>).MakeGenericType(type.GetGenericArguments()[0]);
+            };
             inPropRender[typeof(HashSet<>)]=true;
             formRenderer2[typeof(HashSet<>)] = (type, prps) =>
             {
@@ -853,7 +883,7 @@ namespace AdminBaseComponenets
 
                 {
                     var x = prps.GetFirst<Attribute, GridShow>();
-                    if (x != null)
+                    //if (x != null)
                     {
                         return typeof(AdminBaseComponenets.BaseComs.DictinaryStringKeyInput<>).MakeGenericType(type.GetGenericArguments()[1]);
                     }

@@ -84,7 +84,7 @@
     async Task createArray()
     {
         value = new List<TItem>();
-        await changeRefrence.InvokeAsync(value);
+        OnChange(value);
 
     }
 
