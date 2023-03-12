@@ -380,7 +380,14 @@ namespace AdminBaseComponenets
                 return createForm(property.PropertyType, attrs);
             }
 
+            if (type.IsArray)
+            {
 
+                var wt = typeof(AdminBaseComponenets.BaseComs.PArrayInput<>).MakeGenericType(type.GetElementType());
+                //var wt = typeof(AdminBaseComponenets.BaseComs.EnumInput3<>).MakeGenericType(type);
+                var wc = wt.GetConstructor(new Type[] { });
+                return wc.Invoke(new object[] { }) as ComponentBase;
+            }
 
 
             if (property.PropertyType.IsClass)
@@ -449,7 +456,7 @@ namespace AdminBaseComponenets
             if (type.IsArray)
             {
 
-                var wt= typeof(AdminBaseComponenets.BaseComs.ArrayInput<>).MakeGenericType(type.GetElementType());
+                var wt= typeof(AdminBaseComponenets.BaseComs.PArrayInput<>).MakeGenericType(type.GetElementType());
                 //var wt = typeof(AdminBaseComponenets.BaseComs.EnumInput3<>).MakeGenericType(type);
                 var wc = wt.GetConstructor(new Type[] { });
                 return wc.Invoke(new object[] { }) as ComponentBase;
