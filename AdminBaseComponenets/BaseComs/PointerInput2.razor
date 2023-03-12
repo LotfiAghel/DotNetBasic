@@ -15,18 +15,44 @@
 
 
 @inherits PointerInputBase2<TItem>
+<!--
 
+<p style="display: inline;color:blue" @onclick=@Click0>close</p>
 
+    @if (!ReadOnly)
+    {
+<Select TValue="string" SelectedValue=@typeName SelectedValueChanged=@Click2 >
+    <SelectItem TValue="string" value="null">null</SelectItem>
+    @foreach (var t in classess)
+    {
+        <SelectItem TValue="string" value=@t.Name>@t.GetPerisanName()</SelectItem>
+    }
+</Select>
 
+    }
+    else if (value != null)
+    {
+<div>@(value.GetType().Name)</div>
+    }
+
+@if (openOject)
+{
+    if (w != null)
+    {
+        <div>@Program0.CreateDynamicComponent2(this, w, value, null, new List<System.Attribute>(), ReadOnly);</div>
+    }
+}
+
+-->
         <Accordion>
         <Collapse  Visible=@collapse1Visible>
              <CollapseHeader>
-            <Heading Size="HeadingSize.Is6">
+            <Heading Size="HeadingSize.Is1" >
                 <Row>
-                <Column ColumnSize="ColumnSize.Is4">
+                <Column ColumnSize="ColumnSize.Is1">
                     <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)" >toggle</Button>
                 </Column>
-                <Column ColumnSize="ColumnSize.Is8">
+                <Column ColumnSize="ColumnSize.Is6" >
                @if(classess.Count() >0 ){
                 if(!ReadOnly){
                     <Select TValue="string" SelectedValue=@typeName SelectedValueChanged=@Click2  >
@@ -52,14 +78,18 @@
         </Collapse >
         </Accordion>
 
- 
+
 
 @code
 {
-
+    public bool openOject = true;
     ElementReference MyElementReference;
     ComponentBase w = null;
     bool collapse1Visible = false;
+    async Task Click0()
+    {
+        openOject = !openOject;
+    }
     async Task Click2(string typeName)
     {
 
