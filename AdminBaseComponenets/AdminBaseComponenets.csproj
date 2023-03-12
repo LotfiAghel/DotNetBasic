@@ -13,19 +13,27 @@
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Blazorise\Shared\Blazorise.Shared\Blazorise.Shared.csproj" />
+    <ProjectReference Include="..\Blazorise\Source\Blazorise.Bootstrap\Blazorise.Bootstrap.csproj" />
+    <ProjectReference Include="..\Blazorise\Source\Blazorise\Blazorise.csproj" />
+    <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Components\Blazorise.Components.csproj" />
+    <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Sidebar\Blazorise.Sidebar.csproj" />
+    <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.DataGrid\Blazorise.DataGrid.csproj" />
+    <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Icons.FontAwesome\Blazorise.Icons.FontAwesome.csproj" />
+  </ItemGroup>
+  
 <ItemGroup>
   
   
     <PackageReference Include="Blazor.PersianDatePicker" Version="1.0.1" />
   
+   
+
+
+
   
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.0.6" />
   
-  
-    <PackageReference Include="Blazorise.Material" Version="1.0.6" />
-    <PackageReference Include="Blazorise.DataGrid" Version="1.0.6" />
-    <PackageReference Include="Blazorise.Sidebar" Version="1.0.6" />
-    <PackageReference Include="Blazorise.Components" Version="1.0.6" />
   <ProjectReference Include="..\BaseModels\BaseModels.csproj" />
 
 
@@ -56,6 +64,12 @@
 
   <ItemGroup>
     <Folder Include="tools\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="BaseComs\PArrayInput.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
   </ItemGroup>
 
 </Project>

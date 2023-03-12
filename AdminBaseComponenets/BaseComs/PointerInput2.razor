@@ -52,7 +52,7 @@
                 <Column ColumnSize="ColumnSize.Is1">
                     <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)" >toggle</Button>
                 </Column>
-                <Column ColumnSize="ColumnSize.Is6" >
+                <Column ColumnSize=ColumnSize.Is6 >
                @if(classess.Count() >0 ){
                 if(!ReadOnly){
                     <Select TValue="string" SelectedValue=@typeName SelectedValueChanged=@Click2  >

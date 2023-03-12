@@ -1,7 +1,7 @@
 ﻿@using ClTool
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Net.Http
-
+@inherits ValueInput<string>
 
 <p>
     <label>
@@ -47,15 +47,8 @@
 
 @code {
 
-    [Parameter]
-    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
-
-    [Parameter]
-    public string value { get; set; } = "";
-
-    [Parameter] 
-    public Action<object> OnChange { get; set; }
-
+    
+    
     private File files = null;
     private UploadResult uploadResults = null;
     private int maxAllowedFiles = 1;

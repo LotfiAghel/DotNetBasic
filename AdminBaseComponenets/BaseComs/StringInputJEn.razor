@@ -8,7 +8,7 @@
 
 @using Newtonsoft.Json.Linq;
 
-
+@inherits ValueInput<string>
 
 
 <div class="row pt-2 pb-2">
@@ -27,17 +27,11 @@
 
 @code
 {
-    [Parameter]
-    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
-
+    
     [Parameter]
     public string value { get; set; } = "";
 
     string prvValue;
-    public Action<object> OnChange { get; set; }
-
-    [Parameter]
-    public bool ReadOnly{ get; set; }=false;
 
     async Task Click2()
     {

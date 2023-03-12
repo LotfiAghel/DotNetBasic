@@ -13,7 +13,7 @@
 @using Newtonsoft.Json.Linq;
 @using System.Globalization;
 
-
+@inherits ValueInput<DateTime>
 
 
 <div class="row">
@@ -109,12 +109,8 @@
 {
     PersianCalendar pc = new PersianCalendar();
 
-    [Parameter]
-    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
+    
 
-
-    [Parameter]
-    public DateTime value { get; set; }
     
     public int Years {
         get{
@@ -144,7 +140,7 @@
          set{this.value=pc.ToDateTime(Years,Months,Days,Hours,Minutes,value,0);}}
     DateTime prvValue= new DateTime();
     
-    [Parameter] public Action<object> OnChange { get; set; }
+    
 
     async Task Click2()
     {
