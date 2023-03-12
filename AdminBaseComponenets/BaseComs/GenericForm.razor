@@ -7,8 +7,6 @@
 @inherits EditBase2<TItem>
 
 <EditForm Model="@value">
-    <h3>@typeof(TItem).Name</h3>
-    <hr />
     @{
         if (typeof(TItem).IsValueType && OnChange==null)
         {
