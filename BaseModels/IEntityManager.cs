@@ -44,7 +44,7 @@ namespace ModelsManager
 
 
         public abstract Task<int> loadAll();
-
+        public abstract Task<int> DeleteAll();
 
 
         public abstract List<T> getAllRamData();
