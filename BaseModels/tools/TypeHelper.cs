@@ -183,7 +183,7 @@ namespace Tools
                     var candidates = currentAssembly.GetExportedTypes().Where(x => x.IsAssignableTo(T));
 
                     foreach (var candidate in candidates)
-                        if (candidate.IsClass && (!candidate.IsAbstract || evenAbstracts))
+                        if (candidate.IsClass && (!candidate.IsAbstract || evenAbstracts) && !classess.Contains(candidate))
                             classess.Add(candidate);
                 }
                 catch
