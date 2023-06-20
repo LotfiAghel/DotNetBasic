@@ -73,11 +73,10 @@ public class ForeignKeyAttr : Attribute
 {
     public Type type;
     public Type tkey = typeof(int);
-    public ForeignKeyAttr(Type t, Type tkey=null )
+    public ForeignKeyAttr(Type t)
     {
         type = t;
-        if (tkey!=null)
-            this.tkey = tkey;
+        this.tkey=t.GetProperty("id").PropertyType;
     }
     public Type[] getTypes()
     {

@@ -103,7 +103,7 @@ namespace AdminClientViewModels
        
          public T getFast(string id){
             
-            System.Console.WriteLine("getFast :" + id.ToString());
+            System.Console.WriteLine("getFast :" + id);
             
             
 
@@ -123,8 +123,6 @@ namespace AdminClientViewModels
             
             
             var res = data.FirstOrDefault(x => x.id.Equals(id));
-            if (res == null)
-                return res;
             return res;
 
         }

@@ -13,18 +13,20 @@ namespace ModelsManager
     {
         public static Dictionary<Type, IEntityManager0> managers = new Dictionary<Type, IEntityManager0>();
         
-        public static IEntityManager<T> GetManager<Key, T>() where T : Models.IIdMapper<int>
+        public static IEntityManager<T, Key> GetManager<Key, T>() where T : Models.IIdMapper<Key>
+            where Key : IEquatable<Key>, IComparable<Key>, IComparable
         {
-            return managers[typeof(T)] as IEntityManager<T>;
+            return managers[typeof(T)] as IEntityManager<T, Key>;
         }
 
     }
-    public abstract class IEntityManager<T> : IEntityManager0 where T : Models.IIdMapper<int>
+    public abstract class IEntityManager<T,TKEY> : IEntityManager0 where T : Models.IIdMapper<TKEY>
+        where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
-        public Dictionary<int, T> data = new Dictionary<int, T>();
+        public Dictionary<TKEY, T> data = new Dictionary<TKEY, T>();
 
-        private static IEntityManager<T> _instance;
-        public static IEntityManager<T> instance
+        private static IEntityManager<T,TKEY> _instance;
+        public static IEntityManager<T, TKEY> instance
         {
             get
             {
@@ -36,7 +38,7 @@ namespace ModelsManager
 
         }
         
-        public static T2 getInstance<T2>()where T2 : IEntityManager<T>
+        public static T2 getInstance<T2>()where T2 : IEntityManager<T, TKEY>
         {
             return instance as T2;
         }

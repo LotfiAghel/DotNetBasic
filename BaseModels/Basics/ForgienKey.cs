@@ -35,7 +35,7 @@ public struct ForeignKey<T> : IComparable<ForeignKey<T>>, IEquatable<int>, IFore
 #if SERVER
     public T getValue()
     {
-        return IEntityManager<T>.instance.get(Value);
+        return IEntityManager<T, int>.instance.get(Value);
     }
 #endif
     public bool Equals(ForeignKey<T>? other) => false;

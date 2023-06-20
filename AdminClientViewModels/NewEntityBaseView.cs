@@ -106,6 +106,10 @@ namespace AdminClientViewModels
             T res=null;
             System.Console.WriteLine("getFast :" + id.ToString());
 
+            if (typeof(TKEY) == typeof(Guid))
+            {
+                id2En.TryGetValue((TKEY)((object)Guid.Parse(id)), out res);
+            }
 
             if (typeof(TKEY) == typeof(string))
             {
@@ -157,7 +161,7 @@ namespace AdminClientViewModels
             id2En.TryGetValue(id, out res);
             return res;
         }
-        public async Task<T> get(object id)
+        public async Task<T> getWithObject(object id)
         {
             
             
@@ -167,12 +171,11 @@ namespace AdminClientViewModels
                     var newI = typeof(T).GetConstructor(new Type[] { }).Invoke(new object[] { }) as T;
                     return newI;
                 }
-                id =int.Parse((string)id);
             }
+            return await get((TKEY)id);
+            
 
-
-
-            return await get((int)id);
+            
             
         }
         public T getFromLoaded(TKEY id)
@@ -187,7 +190,7 @@ namespace AdminClientViewModels
         }
 
         public async Task<object> get00(object id){
-            return await get(id);
+            return await getWithObject(id);
         }
         public async Task<T> post(T t)
         {
@@ -237,11 +240,15 @@ namespace AdminClientViewModels
         {
             if (typeof(TKEY) == typeof(string))
             {
-                return await get(id);
+                return await getWithObject(id);
             }
             if (typeof(TKEY) == typeof(int))
             {
-                return await get(Int32.Parse(id));
+                return await getWithObject(Int32.Parse(id));
+            }
+            if (typeof(TKEY) == typeof(Guid))
+            {
+                return await getWithObject(Guid.Parse(id));
             }
             throw new Exception($"can not ahndle type {typeof(TKEY).Name}");
             
