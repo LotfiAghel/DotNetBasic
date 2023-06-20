@@ -778,7 +778,7 @@ namespace AdminBaseComponenets
                     Console.WriteLine("formRenderer[typeof(int)] ");
                     var ct = a.type;
                     Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{ct}>");
-                    prVal = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes()).GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { prVal });
+                    prVal = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes()).GetConstructor(new Type[] { a.getTypes()[1] }).Invoke(new object[] { prVal });
                     //var gtc = gt.GetConstructor(new[] { typeof(int) });
 
 

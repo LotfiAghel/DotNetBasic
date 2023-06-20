@@ -5,64 +5,72 @@
 @using AdminBaseComponenets;
 @using Newtonsoft.Json
 @inherits EditBase2<TItem>
-
-<EditForm Model="@value">
-    @{
-        if (typeof(TItem).IsValueType && OnChange==null)
-        {
-            OnChange = (x) =>
-            {
-                Console.WriteLine("mis onchange");
-
-
-            };
-        }
-
-        foreach (var property in propertis)
-        {
-
-
-            {
-                var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
-                if(y!=null)    
-                    continue;
-
-            }
-            {
-                var x = property.GetCustomFirstAttributes<JsonIgnoreAttribute>();
-                if(x!=null)
-                    continue;
-
-            }
-            
-
-
-            var z = createProp(property);
-
-                
-                if (z != null)
+<div>genericForm</div>
+@{
+    if(value is null){
+        <div>value is null</div>
+    }
+}
+@{
+    if(!(value is null)){
+        <EditForm Model="@value">
+            @{
+                if (typeof(TItem).IsValueType && OnChange==null)
                 {
-                    
-                    <Row>
-                         <Column ColumnSize=ColumnSize.Is2>
-                            <label for="pass">@property.GetPerisanName()</label>
-                        </Column>
-                    
+                    OnChange = (x) =>
+                    {
+                        Console.WriteLine("mis onchange");
 
-                    
-                        <Column ColumnSize=ColumnSize.Is10>
-                            @z
-                        </Column>
-                    </Row>
-                
+
+                    };
                 }
 
-            }
-        }
+                foreach (var property in propertis)
+                {
 
 
-    
-</EditForm>
+                    {
+                        var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
+                        if(y!=null)    
+                            continue;
 
+                    }
+                    {
+                        var x = property.GetCustomFirstAttributes<JsonIgnoreAttribute>();
+                        if(x!=null)
+                            continue;
+
+                    }
+                    
+
+
+                    var z = createProp(property);
+
+                        
+                        if (z != null)
+                        {
+                            
+                            <Row>
+                                <Column ColumnSize=ColumnSize.Is2>
+                                    <label for="pass">@property.GetPerisanName()</label>
+                                </Column>
+                            
+
+                            
+                                <Column ColumnSize=ColumnSize.Is10>
+                                    @z
+                                </Column>
+                            </Row>
+                        
+                        }
+
+                    }
+                }
+
+
+            
+        </EditForm>
+    }
+}
 
 

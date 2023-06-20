@@ -501,6 +501,25 @@ namespace AdminBaseComponenets
 
             defultRenderer[typeof(string)] = (prps) =>
             {
+                var a = prps.GetFirst<Attribute, ForeignKeyAttr>();
+
+                if (a != null)
+                {
+                    Console.WriteLine("defultRenderer[typeof(int)]");
+                    
+                    var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
+                    var gtc = gt.GetConstructor(new[] { typeof(int) });
+
+                    return createWidget(
+                            gt,
+                            new List<Attribute>()
+                    );/**/
+
+                }
+                return null;
+            };
+            defultRenderer[typeof(Guid)] = (prps) =>
+            {
                 var a = prps.FindAll(x => x is ForeignKeyAttr).ConvertAll<ForeignKeyAttr>(x => x as ForeignKeyAttr);
                 if (a.Count > 0)
                 {
@@ -522,6 +541,30 @@ namespace AdminBaseComponenets
                     
                     var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
                     var gtc = gt.GetConstructor(new[] { typeof(int) });
+
+                    return createWidget(
+                            gt,
+                            new List<Attribute>()
+                    );/**/
+
+                }
+
+                return createWidget(
+                                typeof(string),
+                                new List<Attribute>()
+                        );
+            };
+            defultRenderer[typeof(Guid)] = (prps) =>
+            {
+
+                var a = prps.GetFirst<Attribute, ForeignKeyAttr>();
+
+                if (a != null)
+                {
+                    Console.WriteLine("defultRenderer[typeof(Guid)]");
+                    
+                    var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
+                    var gtc = gt.GetConstructor(new[] { typeof(Guid) });
 
                     return createWidget(
                             gt,
@@ -646,6 +689,23 @@ namespace AdminBaseComponenets
             inPropRender[typeof(string)]=true;
             formRenderer[typeof(string)] = (prps) =>
             {
+                Console.WriteLine("formRenderer[typeof(string)]");
+                var a = prps.GetFirst<Attribute, ForeignKeyAttr>();
+
+                if (a != null)
+                {
+                    Console.WriteLine("formRenderer[typeof(string)] ");
+                    Console.WriteLine($"formRenderer[typeof(string)] ForeignKey2<{a.getTypes()[0]},{a.getTypes()[1]}>");
+                    var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
+                    //var gtc = gt.GetConstructor(new[] { typeof(int) });
+
+                    return createForm(
+                            gt,
+                            new List<Attribute>()
+                    );/**/
+
+                }
+
                 /*{
                     var x = prps.GetFirst<Attribute, AdminBaseComponenets.BaseComs.SmallPicShow>();
                     if (x != null)
@@ -699,6 +759,30 @@ namespace AdminBaseComponenets
                 }
                 return new AdminBaseComponenets.BaseComs.IntInput();
             };
+            
+            formRenderer[typeof(Guid)] = (prps) =>
+            {
+                Console.WriteLine("formRenderer[typeof(Guid)]");
+                var a = prps.GetFirst<Attribute, ForeignKeyAttr>();
+
+                if (a != null)
+                {
+                    Console.WriteLine("formRenderer[typeof(Guid)] ");
+                    Console.WriteLine($"formRenderer[typeof(Guid)] ForeignKey2<{a.getTypes()}>");
+                    var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
+                    //var gtc = gt.GetConstructor(new[] { typeof(int) });
+
+                    return createForm(
+                            gt,
+                            new List<Attribute>()
+                    );/**/
+
+                }
+                return new AdminBaseComponenets.BaseComs.StringInput();
+            };
+
+
+            
 
 
 
