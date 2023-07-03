@@ -307,11 +307,11 @@ namespace ClTool
         {
             return await webClient.fetch<IAction<T>, T>($"{additinalUrl}{typeof(T).Name}/{entityId}/runAction", HttpMethod.Post, inp);
         }
-        public async Task<List<T>> getAll3(string masterEntityName, string collectionName, int masterId)
+        public async Task<List<T>> getAll3(string masterEntityName, string collectionName, TKEY masterId)
         {
             return await webClient.fetch<T, List<T>>($"{masterEntityName}/{masterId}/{collectionName}", HttpMethod.Get, null);
         }
-        public async Task<List<T>> getAll(string itemName, int value)
+        public async Task<List<T>> getAll(string itemName, TKEY value)
         {
             var filter = JToken.FromObject(new
             {
