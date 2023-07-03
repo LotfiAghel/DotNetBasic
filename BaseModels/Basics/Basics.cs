@@ -50,6 +50,7 @@ namespace Models
         public ChangeEventList onChanges { get; set; }
 
     }
+    
 
     [ShowClassHirarci]
     public class IdMapper<T> : CUAT, IIdMapper<T> where T : IEquatable<T>, IComparable<T>, IComparable
