@@ -14,7 +14,7 @@ namespace AdminClientViewModels
         Task<object> get0s(string id);
 
         Task<object> get00(object id);
-        Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName,string collectionName,int masterEnityId);
+        
     }
 
     public interface IEntityService01<T>: IEntityService00
@@ -33,7 +33,7 @@ namespace AdminClientViewModels
     {
 
 
-
+        Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName, string collectionName, TKEY masterEnityId);
 
         Task<T> get(TKEY id);
         //Task<T> get0s(TKEY id);
@@ -49,9 +49,9 @@ namespace AdminClientViewModels
 
         T Add(T t);
 
-        IEntityService<T, TKEY> getFiltered(string itemName, int masterId);
+        IEntityService<T, TKEY> getFiltered(string itemName, TKEY masterId);
 
-        Task<IEnumerable<T>> fetchFiltered(string itemName, int masterId);
+        Task<IEnumerable<T>> fetchFiltered(string itemName, TKEY masterId);
     }
 
     
@@ -158,14 +158,14 @@ namespace AdminClientViewModels
             return t;
         }
 
-        public IEntityService<T,TKEY> getFiltered(string itemName, int masterId)
+        public IEntityService<T,TKEY> getFiltered(string itemName, TKEY masterId)
         {
             throw new NotImplementedException();
         }
-        public async Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName,string collectionName,int masterEnityId)
+        public async Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName,string collectionName, TKEY masterEnityId)
         {      
                 
-            var d = await ocg.getAll3(masterEntityName,collectionName,masterEnityId);
+            var d = await ocg.getAll3(masterEntityName,collectionName,masterEnityId );
             var res=new List<T>();
             foreach (var r in d)
                 res.Add(r);
@@ -188,7 +188,7 @@ namespace AdminClientViewModels
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<T>> fetchFiltered(string itemName, int masterId)
+        public Task<IEnumerable<T>> fetchFiltered(string itemName, TKEY masterId)
         {
             throw new NotImplementedException();
         }

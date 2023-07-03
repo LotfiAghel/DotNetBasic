@@ -80,7 +80,7 @@ namespace AdminClientViewModels
 
         }
 
-        public async Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName,string collectionName,int masterEnityId)
+        public async Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName,string collectionName, TKEY masterEnityId)
         {      
                 
             var d = await ocg.getAll3(masterEntityName,collectionName,masterEnityId);
@@ -91,7 +91,7 @@ namespace AdminClientViewModels
             return res;
         }
 
-        public IEntityService<T,TKEY> getFiltered(string itemName,int masterId)//TODO in function khafan tar az ina bayad bashe
+        public IEntityService<T,TKEY> getFiltered(string itemName, TKEY masterId)//TODO in function khafan tar az ina bayad bashe
         {
             
             var res=new PartCollectionProxy<T, TKEY>();
@@ -229,7 +229,7 @@ namespace AdminClientViewModels
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<T>> fetchFiltered(string itemName, int masterId)
+        public async Task<IEnumerable<T>> fetchFiltered(string itemName, TKEY masterId)
         {
             return  (await ocg.getAll(itemName, masterId)).ConvertAll(x => insertOrUpdate(x));
             

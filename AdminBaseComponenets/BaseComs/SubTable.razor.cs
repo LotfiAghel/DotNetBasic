@@ -22,7 +22,7 @@ namespace AdminBaseComponenets.BaseComs
 
 
 
-        public IEntityService01<TItem> Data { get; set; } = null;
+        public IEntityService<TItem, TKEY> Data { get; set; } = null;
         public string ButtonState = "--";
 
         [Parameter]
@@ -30,7 +30,7 @@ namespace AdminBaseComponenets.BaseComs
         [Parameter]
         public string collectionName { get; set; }
         [Parameter]
-        public int masterEnityId { get; set; }
+        public TKEY masterEnityId { get; set; }
         async Task Click()
         {
             await load();
@@ -41,7 +41,7 @@ namespace AdminBaseComponenets.BaseComs
             Console.WriteLine("load start");
 
             if (Data is null)
-                Data = Program0.getEntityManager01<TItem>();
+                Data = Program0.getEntityManager<TItem, TKEY>();
             Console.WriteLine("load getAll2");
             value = await Data.getAllSubTable(masterEntityName, collectionName, masterEnityId) as IEnumerable<TItem>;
 

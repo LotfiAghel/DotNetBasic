@@ -14,7 +14,7 @@ namespace AdminClientViewModels
     {
         public List<T> data;
         public System.Reflection.PropertyInfo pr;
-        public int masterId;
+        public TKEY masterId;
         public IEntityService<T, TKEY> masterManager;
 
         public int Count => ((ICollection<T>)data).Count;
@@ -56,7 +56,7 @@ namespace AdminClientViewModels
         }
 
 
-        public IEntityService<T, TKEY> getFiltered(string itemName, int masterId)
+        public IEntityService<T, TKEY> getFiltered(string itemName, TKEY masterId)
         {
             return masterManager.getFiltered(itemName, masterId);
         }
@@ -86,11 +86,11 @@ namespace AdminClientViewModels
             return data.GetEnumerator();
         }
 
-        public async Task<IEnumerable<T>> fetchFiltered(string itemName, int masterId)
+        public async Task<IEnumerable<T>> fetchFiltered(string itemName, TKEY masterId)
         {
             return data;
         }
-        public async Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName, string collectionName, int masterEnityId)
+        public async Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName, string collectionName, TKEY masterEnityId)
         {
 
             return data;
