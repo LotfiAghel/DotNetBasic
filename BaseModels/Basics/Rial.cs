@@ -181,4 +181,3 @@ public class RialConverter : JsonConverter<Rial>
         return  Rial.Parse(s);
     }
 }
-

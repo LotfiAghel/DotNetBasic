@@ -24,7 +24,7 @@ namespace ClTool
     {
         public static WebClient webClient = null;
         public static string pass;
-        public string baseUrl;//"http://testserver.karafsgym.com:5001/"
+        public string baseUrl;
         public Action onLogout;
         public void setUrl(string s)
         {

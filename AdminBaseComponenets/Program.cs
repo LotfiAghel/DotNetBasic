@@ -304,7 +304,7 @@ namespace AdminBaseComponenets
         {
             Console.WriteLine("createFormWithPointer");
 
-            if(tt.IsClass){
+            if(tt.IsClass || tt.IsInterface){
                 return typeof(AdminBaseComponenets.BaseComs.PointerInput2<>).MakeGenericType(tt).GetConstructor(new Type[] { }).Invoke(new object[] { }) as ComponentBase;
             }
             var wt=typeof(AdminBaseComponenets.BaseComs.PrimitiveCInput<>).MakeGenericType(tt);
@@ -353,7 +353,7 @@ namespace AdminBaseComponenets
             }
 
 
-            if (type.IsClass)
+            if (type.IsClass || type.IsInterface)
             {
                 var wt = typeof(AdminBaseComponenets.BaseComs.PointerInput2<>).MakeGenericType(type);
                 var wc = wt.GetConstructor(new Type[] { });
@@ -390,7 +390,7 @@ namespace AdminBaseComponenets
             }
 
 
-            if (property.PropertyType.IsClass)
+            if (property.PropertyType.IsClass || property.PropertyType.IsInterface)
             {
                 var wt = typeof(AdminBaseComponenets.BaseComs.PointerInput2<>).MakeGenericType(property.PropertyType);
                 var wc = wt.GetConstructor(new Type[] { });
@@ -479,22 +479,29 @@ namespace AdminBaseComponenets
 
             return null;
         }
+        
+
+        public static Type getKeyType(Type entity){
+            if (entity.IsSubclassOf(typeof(IdMapper<string>)))
+                return typeof(string);
+            if (entity.IsSubclassOf(typeof(IdMapper<Guid>)))
+                return typeof(Guid);
+
+            if (entity.IsSubclassOf(typeof(IdMapper<int>)))
+                return typeof(int);
+            return typeof(int);
+
+        }
         public static Type[] getValueKeyPair(string entityName)
         {
             Type[] genericArgs = new Type[] { null, null };
             genericArgs[0] =  resources.FirstOrDefault(x => x.FullName.Replace(".", "__") == entityName);
 
-
-            if (genericArgs[0].IsSubclassOf(typeof(IdMapper<string>)))
-                genericArgs[1] = typeof(string);
-            if (genericArgs[0].IsSubclassOf(typeof(IdMapper<Guid>)))
-                genericArgs[1] = typeof(Guid);
-
-            if (genericArgs[0].IsSubclassOf(typeof(IdMapper<int>)))
-                genericArgs[1] = typeof(int);
-
+            genericArgs[1]=getKeyType(genericArgs[0]);
+            
             return genericArgs;
         }
+
 
         public static void GenerateWidgetsFunctions()
         {
@@ -819,7 +826,7 @@ namespace AdminBaseComponenets
            {
 
 
-               return new AdminBaseComponenets.BaseComs.PrimitiveInput<double>();
+               return new AdminBaseComponenets.BaseComs.DoubleInput();
            };
 
 
@@ -830,10 +837,16 @@ namespace AdminBaseComponenets
                 return new AdminBaseComponenets.BaseComs.BoolInput();
             };
 
-           
+            formRenderer[typeof(decimal)] = (prps) =>
+            {
+                return new AdminBaseComponenets.BaseComs.PrimitiveInput<decimal>();
 
-           
-            
+                
+            };
+
+
+
+
 
 
             /*formRenderer[typeof(Models.OldDataCoachList)] = (props) =>

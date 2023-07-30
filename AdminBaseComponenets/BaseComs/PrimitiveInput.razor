@@ -36,7 +36,8 @@
 
     async Task Click2(string vv  )
     {
-        //value=(TItem)vv;
+
+        value=(TItem)Convert.ChangeType(vv, typeof(TItem));
         if (!prvValue.Equals(value))
         {
 
