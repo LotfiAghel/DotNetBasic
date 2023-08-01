@@ -10,12 +10,16 @@ using Microsoft.AspNetCore.Components;
 namespace AdminBaseComponenets.BaseComs
 {
 
-    public partial class EnumInput3<ENUM> : ValueInput<ENUM>
+    public partial class StructOptionInput<ENUM> : ValueInput<ENUM>
+        where ENUM : IEquatable<ENUM>
     {
 
 
         [Parameter]
         public IEnumerable<ENUM> optionGenerator { get; set; } = null;
+
+
+        public Dictionary<int, ENUM> optionMap { get; set; } = new Dictionary<int, ENUM>();
 
         public int value0 { get; set; } = 0;
 
@@ -47,7 +51,7 @@ namespace AdminBaseComponenets.BaseComs
         public async Task Click2(int vs0)
         {
             Console.WriteLine($"onClick2 onClick2 onClick2 {vs0}");
-            ENUM vs = (ENUM)Convert.ChangeType(vs0, typeof(int));
+            ENUM vs = optionMap[vs0];
             Console.WriteLine($"onClick2 onClick2 onClick3 {vs}");
             value = vs;
             await Click();
@@ -67,27 +71,15 @@ namespace AdminBaseComponenets.BaseComs
             Type enumType = typeof(ENUM);
 
             // I will get0s all values and iterate through them
-            
-            if (optionGenerator == null)
+
+            int i = 0;
+            foreach(var o in optionGenerator)
             {
-                var enumValues = enumType.GetEnumValues();
-
-                List<ENUM> ee = new List<ENUM>();
-                optionGenerator = ee;
-                Console.WriteLine($"load optionGenerator load0 ");
-                foreach (ENUM value in enumValues)
-                {
-                    ee.Add(value);
-                    
-
-                    
-
-
-
-                }
-
+                
+                if(o.Equals(value))
+                    value0= i;
+                optionMap[i++] = o;
             }
-            //for (int i=0; i<enumValues.Length; ++i)
 
 
 

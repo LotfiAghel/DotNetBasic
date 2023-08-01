@@ -270,6 +270,15 @@ namespace AdminBaseComponenets
 
                 }
             }
+            foreach(var cc in defultRenderer)
+            {
+                if (type.IsAssignableTo(cc.Key))
+                { 
+                    
+                    return cc.Value.Invoke( prps ) ;
+                    
+                }
+            }
             if (type.IsClass && type.IsAssignableTo(typeof(Models.Entity)))
             { //TODO fix this
                 Console.WriteLine("got to create GenericInSelectInt");

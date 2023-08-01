@@ -1,0 +1,39 @@
+﻿@typeparam ENUM
+
+
+
+
+@using Blazorise
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+@using Newtonsoft.Json.Linq;
+
+
+@inherits ValueInput<ENUM>
+
+@{
+    load();
+    Console.WriteLine($"load come from load ");
+}
+            @if ( optionGenerator != null && optionGenerator.Count()>0 && !ReadOnly){
+                    <Select TValue="int" SelectedValue=@value0
+                    SelectedValueChanged=@Click2>
+                        @foreach(var i in optionMap){
+                            var ii=i.Key;
+                            var value = i.Value;
+                            int x=  ii;
+                            if(itemComponenet!=null){
+                                <SelectItem  TValue="int" Value=@x>@Program0.CreateDynamicComponent2(this, itemComponenet, i)</SelectItem>
+                            }else{
+                                <SelectItem  TValue="int" Value=@x>@(value.ToString())</SelectItem >
+                            }
+                        }
+                    </Select>
+                
+            }
+
+
