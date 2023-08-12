@@ -18,15 +18,14 @@
 @using System.Net.Http.Json;
 @using System.Collections;
 
-
+@inherits ValueInput<JToken>
 
 
   
 @if(value!=null){
-    Action<object> onClick2 = async (x) =>
-                                                                                {
-                                                                                    await Click();
-                                                                                };
+    Action<object> onClick2 = async (x) =>{
+                                    await Click();
+                                };
     if(value.Type ==JTokenType.Array){
             <div style="display: inline;"> <p style="display: inline;color:blue"  @onclick=@onClick2>[</p>
                 @if(openOject){
@@ -71,7 +70,7 @@
                 
                 <p style="display: inline;">
                     &emsp;"@value.ToString()"
-                </p>
+        </p>
 
     }
 }
@@ -79,18 +78,12 @@
 
 @code {
 
-    [Parameter]
-    public JToken value{get;set;}
-  
+
     public bool openOject=true;
     async Task Click()
     {
        openOject=!openOject;
     }
-
-
-
-
 
 
 }

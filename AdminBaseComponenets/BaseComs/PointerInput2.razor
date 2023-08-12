@@ -71,8 +71,8 @@
             </Heading>
             </CollapseHeader>
             <CollapseBody>
-            @if (w != null){
-                <div>@Program0.CreateDynamicComponent2(this,w,value,null,new List<System.Attribute>(),ReadOnly)</div>;
+            @if (widget != null){
+                <div>@Program0.CreateDynamicComponent2(this,widget,value,null,new List<System.Attribute>(),ReadOnly)</div>;
             }
             </CollapseBody>
         </Collapse >
@@ -84,7 +84,7 @@
 {
     public bool openOject = true;
     ElementReference MyElementReference;
-    ComponentBase w = null;
+    ComponentBase widget = null;
     bool collapse1Visible = false;
     async Task Click0()
     {
@@ -111,7 +111,7 @@
         
 
         OnChange(value);            
-        w = Program0.createForm(vv.GetType(), new List<Attribute>() { });
+        widget = Program0.createForm(vv.GetType(), new List<Attribute>() { });
         Console.WriteLine("Click2 <3>");
 
 
@@ -123,7 +123,7 @@
         if (typeName == null && value != null)
         {
             typeName = value.GetType().Name;
-            w = Program0.createForm(value.GetType(), new List<Attribute>() { });
+            widget = Program0.createForm(value.GetType(), new List<Attribute>() { });
         }
     }
 

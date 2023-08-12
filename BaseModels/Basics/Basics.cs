@@ -19,18 +19,18 @@ namespace Models
 
 
         //[Models.IgnoreDefultForm]
-        [IgnoreDefultGird]
+        
         [ReadOnly(true)]
         [Models.PersianLabel("تاریخ ساخت")]
         public DateTimeOffset? createdAt { get; set; }
 
         //[Models.IgnoreDefultForm]
-        [IgnoreDefultGird]
+        
         [ReadOnly(true)]
         [Models.PersianLabel("تاریخ اخرین تغیر")]
         public DateTimeOffset? updatedAt { get; set; }
 
-        [IgnoreDefultGird]
+        
         //[Models.IgnoreDefultForm]
         [ReadOnly(true)]
         [Models.PersianLabel("تاریخ حذف")]

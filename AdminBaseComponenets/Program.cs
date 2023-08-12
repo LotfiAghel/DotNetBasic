@@ -825,6 +825,11 @@ namespace AdminBaseComponenets
                 return new AdminBaseComponenets.BaseComs.RialInput();
             };
 
+            formRenderer[typeof(JToken)]= formRenderer[typeof(JObject)]= formRenderer[typeof(JArray)] = (prps) =>
+            {
+
+                return new AdminBaseComponenets.BaseComs.JsonShow();
+            };
 
 
 
