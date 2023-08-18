@@ -42,7 +42,7 @@
     }
     else if (value is EntityModel eM)
     {
-        var link = $"page/{eM.Type.FullName.Replace(".","__")}";
+        var link = $"page/{eM.Type.GetUrlEncodeName()}";
         var name = eM.Type.GetPerisanName();
         if (eM.Name != null)
             name = eM.Name;

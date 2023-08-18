@@ -10,6 +10,7 @@ using System;
 using Microsoft.AspNetCore.Components;
 using Blazorise.DataGrid;
 using Models;
+using Tools;
 
 namespace AdminBaseComponenets.BaseComs
 {
@@ -40,7 +41,7 @@ namespace AdminBaseComponenets.BaseComs
 
         bool widget = true;
 
-        string EntityName = typeof(TItem).FullName.Replace(".", "__");
+        string EntityName = typeof(TItem).GetUrlEncodeName();
 
 
         public List<System.Reflection.PropertyInfo> propertis = typeof(TItem).GetProperties()

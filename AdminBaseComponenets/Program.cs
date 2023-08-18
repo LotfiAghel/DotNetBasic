@@ -504,7 +504,8 @@ namespace AdminBaseComponenets
         public static Type[] getValueKeyPair(string entityName)
         {
             Type[] genericArgs = new Type[] { null, null };
-            genericArgs[0] =  resources.FirstOrDefault(x => x.FullName.Replace(".", "__") == entityName);
+            Console.WriteLine(entityName);
+            genericArgs[0] =  resources.FirstOrDefault(x => x.GetUrlEncodeName() == entityName);
 
             genericArgs[1]=getKeyType(genericArgs[0]);
             

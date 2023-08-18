@@ -40,6 +40,7 @@ namespace Tools
             }
             return t.Name;
         }
+        public static string GetUrlEncodeName(this Type t) => t.Name.Replace(".","__").Replace("<","_L_").Replace(">", "_R_");
         public static string GetPerisanName(this PropertyInfo t)
         {
 
