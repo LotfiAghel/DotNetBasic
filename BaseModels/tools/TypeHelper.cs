@@ -38,9 +38,9 @@ namespace Tools
                 if (displayName != null)
                     return displayName.txt;
             }
-            return t.Name;
+            return t.GetName();
         }
-        public static string GetUrlEncodeName(this Type t) => t.Name.Replace(".","__").Replace("<","_L_").Replace(">", "_R_");
+        public static string GetUrlEncodeName(this Type t) => t.GetName().Replace(".","__").Replace("<","_L_").Replace(">", "_R_");
         public static string GetPerisanName(this PropertyInfo t)
         {
 

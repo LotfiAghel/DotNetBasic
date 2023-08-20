@@ -88,6 +88,7 @@ namespace ClTool
         public virtual async Task<string> fetch(string url, string payload, HttpMethod method)
         {
             Console.WriteLine("fetch url " + url);
+            Console.WriteLine("with data :" + payload);
             HttpWebRequest request = HttpWebRequest.Create(baseUrl + url) as HttpWebRequest;
             request.Method = method.ToString();
             if (request.CookieContainer == null && cookie != null)
@@ -297,15 +298,15 @@ namespace ClTool
         {
             if (cash != null)
                 return cash;
-            return cash = await webClient.fetch<T, List<T>>(additinalUrl + typeof(T).Name, HttpMethod.Get, null);
+            return cash = await webClient.fetch<T, List<T>>(additinalUrl + typeof(T).GetUrlEncodeName(), HttpMethod.Get, null);
         }
         public async Task<List<T>> getAll2(IQuery<T> inp)
         {
-            return await webClient.fetch<IQueryContainer<T>, List<T>>(additinalUrl + typeof(T).Name + "/getAll", HttpMethod.Post, new IQueryContainer<T>() {query= inp });
+            return await webClient.fetch<IQueryContainer<T>, List<T>>(additinalUrl + typeof(T).GetUrlEncodeName() + "/getAll", HttpMethod.Post, new IQueryContainer<T>() {query= inp });
         }
         public async Task<T> sendAction(int entityId, IAction<T> inp)
         {
-            return await webClient.fetch<IAction<T>, T>($"{additinalUrl}{typeof(T).Name}/{entityId}/runAction", HttpMethod.Post, inp);
+            return await webClient.fetch<IAction<T>, T>($"{additinalUrl}{typeof(T).GetUrlEncodeName()}/{entityId}/runAction", HttpMethod.Post, inp);
         }
         public async Task<List<T>> getAll3(string masterEntityName, string collectionName, TKEY masterId)
         {
@@ -321,7 +322,7 @@ namespace ClTool
                     value = value
                 }
             }).ToString();
-            return cash = await webClient.fetch<T, List<T>>(additinalUrl + typeof(T).Name + $"?filter={filter}", HttpMethod.Get, null);
+            return cash = await webClient.fetch<T, List<T>>(additinalUrl + typeof(T).GetUrlEncodeName() + $"?filter={filter}", HttpMethod.Get, null);
         }
         List<T> cash = null;
         public async Task<List<object>> getAll2()
@@ -333,20 +334,20 @@ namespace ClTool
         }
         public async Task<T> get(TKEY id)
         {
-            return await webClient.fetch<T, T>(additinalUrl + typeof(T).Name + "/" + id, HttpMethod.Get, null);
+            return await webClient.fetch<T, T>(additinalUrl + typeof(T).GetUrlEncodeName() + "/" + id, HttpMethod.Get, null);
         }
 
 
         public async Task<T> put(object id, T t)
         {
-            return await webClient.fetch<T, T>(additinalUrl + typeof(T).Name + "/" + id, HttpMethod.Put, t);
+            return await webClient.fetch<T, T>(additinalUrl + typeof(T).GetUrlEncodeName() + "/" + id, HttpMethod.Put, t);
 
         }
 
 
         public async Task<T> post(T t)
         {
-            return await webClient.fetch<T, T>(additinalUrl + typeof(T).Name, HttpMethod.Post, t);
+            return await webClient.fetch<T, T>(additinalUrl + typeof(T).GetUrlEncodeName(), HttpMethod.Post, t);
         }
 
     }
