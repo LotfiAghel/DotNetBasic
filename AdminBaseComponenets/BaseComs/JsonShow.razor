@@ -57,6 +57,10 @@
            <p style="display: inline;">
                     &emsp;@value.ToString()
                 </p>
+        }else if(value.Type == JTokenType.Float ){
+           <p style="display: inline;">
+                    &emsp;@value.ToString()f
+                </p>
         }else if(value.Type == JTokenType.Boolean){
             var ph=value.ToObject<bool>()?"true":"false";
            <p style="display: inline;">
