@@ -248,6 +248,11 @@ namespace ClTool
             var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
             return x.ToObject(tout, settings1);
         }
+        public async Task<JToken> fetch00(string url, HttpMethod method, object payload)
+        {
+            var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
+            return x;
+        }
         public async Task<TOUT> fetch<TIN, TOUT>(string url, HttpMethod method, TIN payload)
         {
             var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
