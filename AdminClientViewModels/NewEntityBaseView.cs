@@ -26,6 +26,9 @@ namespace AdminClientViewModels
                 _ocg = new GenericClientInt<T,TKEY>(WebClient.webClient);   
             return _ocg;
         } }
+
+        public int Count => data.Count;
+
         public T insertOrUpdate( T inp)
         {
             T o;
@@ -262,6 +265,11 @@ namespace AdminClientViewModels
         public Task<T> get1s(string id)
         {
             throw new NotImplementedException();
+        }
+
+        IEnumerator<ForeignKey2<T, TKEY>> IEnumerable<ForeignKey2<T, TKEY>>.GetEnumerator()
+        {
+            return data.ConvertAll(x=>new ForeignKey2<T,TKEY>(x.id)).GetEnumerator();
         }
     }
 }

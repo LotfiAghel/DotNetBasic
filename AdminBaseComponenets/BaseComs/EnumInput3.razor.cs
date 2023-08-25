@@ -10,18 +10,13 @@ using Microsoft.AspNetCore.Components;
 namespace AdminBaseComponenets.BaseComs
 {
 
-    public partial class EnumInput3<ENUM> : ValueInput<ENUM>
+    public partial class EnumInput3<ENUM> : OptionsValueInput<ENUM>
     {
 
 
-        [Parameter]
-        public IEnumerable<ENUM> optionGenerator { get; set; } = null;
-
+        
         public int value0 { get; set; } = 0;
 
-
-        [Parameter]
-        public ComponentBase itemComponenet { get; set; } = null;
 
         
         

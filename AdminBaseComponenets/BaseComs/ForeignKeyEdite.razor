@@ -19,26 +19,26 @@
 
 
 @if(!ReadOnly){
-    @if(generator!=null ){
+    @if(optionGenerator!=null ){
         <Select TValue=TKEY SelectedValue=@value.getFValue()
                 SelectedValueChanged=@Click2
                 ReadOnly=@ReadOnly>
-            @if (generator != null)
-                foreach (var t in  generator)
+            @if (optionGenerator != null)
+                foreach (var t in  optionGenerator)
                 {
                             
                     <SelectItem TValue=TKEY Value=@t.Value>
-                        @if (ItemComponenet != null)
+                        @if (itemComponenet != null)
                         {
-                            <div>@Program0.CreateDynamicComponent2(this, ItemComponenet, t)</div> 
+                            <div>@Program0.CreateDynamicComponent2(this, itemComponenet, t)</div> 
                         }
                     </SelectItem>
                 }
         </Select>
     }
 }
-<div>@generator.GetHashCode()</div>
-<div>@generator.Count()</div>
+<!-- <div>@optionGenerator.GetHashCode()</div>
+<div>@optionGenerator.Count()</div>-->
 
        
 

@@ -15,12 +15,10 @@ namespace AdminBaseComponenets.BaseComs
          where TEntity : class, Models.IIdMapper<TKEY>
          where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
-        ComponentBase ItemComponenet = null;
+        
         bool panelOpenState;
 
-        [Parameter]
-        public IEnumerable<ForeignKey2<TEntity, TKEY>> generator { get; set; } =null;
-
+        
         
         
 
@@ -31,7 +29,7 @@ namespace AdminBaseComponenets.BaseComs
 
         protected override async Task OnInitializedAsync()
         {
-            ItemComponenet = Program0.createWidget(typeof(ForeignKey2<TEntity, TKEY>), new List<Attribute>());
+            itemComponenet = Program0.createWidget(typeof(ForeignKey2<TEntity, TKEY>), new List<Attribute>());
             await load();
         }
 
@@ -39,8 +37,8 @@ namespace AdminBaseComponenets.BaseComs
         protected async Task Click2(TKEY vs)
         {
             Console.WriteLine($"onChange integerFUnput  {vs} ");
-            value.setFValue(vs);
-            Console.WriteLine($"onChange integerFUnput  {value.getFValue} ");
+            value=new ForeignKey2<TEntity, TKEY>(vs);
+            Console.WriteLine($"onChange integerFUnput  {value.getFValue()} ");
             var bv = fValue;
             var vv = await Click();
             if (bv != null && bv.Equals(vv))
@@ -62,8 +60,8 @@ namespace AdminBaseComponenets.BaseComs
             var tmp = Program0.getEntityManager<TEntity, TKEY> ();
 
 
-            if(generator==null)
-                generator = (await tmp.getAll()).ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id)); 
+            if (optionGenerator == null)
+                optionGenerator = tmp;//.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id)); 
             // StateHasChanged();
 
 

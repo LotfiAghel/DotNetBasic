@@ -9,11 +9,9 @@ using Microsoft.AspNetCore.Components.Rendering;
 using Newtonsoft.Json.Linq;
 using Tools;
 using System.Reflection;
-using System.Linq.Expressions;
 using System.Reflection.Emit;
-using Microsoft.AspNetCore.Components;
 using Models;
-using Tools;
+using System.Collections.ObjectModel;
 
 namespace AdminBaseComponenets
 {
@@ -175,6 +173,19 @@ namespace AdminBaseComponenets
 
     }
 
+    
+    public class OptionsValueInput<T> : ValueInput<T>
+    {
+        [Parameter]
+        public IEnumerable<T> optionGenerator { get; set; } = null;
+
+
+        [Parameter]
+        public ComponentBase itemComponenet { get; set; } = null;
+
+
+    }
+
     public class NullableInput2<T> : ValueInput0  //where T : struct
     {
 
@@ -329,7 +340,7 @@ namespace AdminBaseComponenets
     }
 
 
-    public class ForeignKeyEditeBase<CT, TKEY> : ValueInput<IForeignKey11<CT,TKEY>>
+    public class ForeignKeyEditeBase<CT, TKEY> : OptionsValueInput<ForeignKey2<CT,TKEY>>
        where CT : class, Models.IIdMapper<TKEY>
          where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
@@ -392,28 +403,36 @@ namespace AdminBaseComponenets
 
     public class Enumerator2<CT> : IEnumerator<CT>
     {
-        public MarkedGenerator<CT> parnet;
-        public int idx;
+        private MarkedGenerator<CT> parnet;
+        private IEnumerator<CT> idx;
 
-        CT IEnumerator<CT>.Current => parnet.enumList[idx];
+        CT IEnumerator<CT>.Current => idx.Current;
 
-        object System.Collections.IEnumerator.Current => parnet.enumList[idx];
+        object System.Collections.IEnumerator.Current => idx.Current;
+
+
+        public Enumerator2(MarkedGenerator<CT> parnet)
+        {
+            this.parnet = parnet;
+            idx = parnet.enumList.GetEnumerator();
+        }
 
         public bool MoveNext()
         {
-            idx++;
-            while (idx < parnet.enumList.Count && parnet.mark.Contains(parnet.enumList[idx]))
+            var ph=idx.MoveNext();
+            while (ph && parnet.mark.Contains(idx.Current))
             {
-                idx++;
+                ph=idx.MoveNext();
             }
-            return idx < parnet.enumList.Count;
+            return ph;
         }
         public void Reset()
         {
-            idx = 0;
-            while (idx < parnet.enumList.Count && parnet.mark.Contains(parnet.enumList[idx]))
+            idx.Reset();
+            var ph = true;
+            while (ph && parnet.mark.Contains(idx.Current))
             {
-                idx++;
+                ph = idx.MoveNext();
             }
         }
         public void Dispose()
@@ -425,12 +444,12 @@ namespace AdminBaseComponenets
     public class MarkedGenerator<CT> : IEnumerable<CT>
     {
         public HashSet<CT> mark = new HashSet<CT>();
-        public List<CT> enumList =null;
-
+        public IReadOnlyCollection<CT> enumList =null;
+        //public List
        
         public IEnumerator<CT> GetEnumerator()
         {
-            var x= new Enumerator2<CT>(){parnet=this};
+            var x = new Enumerator2<CT>(this);
             x.Reset();
             return x;
         }
@@ -438,7 +457,7 @@ namespace AdminBaseComponenets
         {
             mark.Clear();
         }
-        public void initList(IEnumerable<CT> enumValues) {
+        /*public void initList(IEnumerable<CT> enumValues) {
 
 
             // I will get0s all values and iterate through them
@@ -450,13 +469,13 @@ namespace AdminBaseComponenets
             //for (int i=0; i<enumValues.Length; ++i)
             foreach (CT v in enumValues)
                 enumList.Add(v);
-        }
+        }*/
         public void load(IEnumerable<CT> value)
         {
-            if(enumList==null){
+            /*if(enumList==null){
                 var z=Enum.GetValues(typeof(CT)).Cast<CT>();
                 initList(z);
-            }
+            }*/
 
             if(value!=null)foreach (var item in value)
                 mark.Add(item);
@@ -464,7 +483,7 @@ namespace AdminBaseComponenets
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return new Enumerator2<CT>() { parnet = this };
+            return enumList.GetEnumerator(); ;// new Enumerator2<CT>() { parnet = this };
         }
 
         internal void onRemove(CT vs)
@@ -478,12 +497,50 @@ namespace AdminBaseComponenets
         }
         public int Count() { return enumList.Count - mark.Count; }
     }
+    
+    
+
+    public class EnumMakerdGEnerator<ENUM> : MarkedGenerator<ENUM> where ENUM : System.Enum{
+        public EnumMakerdGEnerator()
+        {
+            var enumList = new List<ENUM>();
+
+
+            var enumValues = typeof(ENUM).GetEnumValues();
+            foreach (ENUM v in enumValues)
+                enumList.Add(v);
+            this.enumList = new ReadOnlyCollection<ENUM>(enumList);
+
+
+        }
+    }
+
+    public class MarkedGenerator2<T, TKEY> : MarkedGenerator<ForeignKey2<T, TKEY>>
+        where T : class, Models.IIdMapper<TKEY>
+     where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
+    {
+        public MarkedGenerator2()
+        {
+            enumList = Program0.getEntityManager<T,TKEY>();
+            
+
+            //initList(x.ConvertAll(x => new ForeignKey2<T, TKEY>(x.id)));
+            
+        }
+    }
     public class EnumArrayInput<CT> : NullableInput2<List<CT>>
     {
 
 
         [Parameter]
         public MarkedGenerator<CT> generator {get; set; }=null;
+
+        [Parameter]
+        public ComponentBase itemComponenet { get; set; }
+
+
+        [Parameter]
+        public OptionsValueInput<CT> itemCreateComponenet { get; set; }
 
 
         public List<CT> fValue { get; set; }
@@ -687,207 +744,6 @@ namespace AdminBaseComponenets
                 value = await Program0.getEntityManager<T, TKEY>().get1s(Id);
             
         }
-    }
-
-    
-    public class EditBase2<T> : ValueInput<T> 
-    {
-        public RenderFragment autoComp<T2>(Expression<Func<T2>> action)
-        {
-
-
-            try
-            {
-                var expression = (MemberExpression)action.Body;
-                var property = expression.Member as PropertyInfo;
-                return createProp(property);
-            }
-            catch (Exception e)
-            {
-
-            }
-
-
-            try
-            {
-                var expression = (MemberExpression)action.Body;
-                var property = expression.Member as MethodInfo;
-                return createMethod(property);
-            }
-            catch (Exception e)
-            {
-
-            }
-            return null;
-
-
-
-
-        }
-        public RenderFragment createProp(PropertyInfo property)
-        {
-
-            ComponentBase w = Program0.createForm2(property);
-            if (w is null)
-                return null;
-
-            /*Action<T> onChange0 = null;
-            if (typeof(T).IsValueType)
-            {
-                onChange0 = (x) =>
-                {
-                    Console.WriteLine($"onChange00 property {property.Name} : {x} ");
-                    if (OnChange != null)
-                        OnChange(this);
-
-                };
-            }/**/
-
-
-            Action<object> onChange = (x) =>
-            {
-                Console.WriteLine($"onChange property {property.Name} : {x} ");
-                object vv2 = value;//this step neserrcry for struct and valuetype data
-                property.SetValue(vv2, x,null);
-                value = (T)vv2;//
-                Console.WriteLine($"onChange value : {value} ");
-                Console.WriteLine($"onChange vv2 : {vv2} ");
-                if (OnChange != null)
-                    OnChange(value);
-            };
-            var prVal = property.GetValue(value);
-            if (w.GetType().IsGenericInstanceOf(typeof(AdminBaseComponenets.BaseComs.ForeignKeyEdite<,>))
-                    
-                && ! property.PropertyType.IsGenericInstanceOf(typeof(ForeignKey2<,>)) 
-                    
-                )
-            {
-                onChange = (x) =>
-                {
-                    property.SetValue(value, ((IForeignKey20)x).getFValue0());
-                    if (OnChange != null)
-                        OnChange(value);
-                };
-
-
-
-                var a = property.GetCustomFirstAttributes<ForeignKeyAttr>();
-
-                if (a != null)
-                {
-                    Console.WriteLine("formRenderer[typeof(int)] ");
-                    var ct = a.type;
-                    Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{ct}>");
-                    prVal = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes()).GetConstructor(new Type[] { a.getTypes()[1] }).Invoke(new object[] { prVal });
-                    //var gtc = gt.GetConstructor(new[] { typeof(int) });
-
-
-
-                }
-
-
-            }
-            if (property.PropertyType == typeof(int)
-                && w.GetType().IsGenericInstanceOf ( typeof(AdminBaseComponenets.BaseComs.ForeignKeyEditeInt<>)) )
-            {
-                onChange = (x) =>
-                {
-                    property.SetValue(value, ((IForeignKey20)x).getFValue0());
-                    if (OnChange != null)
-                        OnChange(value);
-                };
-
-
-
-                var a = property.GetCustomFirstAttributes<ForeignKeyAttr>();
-
-                if (a != null)
-                {
-                    Console.WriteLine("formRenderer[typeof(int)] ");
-                        
-                    Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{a.type}>");
-                    prVal = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes()).GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { prVal });
-                    //var gtc = gt.GetConstructor(new[] { typeof(int) });
-
-
-
-                }
-
-
-            }
-
-            if (property.PropertyType == typeof(Nullable<int>) && w.GetType().IsGenericType
-                    && w.GetType().GetGenericTypeDefinition() == typeof(AdminBaseComponenets.BaseComs.NullabeType<>)
-                    && w.GetType().GetGenericArguments()[0].IsGenericType
-                    && w.GetType().GetGenericArguments()[0].GetGenericTypeDefinition() == typeof(ForeignKey<>))
-            {
-                onChange = (x) =>
-                {
-                    if (x == null)
-                    {
-                        property.SetValue(value, null);
-                        return;
-                    }
-                    property.SetValue(value, ((IForeignKey20)x).getFValue0());
-                    if (OnChange != null)
-                        OnChange(value);
-
-                };
-            }
-
-
-
-            var attrs = property.GetCustomAttributes(typeof(object), false).ToList().ConvertAll<Attribute>(x => x as Attribute);
-            var setMethod = property.GetSetMethod();
-
-
-
-            bool propertyReadOnly = attrs != null && attrs.Any(a => (a is System.ComponentModel.ReadOnlyAttribute) && (a as System.ComponentModel.ReadOnlyAttribute).IsReadOnly);
-            if (setMethod == null)
-            {
-                propertyReadOnly = true;
-            }
-
-            Console.WriteLine($" go to create {w} {prVal}");
-            return Program0.CreateDynamicComponent2(this, w, prVal, onChange, attrs, ReadOnly || propertyReadOnly);
-
-        }
-
-        public RenderFragment createMethod(MethodInfo property)
-        {
-            return null;
-            /*ComponentBase w = Program.createForm2(property);
-
-
-            if (w != null)
-            {
-                var x = property.GetCustomFirstAttributes<Models.PersianLabel>();
-
-
-                Action<object> onClick = (x) =>
-                {
-                    property.Invoke(value);
-                };
-
-
-
-
-
-                var attrs = property.GetCustomAttributes(typeof(object), false).ToList().ConvertAll<Attribute>(x => x as Attribute);
-
-
-
-
-                //bool propertyReadOnly = attrs!=null && attrs.Any(a => (a is System.ComponentModel.ReadOnlyAttribute)&& (a as System.ComponentModel.ReadOnlyAttribute).IsReadOnly);
-                // TODO check this
-
-
-                return Program0.CreateDynamicComponent2(this, w, property.GetValue(value), onClick, attrs,ReadOnly||propertyReadOnly);
-
-            }
-            return null;/**/
-        }
-
     }
 
    

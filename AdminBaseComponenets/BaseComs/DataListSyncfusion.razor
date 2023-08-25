@@ -48,19 +48,27 @@
 
 
 <DataGrid TItem="TItem"
-        Data="@value"
+        Data=@value
         RowDoubleClicked=onClick
         Responsive
         ShowPager
         Borderless
         Resizable
         
+        
         >
-    <DataGridCommandColumn TItem="TItem" />
+    <DataGridCommandColumn>
+        <NewCommandTemplate>
+            <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+        </NewCommandTemplate>
+        <EditCommandTemplate>
+            <Button Color="Color.Primary" Clicked="@context.Clicked">Edit</Button>
+        </EditCommandTemplate>
+    </DataGridCommandColumn>
     
     @foreach (var prop in propertis){
-                var persianLabel = prop.GetCustomFirstAttributes<Models.PersianLabel>();
-                <DataGridColumn TItem="TItem" Field=@prop.Name Caption="@(persianLabel != null ? persianLabel.txt : prop.Name)" Editable="true" />
+                var persianLabel = prop.GetPerisanName();
+                <DataGridColumn TItem="TItem" Field=@prop.Name Caption=@persianLabel Editable="true" />
     }
 </DataGrid>
 

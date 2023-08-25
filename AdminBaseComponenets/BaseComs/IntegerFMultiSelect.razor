@@ -11,7 +11,7 @@
 @using System.Collections.Generic
 @using Newtonsoft.Json.Linq;
 
-@inherits IntegerForeignKeyArrayInput<TEntity,TKEY>
+@inherits EnumArrayInput<ForeignKey2< TEntity,TKEY> >
 @if (itemComponenet != null && value!=null){
 <div class="e-multiselect e-control-wrapper e-control-container e-input-group e-rtl" style="width:100%;" _bl_17="">
     <Button Clicked=" (_) => setNull()" style="position: absolute; z-index: 10; margin: .5rem; left: 0%;">
@@ -40,14 +40,15 @@
         </span>
         <span class="e-multi-searcher">
 
-        @if ( generator != null && generator.Count()>0 && !ReadOnly){
+        @if ( generator != null && generator.Count()>0  && itemCreateComponenet!=null  && !ReadOnly){
 
                         Action<object> onClick22 = async (object x) =>
                                     {
 
                         await Click3((ForeignKey2<TEntity, TKEY>)x);
                                     };
-                    <ForeignKeyEdite TEntity=@TEntity TKEY=@TKEY changeRefrence=@onClick22 generator=@generator></ForeignKeyEdite>
+                    <div> @Program0.CreateDynamicComponent2(this, itemCreateComponenet, null/*,changeRefrence:onClick22*/)</div>
+                    //<!--<ForeignKeyEdite TEntity=@TEntity TKEY=@TKEY OnChange=@onClick22 generator=@generator></ForeignKeyEdite>-->
 
             }
             </span>

@@ -42,7 +42,7 @@ namespace AdminClientViewModels
         public void refresh()
         {
             data = new List<T>();
-            foreach (var row in masterManager)
+            foreach (var row in (masterManager as IEnumerable<T>))
             {
                 if (pr.GetValue(row).Equals(masterId))
                     data.Add(row);
@@ -118,7 +118,10 @@ namespace AdminClientViewModels
             return await masterManager.get(id);
         }
 
-
+        public IEnumerator<ForeignKey2<T, TKEY>> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

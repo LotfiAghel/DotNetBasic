@@ -11,13 +11,13 @@ namespace AdminBaseComponenets.BaseComs
 {
 
 
-    public partial class IntegerFMultiSelect<TEntity,TKEY> : IntegerForeignKeyArrayInput<TEntity, TKEY>
+    public partial class IntegerFMultiSelect<TEntity,TKEY> : EnumArrayInput<ForeignKey2<TEntity, TKEY>>
           where TEntity : class, Models.IIdMapper<TKEY>
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
 
-        ComponentBase itemComponenet = Program0.createWidget(typeof(ForeignKey2<TEntity,TKEY>), null);
+        
 
         
 
@@ -61,16 +61,11 @@ namespace AdminBaseComponenets.BaseComs
         }
         public async Task load()
         {
-            
 
+            itemComponenet = Program0.createWidget(typeof(ForeignKey2<TEntity, TKEY>), null);
             if (generator == null)
             {
-                generator = new MarkedGenerator<ForeignKey2<TEntity,TKEY>>();
-                var tmp = Program0.getEntityManager<TEntity,TKEY>();
-                var x = (await tmp.getAll()).ToList();
-                
-                generator.initList(x.ConvertAll(x => new ForeignKey2<TEntity, TKEY>(x.id)));
-                generator.load(value);
+                generator = Program0.createGenerator(typeof(ForeignKey2<TEntity, TKEY>), null) as MarkedGenerator<ForeignKey2<TEntity, TKEY>>; //
             }
 
 

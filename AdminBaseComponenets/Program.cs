@@ -22,6 +22,7 @@ using Models;
 using Tools;
 using Tools;
 using AdminBaseComponenets.BaseComs;
+using System.Collections;
 
 public static class ExtensionMethods
 {
@@ -67,6 +68,9 @@ namespace AdminBaseComponenets
 
         public static Dictionary<Type,bool> inPropRender = new Dictionary<Type, bool>();
         public static Dictionary<Type, Func<Type, List<Attribute>, Type>> formRenderer2 = new Dictionary<Type, Func<Type, List<Attribute>, Type>>();
+
+        public static Dictionary<Type, Func<Type, List<Attribute>, IEnumerable >> generator2 = new ();
+        public static Dictionary<Type, Func<Type, List<Attribute>, IEnumerable>> generator = new();
 
 
         public enum ViewType
@@ -179,17 +183,13 @@ namespace AdminBaseComponenets
                   {
                       var valuePr = gt.GetProperty(nameof(ValueInput<int>.value));
                       var vt = vv.GetType();
-                      Console.WriteLine("valuePr.PropertyType == " + vt.GetName());
+                      
                       if (vt == typeof(int) && valuePr != null && valuePr.PropertyType.IsGenericInstanceOf(typeof(ForeignKey<>)))
                       {
-                          Console.WriteLine("valuePr.PropertyType == " + c.GetType().GetName());
-                          Console.WriteLine("valuePr.PropertyType == " + valuePr.PropertyType.GetName());
                           vv = valuePr.PropertyType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { vv });
                       }
                       if (vt == typeof(int) && valuePr != null && valuePr.PropertyType.IsGenericInstanceOf(typeof(ForeignKey2<,>)))
                       {
-                          Console.WriteLine("valuePr.PropertyType == " + c.GetType().GetName());
-                          Console.WriteLine("valuePr.PropertyType == " + valuePr.PropertyType.GetName());
                           vv = valuePr.PropertyType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { vv });
                       }
 
@@ -238,6 +238,23 @@ namespace AdminBaseComponenets
 
             }
             return new List<Attribute>();
+        }
+
+
+        public static IEnumerable createGenerator(Type type, List<Attribute> prps)
+        {
+            if (generator.ContainsKey(type))
+            {
+                return generator[type](type, prps);
+            }
+            
+            if(type.IsGenericType && generator2.ContainsKey(type.GetGenericTypeDefinition()))
+                return generator2[type.GetGenericTypeDefinition()](type, prps);
+            if(type.IsEnum)
+            {
+                return typeof(EnumMakerdGEnerator<>).MakeGenericType(new Type[] { type}).GetConstructor(new Type[] { }).Invoke(new object[] { }) as IEnumerable;
+            }
+            return null;
         }
 
         public static ComponentBase createWidget(Type type, List<Attribute> prps, ViewType viewtype = ViewType.SMALL_VIEW)
@@ -449,9 +466,10 @@ namespace AdminBaseComponenets
                     }
 
                 }
-                catch
+                catch(Exception e)
                 {
                     Console.WriteLine("createForm exception on generic Fromrender2");
+                    Console.WriteLine(e.Message);
                 }
             }
 
@@ -647,8 +665,14 @@ namespace AdminBaseComponenets
                 return typeof(AdminBaseComponenets.BaseComs.IntegerFSmallView<,>).MakeGenericType(type.GetGenericArguments());
 
             };
+            /*defultRenderer2[typeof(List<>)] = (type, prps) =>
+            {
+                Console.WriteLine("defultRenderer2[List<>]");
+                return typeof(AdminBaseComponenets.BaseComs.ListSmallView<>).MakeGenericType(type.GetGenericArguments());
 
+            };*/
 
+            
 
 
 
@@ -917,6 +941,12 @@ namespace AdminBaseComponenets
                 return typeof(AdminBaseComponenets.BaseComs.ArrayInput<>).MakeGenericType(type.GetGenericArguments()[0]);
             };
             inPropRender[typeof(List<>)]=true;
+            generator2[typeof(ForeignKey2<,>)] = (type, prop) =>
+            {
+                var generator = typeof(MarkedGenerator2<,>).MakeGenericType(type.GenericTypeArguments).GetConstructor(new Type[] { }).Invoke(new object[] { }) as IEnumerable;
+                
+                return generator;
+            };
             formRenderer2[typeof(List<>)] = (type, prps) =>
             {
                 Console.WriteLine("formRenderer2(List<>)");
@@ -926,6 +956,12 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, MultiSelect>();
                     if (x != null)
                         return typeof(AdminBaseComponenets.BaseComs.IntegerFMultiSelect<>).MakeGenericType(type.GetGenericArguments()[0].GetGenericArguments()[0]);
+                }
+                if (ItemType.IsGenericType && ItemType.GetGenericTypeDefinition() == typeof(ForeignKey2<,>))
+                {
+                    var x = prps.GetFirst<Attribute, MultiSelect>();
+                    if (x != null)
+                        return typeof(AdminBaseComponenets.BaseComs.EnumMultiSelectInput<>).MakeGenericType(ItemType);
                 }
 
                 if (ItemType.IsEnum)

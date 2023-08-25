@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Components;
 namespace AdminBaseComponenets.BaseComs
 {
     
-    public partial class EnumMultiSelectInput<ENUM> : EnumArrayInput<ENUM> where ENUM : System.Enum
+    public partial class EnumMultiSelectInput<ENUM> : EnumArrayInput<ENUM> 
     {
 
 
@@ -22,9 +22,7 @@ namespace AdminBaseComponenets.BaseComs
 
         public ENUM nextValue { get; set; }
 
-        [Parameter]
-        public ComponentBase itemComponenet { get; set; }
-
+        
         
         
 
@@ -35,29 +33,29 @@ namespace AdminBaseComponenets.BaseComs
         {
             if (generator == null)
             {
-                generator = new MarkedGenerator<ENUM>();
-                
+                generator = Program0.createGenerator(typeof(ENUM), null) as MarkedGenerator<ENUM>; //
+
             }
             generator.load(value);
 
             if(itemComponenet==null)
                 itemComponenet  = Program0.createWidget(typeof(ENUM), null);
-
+            if(itemCreateComponenet==null)
+                itemCreateComponenet = Program0.createForm4(typeof(ENUM), null) as OptionsValueInput<ENUM>;
+            itemCreateComponenet.optionGenerator = generator;
+            itemCreateComponenet.OnChange = async (x) =>
+            {
+                Console.WriteLine($"Click3 Click3 00 {x}");
+                await Click3((ENUM)x);
+            };
 
         }
 
 
         protected override async Task OnInitializedAsync()
         {
-            if (generator == null) { 
-                generator = new MarkedGenerator<ENUM>();
-                //generator.initList(typeof(ENUM).GetEnumValues().);
-            }
-            generator.load(value);
 
-            if(itemComponenet==null)
-                itemComponenet  = Program0.createWidget(typeof(ENUM), null);
-
+            firstRun();
 
         }
 
@@ -73,11 +71,16 @@ namespace AdminBaseComponenets.BaseComs
             ENUM vs = (ENUM)Convert.ChangeType(vs0, typeof(int));
             Console.WriteLine($"onClick2 onClick2 onClick30 {vs}");
             // ENUM vs=(ENUM)vs0;
+            await Click3(vs);
+
+        }
+        public async Task Click3(ENUM vs)
+        {
             
             await Click();
-            Console.WriteLine($"onClick2 onClick2 onClick3 {vs}");
+            
             value.Add(vs);
-            Console.WriteLine($"onClick2 onClick2 onClick4 {value.Count}");
+            
 
             generator.onAdd(vs);
 
@@ -110,14 +113,14 @@ namespace AdminBaseComponenets.BaseComs
 
 
 
-        int GetIndex(Enum itemId)
+        int GetIndex(ENUM itemId)
         {
 
 
             return value.FindIndex(x => x.Equals(itemId));
         }
 
-        void Drop(Enum itemId)
+        void Drop(ENUM itemId)
         {
 
             {

@@ -37,14 +37,14 @@
                                 <span class="e-chips " data-value=@t draggable="true" style="list-style-type:none; height:30px"  tabindex="1"
                                     @ondrop="@(()=> Drop(t))" @ondragstart="@(()=> StartDrag(t))">
                                     <span class="e-chipcontsent">
-                                        @t
+                                        @Program0.CreateDynamicComponent2(this, itemComponenet, t)
                                     </span>
                                     <span class="e-chips-close" onclick=@onRemove></span>
                                 </span>
                             }else{
                                 <span class="e-chips " data-value=@t style="list-style-type:none; height:30px"  tabindex="1">
                                     <span class="e-chipcontsent">
-                                        @t
+                                        @Program0.CreateDynamicComponent2(this, itemComponenet, t)
                                     </span>
                                 </span>
                             }
@@ -60,8 +60,8 @@
                                             Console.WriteLine( $"onClick2 onClick2 00 {x}");
                                         await Click2((int)x);
                                     };
-                    <EnumInput3 ENUM=@ENUM  changeRefrence=@onChange optionGenerator=@generator />
-                    
+                    //<EnumInput3 ENUM=@ENUM  OnChange=@onChange optionGenerator=@generator />
+                    <div> @Program0.CreateDynamicComponent2(this, itemCreateComponenet, null/*,changeRefrence:onClick22*/)</div>
                     
                 
             }
