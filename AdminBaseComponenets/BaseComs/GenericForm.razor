@@ -49,28 +49,42 @@
 
 
 
-                    var z = createProp(property, readOnly);
+                    var z = createProp0(property, readOnly);
 
                         
                         if (z != null)
                         {
+                        Console.WriteLine($" {property.Name} : {z.GetType().Name} {z.inRowField()}");
+                        @if (z.inRowField())
+                        {
                             
                             <Row>
-                                <Column ColumnSize=ColumnSize.Is2>
-                                    <label for="pass">@property.GetPerisanName()</label>
-                                </Column>
-                            
-
-                            
+                                
+                                    <Column ColumnSize=ColumnSize.Is2>
+                                        <label for="pass">@property.GetPerisanName()</label>
+                                    </Column>
+                                
+                                
                                 <Column ColumnSize=ColumnSize.Is10>
-                                    @z
+                                    @showProp(property,z,readOnly)
                                 </Column>
                             </Row>
+                        }else{
+                            <Column ColumnSize=ColumnSize.Is2>
+                                <label for="pass">@property.GetPerisanName()</label>
+                            </Column>
+
+                            <Row>
+                                   <Column ColumnSize=ColumnSize.Is12>
+                                    @showProp(property,z,readOnly)
+                                </Column>
+                            </Row>
+                        }
                         
                         }
 
-                    }
                 }
+            }
 
 
             

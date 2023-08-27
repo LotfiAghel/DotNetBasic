@@ -22,6 +22,7 @@ namespace AdminBaseComponenets.BaseComs
                           BindingFlags.NonPublic |
                           BindingFlags.Instance ).ToList();
 
+        public override bool inRowField() => false;
 
     }
 

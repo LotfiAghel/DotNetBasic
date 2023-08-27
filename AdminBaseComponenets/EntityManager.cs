@@ -115,9 +115,7 @@ namespace AdminBaseComponenets
         [Parameter]
         public bool ReadOnly { get; set; }
 
-        //[Parameter]
-        //public EventCallback<object> changeRefrence { get; set; }
-
+        
         [Parameter]
         public Action<object> OnChange { get; set; } = null;
 
@@ -126,6 +124,8 @@ namespace AdminBaseComponenets
         {
             get;set;
         }
+
+        public virtual bool inRowField() => true;
 
     }
     public class ValueInput<T> : ValueInput0

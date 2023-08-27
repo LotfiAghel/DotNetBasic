@@ -41,31 +41,25 @@ namespace AdminBaseComponenets
 
 
         }
-        public RenderFragment createProp(PropertyInfo property,bool propertyReadOnly = false)
+        public ValueInput0 createProp0(PropertyInfo property, bool propertyReadOnly = false)
         {
 
-            ComponentBase w = Program0.createForm2(property);
+            return  Program0.createForm2(property);
+            
+        }
+        public RenderFragment showProp(PropertyInfo property,ComponentBase w, bool propertyReadOnly = false)
+        {
+
+            
             if (w is null)
                 return null;
-
-            /*Action<T> onChange0 = null;
-            if (typeof(T).IsValueType)
-            {
-                onChange0 = (x) =>
-                {
-                    Console.WriteLine($"onChange00 property {property.Name} : {x} ");
-                    if (OnChange != null)
-                        OnChange(this);
-
-                };
-            }/**/
 
 
             Action<object> onChange = (x) =>
             {
                 Console.WriteLine($"onChange property {property.Name} : {x} ");
                 object vv2 = value;//this step neserrcry for struct and valuetype data
-                property.SetValue(vv2, x,null);
+                property.SetValue(vv2, x, null);
                 value = (T)vv2;//
                 Console.WriteLine($"onChange value : {value} ");
                 Console.WriteLine($"onChange vv2 : {vv2} ");
@@ -74,9 +68,9 @@ namespace AdminBaseComponenets
             };
             var prVal = property.GetValue(value);
             if (w.GetType().IsGenericInstanceOf(typeof(AdminBaseComponenets.BaseComs.ForeignKeyEdite<,>))
-                    
-                && ! property.PropertyType.IsGenericInstanceOf(typeof(ForeignKey2<,>)) 
-                    
+
+                && !property.PropertyType.IsGenericInstanceOf(typeof(ForeignKey2<,>))
+
                 )
             {
                 onChange = (x) =>
@@ -105,7 +99,7 @@ namespace AdminBaseComponenets
 
             }
             if (property.PropertyType == typeof(int)
-                && w.GetType().IsGenericInstanceOf ( typeof(AdminBaseComponenets.BaseComs.ForeignKeyEditeInt<>)) )
+                && w.GetType().IsGenericInstanceOf(typeof(AdminBaseComponenets.BaseComs.ForeignKeyEditeInt<>)))
             {
                 onChange = (x) =>
                 {
@@ -121,7 +115,7 @@ namespace AdminBaseComponenets
                 if (a != null)
                 {
                     Console.WriteLine("formRenderer[typeof(int)] ");
-                        
+
                     Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{a.type}>");
                     prVal = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes()).GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { prVal });
                     //var gtc = gt.GetConstructor(new[] { typeof(int) });
@@ -168,6 +162,11 @@ namespace AdminBaseComponenets
             Console.WriteLine($" go to create {w} {prVal}");
             return Program0.CreateDynamicComponent2(this, w, prVal, onChange, attrs, ReadOnly || propertyReadOnly);
 
+        }
+
+        public RenderFragment createProp(PropertyInfo property,bool propertyReadOnly = false)
+        {
+            return showProp(property, createProp0(property, propertyReadOnly), propertyReadOnly);
         }
 
         public RenderFragment createMethod(MethodInfo property)

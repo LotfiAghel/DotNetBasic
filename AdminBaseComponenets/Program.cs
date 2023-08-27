@@ -63,7 +63,7 @@ namespace AdminBaseComponenets
         public static Dictionary<Type, Func<Type, List<Attribute>, Type>> defultRenderer2 = new Dictionary<Type, Func<Type, List<Attribute>, Type>>();
 
 
-        public static Dictionary<Type, Func<List<Attribute>, ComponentBase>> formRenderer = new Dictionary<Type, Func<List<Attribute>, ComponentBase>>();
+        public static Dictionary<Type, Func<List<Attribute>, ValueInput0>> formRenderer = new ();
 
 
         public static Dictionary<Type,bool> inPropRender = new Dictionary<Type, bool>();
@@ -389,7 +389,7 @@ namespace AdminBaseComponenets
             return createForm(type, attrs);
         }
 
-        public static ComponentBase createForm2(PropertyInfo property)
+        public static ValueInput0 createForm2(PropertyInfo property)
         {
 
 
@@ -412,7 +412,7 @@ namespace AdminBaseComponenets
                 var wt = typeof(AdminBaseComponenets.BaseComs.PArrayInput<>).MakeGenericType(type.GetElementType());
                 //var wt = typeof(AdminBaseComponenets.BaseComs.EnumInput3<>).MakeGenericType(type);
                 var wc = wt.GetConstructor(new Type[] { });
-                return wc.Invoke(new object[] { }) as ComponentBase;
+                return wc.Invoke(new object[] { }) as ValueInput0;
             }
 
 
@@ -420,7 +420,7 @@ namespace AdminBaseComponenets
             {
                 var wt = typeof(AdminBaseComponenets.BaseComs.PointerInput2<>).MakeGenericType(property.PropertyType);
                 var wc = wt.GetConstructor(new Type[] { });
-                return wc.Invoke(new object[] { }) as ComponentBase;
+                return wc.Invoke(new object[] { }) as ValueInput0;
             }
 
             return createForm(property.PropertyType, attrs);
@@ -428,7 +428,7 @@ namespace AdminBaseComponenets
 
         }
 
-        public static ComponentBase createForm(Type type, List<Attribute> attrs) { 
+        public static ValueInput0 createForm(Type type, List<Attribute> attrs) { 
         
             if(type==null)
                 return null;
@@ -462,7 +462,7 @@ namespace AdminBaseComponenets
                         Console.WriteLine(gt);
                         var gtc = gt.GetConstructor(new Type[] { });
                         Console.WriteLine(gtc);
-                        return gtc.Invoke(new object[] { }) as ComponentBase;
+                        return gtc.Invoke(new object[] { }) as ValueInput0;
                     }
 
                 }
@@ -478,7 +478,7 @@ namespace AdminBaseComponenets
 
                 var wt = typeof(AdminBaseComponenets.BaseComs.EnumInput3<>).MakeGenericType(type);
                 var wc = wt.GetConstructor(new Type[] { });
-                return wc.Invoke(new object[] { }) as ComponentBase;
+                return wc.Invoke(new object[] { }) as ValueInput0;
             }
             if (type.IsArray)
             {
@@ -486,7 +486,7 @@ namespace AdminBaseComponenets
                 var wt= typeof(AdminBaseComponenets.BaseComs.PArrayInput<>).MakeGenericType(type.GetElementType());
                 //var wt = typeof(AdminBaseComponenets.BaseComs.EnumInput3<>).MakeGenericType(type);
                 var wc = wt.GetConstructor(new Type[] { });
-                return wc.Invoke(new object[] { }) as ComponentBase;
+                return wc.Invoke(new object[] { }) as ValueInput0;
             }
 
             try
@@ -496,7 +496,7 @@ namespace AdminBaseComponenets
                 Console.WriteLine("go to make generic from for " + type.Name);
                 var gtc = gt.GetConstructor(new Type[] { });
                 Console.WriteLine("go to make generic from for " + type.Name);
-                return gtc.Invoke(new object[] { }) as ComponentBase;
+                return gtc.Invoke(new object[] { }) as ValueInput0;
             }
             catch
             {

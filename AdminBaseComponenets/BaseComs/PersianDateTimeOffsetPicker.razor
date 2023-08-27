@@ -1,6 +1,6 @@
 ﻿@using System.Collections.Generic
 @using Blazor.PersianDatePicker
-
+@inherits ValueInput<DateTime>
 <div class="row pt-2 pb-2">
     <div class="col-5">
         <InputPersianDatePicker Id="@($"id-{Guid.NewGuid().ToString()}")" @bind-Value="dateValue" Visible="true"
@@ -19,12 +19,7 @@
 
     System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
 
-    [Parameter]
-    public List<Attribute> Attributes { get; set; } = new List<Attribute>();
-
-    [Parameter]
-    public bool ReadOnly{get;set;}
-
+    
     public DateTime? _value;
     [Parameter]
     public DateTimeOffset? value
