@@ -27,23 +27,29 @@
                 foreach (var property in propertis)
                 {
 
+                    bool readOnly = false;
 
                     {
                         var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
-                        if(y!=null)    
+                        if (y != null && y.ignoreDefultForm)
                             continue;
 
                     }
                     {
                         var x = property.GetCustomFirstAttributes<JsonIgnoreAttribute>();
-                        if(x!=null)
-                            continue;
+                        if (x != null){
+                            readOnly = true;
+
+                            var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
+                            if (y==null || y.ignoreDefultForm)
+                                continue;
+                        }
 
                     }
-                    
 
 
-                    var z = createProp(property);
+
+                    var z = createProp(property, readOnly);
 
                         
                         if (z != null)

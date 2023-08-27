@@ -21,7 +21,10 @@ namespace Models
 
     public class IgnoreDefultForm : Attribute
     {
-
+        public bool ignoreDefultForm { get; set; }
+        public IgnoreDefultForm(bool ignoreDefultForm=true) {
+            this.ignoreDefultForm = ignoreDefultForm;
+        }
     }
 
     public class StarRateShow : Attribute

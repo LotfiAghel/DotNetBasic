@@ -41,7 +41,7 @@ namespace AdminBaseComponenets
 
 
         }
-        public RenderFragment createProp(PropertyInfo property)
+        public RenderFragment createProp(PropertyInfo property,bool propertyReadOnly = false)
         {
 
             ComponentBase w = Program0.createForm2(property);
@@ -159,7 +159,7 @@ namespace AdminBaseComponenets
 
 
 
-            bool propertyReadOnly = attrs != null && attrs.Any(a => (a is System.ComponentModel.ReadOnlyAttribute) && (a as System.ComponentModel.ReadOnlyAttribute).IsReadOnly);
+            propertyReadOnly |= attrs != null && attrs.Any(a => (a is System.ComponentModel.ReadOnlyAttribute) && (a as System.ComponentModel.ReadOnlyAttribute).IsReadOnly);
             if (setMethod == null)
             {
                 propertyReadOnly = true;
