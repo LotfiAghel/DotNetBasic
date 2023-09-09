@@ -14,9 +14,12 @@
  
 }
 <EditForm Model=@value >
-    <div>
-        @autoComp( () => value.inp)
-    </div>
+    @if (typeof(TINP) != typeof(MVoid))
+    {
+        <div>
+            @autoComp( () => value.inp)
+        </div>
+    }
     <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
     @if(value!=null){
         Program0.CreateDynamicComponent2(this, Program0.createForm(typeof(TOUT), new List<Attribute>() { }), value.output, null, new List<Attribute>() { }, true);

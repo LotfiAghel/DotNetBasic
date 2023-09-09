@@ -28,7 +28,7 @@ namespace AdminBaseComponenets.BaseComs
 
 
         [Parameter]
-        public string method{get;set;}
+        public HttpMethod method {get;set;}
 
         public object methodValue;
         public string ButtonState="send Action";
@@ -39,6 +39,7 @@ namespace AdminBaseComponenets.BaseComs
             type=Program0.getFuncType(url);
             comp=Program0.createForm(type, new List<Attribute>() { });
             ((dynamic)comp).url = url;
+            ((dynamic)comp).method = method;
             methodValue = type.GetConstructor(new Type[] {}).Invoke(new object[] { });
         }
         

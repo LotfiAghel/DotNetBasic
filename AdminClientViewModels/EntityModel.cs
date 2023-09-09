@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace AdminClientViewModels
 {
+    public class MVoid
+    {
 
+    }
     public class FuncV<TINP, TOUT>{ 
         public TINP inp{get;set;}=default(TINP);
         public TOUT output{get;set;}=default(TOUT);

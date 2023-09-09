@@ -17,12 +17,14 @@ namespace AdminBaseComponenets.BaseComs
         public string url { get; set; }
 
 
-        
+        [Parameter]
+        public HttpMethod method { get; set; }
 
 
-        
 
-        bool done=false;
+
+
+        bool done =false;
 
 
 
@@ -58,7 +60,7 @@ namespace AdminBaseComponenets.BaseComs
             try
             {
                 value.output = await ClTool.WebClient.webClient.fetch<TINP, TOUT>(url,
-                    HttpMethod.Post, value.inp);
+                    method, value.inp);
             }
             catch
             {
