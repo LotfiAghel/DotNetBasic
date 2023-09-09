@@ -427,6 +427,20 @@ namespace AdminBaseComponenets
 
 
         }
+        public static RenderFragment CreateDynamicComponentActionbar(Type entityMetaClass0, object actionValue,object value, Type[] genericArgs) => builder =>
+        {
+
+            //var gridMetaClass = typeof(ActionBar<>).MakeGenericType(new Type[] {  typeof(Models.IAction<>).MakeGenericType(new Type[]{entityMetaClass0}) });
+            var gridMetaClass = typeof(ActionBar<,>).MakeGenericType(genericArgs);
+            builder.OpenComponent(0, gridMetaClass);
+            if (actionValue != null)
+                builder.AddAttribute(1, "value", actionValue);
+            if (value is Models.IEntity0 vl2)
+                builder.AddAttribute(1, "entityId", vl2.getId());
+
+
+            builder.CloseComponent();
+        };
 
         public static ValueInput0 createForm(Type type, List<Attribute> attrs) { 
         
@@ -706,7 +720,7 @@ namespace AdminBaseComponenets
             {
                 return typeof(AdminBaseComponenets.BaseComs.AFunc<,>).MakeGenericType(type.GetGenericArguments());
             };
-
+            
 
             formRenderer2[typeof(Nullable<>)] = (type, prps) =>
             {
