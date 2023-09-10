@@ -9,7 +9,7 @@ namespace AdminBaseComponenets
 {
     public class EditBase2<T> : ValueInput<T> 
     {
-        public RenderFragment autoComp<T2>(Expression<Func<T2>> action)
+        public RenderFragment autoComp<T2>(Expression<Func<T2>> action, bool propertyReadOnly = false)
         {
 
 
@@ -17,7 +17,7 @@ namespace AdminBaseComponenets
             {
                 var expression = (MemberExpression)action.Body;
                 var property = expression.Member as PropertyInfo;
-                return createProp(property);
+                return createProp(property, propertyReadOnly);
             }
             catch (Exception e)
             {

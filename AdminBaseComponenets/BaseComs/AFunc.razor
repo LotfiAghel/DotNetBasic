@@ -21,8 +21,12 @@
         </div>
     }
     <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
-    @if(value!=null){
-        Program0.CreateDynamicComponent2(this, Program0.createForm(typeof(TOUT), new List<Attribute>() { }), value.output, null, new List<Attribute>() { }, true);
+    @if(value!=null && value.output!=null){
+        <div>
+            @autoComp( () => value.output,true)
+        </div>
+        
+     
     }
 </EditForm>
 <div>actions</div>
