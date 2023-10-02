@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using Tools;
@@ -95,6 +96,19 @@ namespace Models
                 }
                 {
                     var aa = GetCustomAttributes<JsonIgnoreAttribute>(type, prop.UnderlyingName);
+                    if (aa != null && aa.ToList().Count > 0)
+                    {
+                        prop.Ignored = true;
+                    }
+                }
+                {
+                    if(pi.PropertyType.IsGenericType && pi.PropertyType.GetGenericTypeDefinition()==typeof(ICollection<>))
+                    {
+                        prop.Ignored = true;
+                    }
+                }
+                {
+                    var aa = GetCustomAttributes<ForeignKeyAttribute>(type, prop.UnderlyingName);
                     if (aa != null && aa.ToList().Count > 0)
                     {
                         prop.Ignored = true;
