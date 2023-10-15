@@ -52,11 +52,7 @@ namespace Models
         }
     }
 
-    public class Master : Attribute
-    {
-
-
-    }
+    
     public class PersianBigDoc : Attribute
     {
         public string txt;

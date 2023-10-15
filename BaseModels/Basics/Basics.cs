@@ -58,6 +58,7 @@ namespace Models
         [Key]
         [PersianLabel("شناسه")]
         [ReadOnly(true)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public T id { get; set; }
         //ID        uuid.UUID  `gorm:"primary_key" sql:"type:uuid;default:uuid_generate_v4()"json:"id"`
 

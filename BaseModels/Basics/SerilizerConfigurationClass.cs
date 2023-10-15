@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using Tools;
@@ -76,9 +77,10 @@ namespace Models
             {
 
                 var pi = type.GetProperty(prop.UnderlyingName);
+                
                 prop.Ignored = false;
                 {
-                    var aa = GetCustomAttributes<CustomIgnoreTag>(type, prop.UnderlyingName);
+                    var aa =pi.GetCustomAttributes<CustomIgnoreTag>();
 
                     if (aa != null && aa.ToList().Count > 0)
                     {
@@ -86,7 +88,7 @@ namespace Models
                             prop.Ignored = true;
                     }
                     {
-                        var bb = GetCustomAttributes<JsonIgnoreAttribute>(type, prop.UnderlyingName);
+                        var bb = pi.GetCustomAttributes<JsonIgnoreAttribute>();
                         if (bb != null && bb.Count() > 0)
                         {
                             prop.Ignored = true;
@@ -94,7 +96,20 @@ namespace Models
                     }
                 }
                 {
-                    var aa = GetCustomAttributes<JsonIgnoreAttribute>(type, prop.UnderlyingName);
+                    var aa = pi.GetCustomAttributes<JsonIgnoreAttribute>();
+                    if (aa != null && aa.ToList().Count > 0)
+                    {
+                        prop.Ignored = true;
+                    }
+                }
+                {
+                    if(pi.PropertyType.IsGenericType && pi.PropertyType.GetGenericTypeDefinition()==typeof(ICollection<>))
+                    {
+                        prop.Ignored = true;
+                    }
+                }
+                {
+                    var aa = pi.GetCustomAttributes<ForeignKeyAttribute>();
                     if (aa != null && aa.ToList().Count > 0)
                     {
                         prop.Ignored = true;
