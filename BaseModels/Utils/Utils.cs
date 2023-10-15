@@ -9,6 +9,11 @@ namespace SGSStandalone.Core
 {
     public static class TimeUtils
     {
+        public static DateTime milliSecToUtc(this long ts)
+        {
+            return (new System.DateTime(1970, 1, 1)).AddMilliseconds(ts);
+            //return (long)(dt - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
+        }
         public static long totalMilliSeconds(this System.DateTime dt)
         {
             return (long)(dt - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
