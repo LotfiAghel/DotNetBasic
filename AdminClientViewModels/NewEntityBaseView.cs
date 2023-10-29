@@ -46,7 +46,7 @@ namespace AdminClientViewModels
 
             }
             try{
-                o.onChanges.invokeAll();
+                o.onChanges?.invokeAll();
             }catch{
 
             }

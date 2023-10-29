@@ -111,7 +111,7 @@ namespace AdminBaseComponenets
             object b = null;
             var keyTypes = new List<Type>(){ typeof(int), typeof(string), typeof(System.Guid) };
             foreach (var KeyType in keyTypes )
-                if (ty.IsAssignableTo(typeof(IdMapper<>).MakeGenericType(KeyType)))
+                if (ty.IsAssignableTo(typeof(IIdMapper<>).MakeGenericType(KeyType)))
                     b = typeof(NewEntityService<,>).MakeGenericType(new Type[] { ty, KeyType }).GetConstructor(new Type[] { }).Invoke(new object[] { });
 
             if (b != null)
@@ -537,6 +537,9 @@ namespace AdminBaseComponenets
         {
             Type[] genericArgs = new Type[] { null, null };
             Console.WriteLine(entityName);
+            Console.WriteLine(resources.Count());
+            foreach (var t in resources)
+                Console.WriteLine(t.GetUrlEncodeName());
             genericArgs[0] =  resources.FirstOrDefault(x => x.GetUrlEncodeName() == entityName);
 
             genericArgs[1]=getKeyType(genericArgs[0]);

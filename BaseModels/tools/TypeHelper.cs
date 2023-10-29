@@ -4,6 +4,9 @@ using Newtonsoft.Json.Serialization;
 using System.Linq;
 using System.Reflection;
 using System.Globalization;
+using System.ComponentModel.DataAnnotations;
+using Models;
+
 namespace Tools
 {
 
@@ -30,13 +33,21 @@ namespace Tools
 
 
             {
-                var displayName = t
-              .GetCustomAttributes(typeof(Models.PersianLabel), false)
-              .FirstOrDefault() as Models.PersianLabel;
+                var d = t.GetCustomAttributes<PersianLabel>().FirstOrDefault();
+
+              
+
+                if (d != null)
+                    return d.txt;
+            }
+            {
+                
+              var d=t.GetCustomAttributes<DisplayAttribute>().FirstOrDefault();
+              
 
 
-                if (displayName != null)
-                    return displayName.txt;
+                if (d != null)
+                    return d.Name;
             }
             return t.GetName();
         }
@@ -166,15 +177,16 @@ namespace Tools
             return "";
 
         }
-        public static Dictionary<Type, List<Type>> cache=new ();
+        public static Dictionary<Tuple<Type,bool>, List<Type>> cache=new ();
         public static List<Type> GetSubClasses(this Type T, bool evenAbstracts = true)
         {
-            if (cache.ContainsKey(T))
-                return cache[T];
+            var r = new Tuple<Type,bool>(T, evenAbstracts);
+            if (cache.ContainsKey(r))
+                return cache[r];
             List<Type> classess = new List<Type>();
-            cache[T] = classess;
+            cache[r] = classess;
             var assms = AppDomain.CurrentDomain.GetAssemblies();
-            if (!T.IsAbstract)
+            if (!T.IsAbstract || evenAbstracts)
                 classess.Add(T);
             foreach (var currentAssembly in assms)
             {

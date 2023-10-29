@@ -119,8 +119,17 @@ namespace ClTool
                 }
             }
 
-
-            var response = request.GetResponse();
+            WebResponse response;
+            try
+            {
+                response = request.GetResponse();
+            }
+            catch(WebException e)
+            {
+                onLogout?.Invoke();
+                return null;
+            }
+            
             HttpWebResponse responseWithLoginCookies = (HttpWebResponse)response;
             cookie = responseWithLoginCookies.Cookies;
             Console.WriteLine("---- " + responseWithLoginCookies.Headers.Count);
