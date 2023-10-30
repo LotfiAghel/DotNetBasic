@@ -15,7 +15,7 @@ using AdminClientViewModels;
 namespace AdminBaseComponenets.BaseComs
 {
     
-    public partial class SubTable<TItem, TKEY> : NullableInput2<IEnumerable<TItem>>
+    public partial class SubTable<TItem, TKEY, TMKEY> : NullableInput2<IEnumerable<TItem>>
          where TItem : class, Models.IIdMapper<TKEY>
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
@@ -30,7 +30,7 @@ namespace AdminBaseComponenets.BaseComs
         [Parameter]
         public string collectionName { get; set; }
         [Parameter]
-        public TKEY masterEnityId { get; set; }
+        public TMKEY masterEnityId { get; set; }
         async Task Click()
         {
             await load();

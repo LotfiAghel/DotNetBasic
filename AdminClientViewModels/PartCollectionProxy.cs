@@ -90,7 +90,7 @@ namespace AdminClientViewModels
         {
             return data;
         }
-        public async Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName, string collectionName, TKEY masterEnityId)
+        public async Task<System.Collections.IEnumerable> getAllSubTable<TMKEY>(string masterEntityName, string collectionName, TMKEY masterEnityId)
         {
 
             return data;

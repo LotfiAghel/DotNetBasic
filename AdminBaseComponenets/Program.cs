@@ -23,6 +23,7 @@ using Tools;
 using Tools;
 using AdminBaseComponenets.BaseComs;
 using System.Collections;
+using System.ComponentModel.DataAnnotations;
 
 public static class ExtensionMethods
 {
@@ -523,14 +524,14 @@ namespace AdminBaseComponenets
         
 
         public static Type getKeyType(Type entity){
-            if (entity.IsSubclassOf(typeof(IdMapper<string>)))
+            if (entity.IsAssignableTo(typeof(IIdMapper<string>)))
                 return typeof(string);
-            if (entity.IsSubclassOf(typeof(IdMapper<Guid>)))
+            if (entity.IsAssignableTo(typeof(IIdMapper<Guid>)))
                 return typeof(Guid);
 
-            if (entity.IsSubclassOf(typeof(IdMapper<int>)))
+            if (entity.IsAssignableTo(typeof(IIdMapper<int>)))
                 return typeof(int);
-            return typeof(int);
+            throw new NotImplementedException();
 
         }
         public static Type[] getValueKeyPair(string entityName)
@@ -763,7 +764,11 @@ namespace AdminBaseComponenets
                     );/**/
 
                 }
-
+                {
+                    var x = prps.GetFirst<Attribute, DataTypeAttribute>();
+                    if (x != null && x.DataType==DataType.MultilineText)
+                        return new AdminBaseComponenets.BaseComs.StringRichInput();
+                }
                 /*{
                     var x = prps.GetFirst<Attribute, AdminBaseComponenets.BaseComs.SmallPicShow>();
                     if (x != null)

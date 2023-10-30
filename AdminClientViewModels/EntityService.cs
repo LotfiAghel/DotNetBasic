@@ -119,7 +119,7 @@ namespace AdminClientViewModels
         {
             throw new NotImplementedException();
         }
-        public async Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName,string collectionName, TKEY masterEnityId)
+        public async Task<System.Collections.IEnumerable> getAllSubTable<TMKEY>(string masterEntityName,string collectionName, TMKEY masterEnityId)
         {      
                 
             var d = await ocg.getAll3(masterEntityName,collectionName,masterEnityId );

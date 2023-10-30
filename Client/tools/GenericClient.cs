@@ -322,7 +322,7 @@ namespace ClTool
         {
             return await webClient.fetch<IAction<T>, T>($"{additinalUrl}{typeof(T).GetUrlEncodeName()}/{entityId}/runAction", HttpMethod.Post, inp);
         }
-        public async Task<List<T>> getAll3(string masterEntityName, string collectionName, TKEY masterId)
+        public async Task<List<T>> getAll3<TMKEY>(string masterEntityName, string collectionName, TMKEY masterId)
         {
             return await webClient.fetch<T, List<T>>($"{masterEntityName}/{masterId}/{collectionName}", HttpMethod.Get, null);
         }

@@ -32,7 +32,7 @@ namespace AdminClientViewModels
     {
 
 
-        Task<System.Collections.IEnumerable> getAllSubTable(string masterEntityName, string collectionName, TKEY masterEnityId);
+        Task<System.Collections.IEnumerable> getAllSubTable<TMKEY>(string masterEntityName, string collectionName, TMKEY masterEnityId);
 
         Task<T> get(TKEY id);
         //Task<T> get0s(TKEY id);
