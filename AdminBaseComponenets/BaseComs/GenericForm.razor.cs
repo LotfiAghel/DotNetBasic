@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Components;
 using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdminBaseComponenets.BaseComs
 {
@@ -21,6 +22,17 @@ namespace AdminBaseComponenets.BaseComs
                           BindingFlags.Public |
                           BindingFlags.NonPublic |
                           BindingFlags.Instance ).ToList();
+        
+
+
+        public void cacl()
+        {
+            foreach (var pr in propertis) {
+                var s = pr.GetCustomAttribute<ForeignKeyAttribute>();
+                if(s!=null)
+                    ForeignKeyAttr.fpropertis[propertis.Find(x => x.Name==s.Name)] = new() { new ForeignKeyAttr(pr.PropertyType) };
+            }
+        }
 
         public override bool inRowField() => false;
 

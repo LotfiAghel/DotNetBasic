@@ -1,12 +1,17 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace Models
 {
 
 
     public class SmallPicShow : Attribute
+    {
+
+    }
+    public class RichTextAttribute : Attribute
     {
 
     }
@@ -72,6 +77,7 @@ public class ForeignKeyAttr : Attribute
 {
     public Type type;
     public Type tkey = typeof(int);
+    public static Dictionary<System.Reflection.PropertyInfo, List<Attribute>> fpropertis = new();
     public ForeignKeyAttr(Type t)
     {
         type = t;
