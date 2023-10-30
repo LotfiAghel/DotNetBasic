@@ -297,7 +297,7 @@ namespace AdminBaseComponenets
                     
                 }
             }
-            if (type.IsClass && type.IsAssignableTo(typeof(Models.Entity)))
+            if (type.IsClass && type.IsAssignableTo(typeof(Models.IEntity0)))
             { //TODO fix this
                 Console.WriteLine("got to create GenericInSelectInt");
                 Type type1 = typeof(AdminBaseComponenets.BaseComs.GenericInSelectInt<>);
@@ -396,8 +396,11 @@ namespace AdminBaseComponenets
 
 
             var type = property.PropertyType;
-            var attrs = property.GetCustomAttributes(typeof(object), false).ToList().ConvertAll<Attribute>(x => x as Attribute);
-
+            var attrs = property.GetCustomAttributes<Attribute>(false).ToList();
+            
+            List<Attribute> extaAtr;
+            if (ForeignKeyAttr.fpropertis.TryGetValue(property, out extaAtr))
+                attrs.AddRange(extaAtr);
             if (inPropRender.ContainsKey(type))
             {
                 return createForm(property.PropertyType, attrs);
@@ -573,13 +576,14 @@ namespace AdminBaseComponenets
             };
             defultRenderer[typeof(Guid)] = (prps) =>
             {
-                var a = prps.FindAll(x => x is ForeignKeyAttr).ConvertAll<ForeignKeyAttr>(x => x as ForeignKeyAttr);
+                var a = prps.OfType<ForeignKeyAttr>().ToList();
                 if (a.Count > 0)
                 {
                     var ct = a[0].type;
                     var gt = typeof(FFJ<>).MakeGenericType(ct);
                     var gtc = gt.GetConstructor(new[] { ct });
                 }
+                
                 return null;
             };
 

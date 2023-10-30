@@ -681,17 +681,14 @@ namespace AdminBaseComponenets
         }
 
     }
-    public class DisplayInSelectBaseInt<T> : ComponentBase
+    public class DisplayInSelectBaseInt<T> : ValueInput<T>
     {
 
-        [Parameter]
-        public T value { get; set; }
 
 
 
 
-
-        protected bool IsSelected { get; set; }
+        /*protected bool IsSelected { get; set; }
 
         [Parameter]
         public EventCallback<bool> OnEntitySelection { get; set; }
@@ -700,7 +697,7 @@ namespace AdminBaseComponenets
         {
             IsSelected = (bool)e.Value;
             await OnEntitySelection.InvokeAsync(IsSelected);
-        }
+        }*/
 
     }
 

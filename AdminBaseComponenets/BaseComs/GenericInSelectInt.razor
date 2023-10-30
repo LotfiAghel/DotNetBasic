@@ -17,12 +17,18 @@ else
             color["id"]    ="blue";
             color["name"]    ="black";
             color["title"]    ="black";
-            foreach(var name in new string[]{"id","name","title"}){
+
+            color["Id"] = "blue";
+            color["Name"] = "black";
+            color["Title"] = "black";
+            foreach (var name in color.Keys)
+            {
                 
                 var t=tt.GetProperty(name);
-                string style=$"font-size:14px;color:{color[name]};";
+                
                 //TODO fix this, RTL not correct proprtis blend ech other
                 if(t!=null){
+                    string style = $"font-size:14px;color:{color[name]};";
                     <span class="font-weight-bold pl-1"   style=@style>@t.GetValue(value)</span>    
                 }
             }
