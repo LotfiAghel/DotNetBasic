@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Components.Rendering;
 @using AdminBaseComponenets;
 @using Newtonsoft.Json
+@using System.ComponentModel.DataAnnotations.Schema;
 @inherits EditBase2<TItem>
 @{
     if(value is null){
@@ -28,7 +29,7 @@
                 {
 
                     bool readOnly = false;
-
+                    bool defultIgnore = false;
                     {
                         var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
                         if (y != null && y.ignoreDefultForm)
@@ -36,16 +37,26 @@
 
                     }
                     {
-                        var x = property.GetCustomFirstAttributes<JsonIgnoreAttribute>();
-                        if (x != null){
-                            readOnly = true;
-
-                            var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
-                            if (y==null || y.ignoreDefultForm)
-                                continue;
-                        }
+                        defultIgnore =  defultIgnore || (property.GetCustomFirstAttributes<JsonIgnoreAttribute>()!=null);
+                    }
+                    {
+                        defultIgnore =  defultIgnore || (property.GetCustomFirstAttributes<ForeignKeyAttribute>()!=null);
+                    }
+                    {
+                        defultIgnore =  defultIgnore || (property.GetCustomFirstAttributes<InversePropertyAttribute>()!=null);
+                        
 
                     }
+                    if (defultIgnore)
+                    {
+                        readOnly = true;
+
+                        var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
+                        if (y == null || y.ignoreDefultForm)
+                            continue;
+                    }
+                    
+                    
 
 
 

@@ -19,6 +19,7 @@
     <ProjectReference Include="..\Blazorise\Source\Blazorise.Material\Blazorise.Material.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Blazorise\Blazorise.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Components\Blazorise.Components.csproj" />
+    <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.RichTextEdit\Blazorise.RichTextEdit.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Sidebar\Blazorise.Sidebar.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.DataGrid\Blazorise.DataGrid.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Icons.FontAwesome\Blazorise.Icons.FontAwesome.csproj" />

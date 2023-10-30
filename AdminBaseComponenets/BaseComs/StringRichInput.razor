@@ -1,0 +1,83 @@
+
+@using Microsoft.AspNetCore.Components.Forms
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+@using Blazorise.RichTextEdit
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+
+@inherits ValueInput<string>
+
+
+
+
+    <RichTextEdit @ref="richTextEditRef"
+              Theme="RichTextEditTheme.Snow"
+              ContentChanged="@OnContentChanged"
+              PlaceHolder="Type your post here..."
+              ReadOnly=@ReadOnly
+              SubmitOnEnter="false"
+              EnterPressed="@OnSave"
+              ToolbarPosition="Placement.Bottom">
+    <Editor>@value</Editor>
+    <Toolbar>
+        <RichTextEditToolbarGroup>
+            <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
+            <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
+            <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
+                <RichTextEditToolbarSelectItem Value="small" />
+                <RichTextEditToolbarSelectItem Selected />
+                <RichTextEditToolbarSelectItem Value="large" />
+                <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
+            </RichTextEditToolbarSelect>
+            <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
+            <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
+        </RichTextEditToolbarGroup>
+        <!-- Custom toolbar content -->
+        <RichTextEditToolbarGroup Float="Float.End">
+            <Button onClick="window.open('https://www.quilljs.com/','quilljs')"><Icon Name="IconName.InfoCircle" /></Button>
+            <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
+        </RichTextEditToolbarGroup>
+    </Toolbar>
+</RichTextEdit>
+@code{
+    protected RichTextEdit richTextEditRef;
+
+    protected string contentAsHtml;
+    protected string contentAsDeltaJson;
+    protected string contentAsText;
+    protected string savedContent;
+    public string prvValue;
+    public async Task OnContentChanged()
+    {
+        contentAsHtml = await richTextEditRef.GetHtmlAsync();
+        contentAsDeltaJson = await richTextEditRef.GetDeltaAsync();
+        contentAsText = await richTextEditRef.GetTextAsync();
+    }
+
+    public async Task OnSave()
+    {
+        savedContent = await richTextEditRef.GetHtmlAsync();
+        await richTextEditRef.ClearAsync();
+
+        this.value = savedContent;
+        if (prvValue != value)
+        {
+
+            OnChange(value);
+        }
+        prvValue = value;
+    }
+
+   
+    
+
+}
+
