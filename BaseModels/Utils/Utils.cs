@@ -56,6 +56,12 @@ namespace SGSStandalone.Core
             var st = new System.DateTime(1970, 1, 1);
             return st.AddDays(t);
         }
+        public static System.DateTime endOfLastComplteDay(this System.DateTime dt)
+        {
+            long t = dt.totalDays()-1 ;
+            var st = new System.DateTime(1970, 1, 1);
+            return st.AddDays(t).AddHours(23).AddMinutes(59).AddSeconds(59).AddMicroseconds(999);
+        }
         public static System.DateTime endOfShamsiDay(this System.DateTime dt)
         {
             long t = (dt.AddHours(3.5).totalDays() + 1);
