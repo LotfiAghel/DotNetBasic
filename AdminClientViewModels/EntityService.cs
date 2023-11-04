@@ -118,6 +118,7 @@ namespace AdminClientViewModels
         public IEntityService<T,TKEY> getFiltered(string itemName, TKEY masterId)
         {
             throw new NotImplementedException();
+            
         }
         public async Task<System.Collections.IEnumerable> getAllSubTable<TMKEY>(string masterEntityName,string collectionName, TMKEY masterEnityId)
         {      

@@ -16,7 +16,7 @@ namespace ClientMsgs
     {
         public List<int> ids { get; set; }
     }
-    public class GetIdsResponse<T> : BooleanResponse where T : Entity
+    public class GetIdsResponse<T> : BooleanResponse where T : IEntity0
     {
         public List<T> data { get; set; }
     }

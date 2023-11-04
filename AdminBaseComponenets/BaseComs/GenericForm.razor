@@ -12,6 +12,7 @@
     }
 }
 @{
+    this.cacl();
     if(!(value is null)){
         <EditForm Model="@value">
             @{
@@ -55,10 +56,10 @@
                         if (y == null || y.ignoreDefultForm)
                             continue;
                     }
-                    
-                    
 
 
+
+                    
 
                     var z = createProp0(property, readOnly);
 

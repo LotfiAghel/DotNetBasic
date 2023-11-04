@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components;
 using Blazorise.DataGrid;
 using Models;
 using Tools;
+using Newtonsoft.Json;
 
 namespace AdminBaseComponenets.BaseComs
 {
@@ -52,8 +53,10 @@ namespace AdminBaseComponenets.BaseComs
                 && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
                     return false;
 
-                var x = prop.GetCustomFirstAttributes<Models.IgnoreDefultGird>();
-                if (x != null)
+                
+                if (prop.GetCustomFirstAttributes<Models.IgnoreDefultGird>() != null)
+                    return false;
+                if (prop.GetCustomFirstAttributes<JsonIgnoreAttribute>() != null)
                     return false;
                 return true;
             }).ToList();

@@ -47,6 +47,7 @@ namespace Models
         public T id { get; set; }
 
         [JsonIgnore]
+        [NotMapped]
         public ChangeEventList onChanges { get; set; }
 
     }

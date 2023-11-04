@@ -773,6 +773,16 @@ namespace AdminBaseComponenets
                     if (x != null && x.DataType==DataType.MultilineText)
                         return new AdminBaseComponenets.BaseComs.StringRichInput();
                 }
+                {
+                    var x = prps.GetFirst<Attribute, DataTypeAttribute>();
+                    if (x != null && x.DataType == DataType.ImageUrl)
+                        return new AdminBaseComponenets.BaseComs.FileUpload();
+                }
+                {
+                    var x = prps.GetFirst<Attribute, DataTypeAttribute>();
+                    if (x != null && x.DataType == DataType.Upload)
+                        return new AdminBaseComponenets.BaseComs.FileUpload();
+                }
                 /*{
                     var x = prps.GetFirst<Attribute, AdminBaseComponenets.BaseComs.SmallPicShow>();
                     if (x != null)

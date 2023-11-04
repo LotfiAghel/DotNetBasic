@@ -1,8 +1,9 @@
 @typeparam TItem
 @typeparam TKEY
 @typeparam TMKEY
+@typeparam TMASTER
 @inherits NullableInput2<IEnumerable<TItem>>
-
+@using System.ComponentModel.DataAnnotations.Schema;
 @using Models
 @using AdminBaseComponenets
 @using System.ComponentModel;
@@ -11,10 +12,52 @@
 <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
 @if(value!=null){
     <DataListSyncfusion TItem=TItem TKEY=TKEY value=@value> </DataListSyncfusion>
-    ;
 }else{
+    Click();
     if(ButtonState.Length<3)
         ButtonState="click to load";
 }
+<Button Color="Color.Primary" Clicked="@ShowModal">Show Modal</Button>
 
+<Modal @ref="modalRef">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Edit</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <GenericForm TItem=@TItem value=@addingItem></GenericForm>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+            <Button Color="Color.Primary" Clicked="@SaveModal">Save Changes</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+@code {
+    // reference to the modal component
+    private Modal modalRef;
 
+    private Task ShowModal()
+    {
+        //newItem = new TItem();
+        addingItem = typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
+        var fmp= typeof(TMASTER).GetProperty(collectionName).GetCustomFirstAttributes<InversePropertyAttribute>().Property;
+        var fidp = typeof(TItem).GetProperty(fmp).GetCustomFirstAttributes<ForeignKeyAttribute>().Name;
+        var fidpp = typeof(TItem).GetProperty(fidp);
+        fidpp.SetValue(addingItem, masterEnityId);
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        
+        return modalRef.Hide();
+    }
+    private Task SaveModal()
+    {
+        //var dataManager=Program0.getEntityManager<TMASTER, TMKEY>();
+        Data.post(addingItem);
+        return modalRef.Hide();
+    }
+}

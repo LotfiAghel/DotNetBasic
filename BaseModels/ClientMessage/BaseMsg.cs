@@ -587,81 +587,8 @@ namespace SGSStandalone.Core.ClientMessage
         }
 
     }
-    public class CheckRecoveryRequest
-    {
-        public string uuid;
-        public string userId;
-        public string email;
-        public string game;
-        public string telegramUsername;
-    }
-    public class CheckRecoveryResponse
-    {
-        public class Option
-        {
-            public enum Method
-            {
-                Telegram, Email, UUID, Unverified
-            }
-            public string userId;
-            public Method method;
-            public bool matched;
-            public string parm;
-            public string displayData;
-            public string displayField;
-        }
-        public List<Option> options;
-    }
-
-    public class RecoveryRequest
-    {
-        public string game;
-        public CheckRecoveryResponse.Option option;
-    }
-    public class RecoveryResponse
-    {
-        public bool done = false;
-        public string userId;
-        public string password;
-        public string loginToken;
-
-    }
-
-    public class SignUpRequest
-    {
-        public string uuid;
-        public string game;
-    }
-
-    public class SignUpResponse
-    {
-        public string userId;
-        public string password;
-        public string loginToken;
-        public bool newUser;
-    }
-
-
-    public class LoginRequest
-    {
-        public string userId;
-        public string password;
-        public string game;
-    }
-
-    public class LoginResponse
-    {
-        public bool done = false;
-        public string userId;
-        public string loginToken;
-        public string msg;
-        public string newPassword;
-
-    }
-
-
-
-
+ 
+   
 
 
 }

@@ -17,13 +17,13 @@
 
 
 
-
     <RichTextEdit @ref="richTextEditRef"
               Theme="RichTextEditTheme.Snow"
               ContentChanged="@OnContentChanged"
               PlaceHolder="Type your post here..."
               ReadOnly=@ReadOnly
               SubmitOnEnter="false"
+              
               EnterPressed="@OnSave"
               ToolbarPosition="Placement.Bottom">
     <Editor>@value</Editor>
@@ -64,8 +64,8 @@
 
     public async Task OnSave()
     {
-        savedContent = await richTextEditRef.GetHtmlAsync();
-        await richTextEditRef.ClearAsync();
+        savedContent = await richTextEditRef.GetTextAsync();
+        //await richTextEditRef.ClearAsync();
 
         this.value = savedContent;
         if (prvValue != value)
