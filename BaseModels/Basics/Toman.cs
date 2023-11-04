@@ -94,7 +94,14 @@ namespace Models
     }
 
 
-    
+    public interface IAdminUser {
+        [MultiSelect]
+        public List<AdminUserRole> roles { get; set; }
+
+
+        public string username { get; set; }
+
+    }
 
     public class ACLAtr : Attribute
     {

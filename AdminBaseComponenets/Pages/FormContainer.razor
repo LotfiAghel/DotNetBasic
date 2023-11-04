@@ -1,0 +1,160 @@
+
+@using Models
+@using System.Reflection;
+@using AdminBaseComponenets;
+@using System.ComponentModel;
+@using Tools;
+@inherits ValueInput0
+
+@{
+    Console.WriteLine("fffffffffff");
+    if (Id == "new")
+    {
+        value = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
+        valueIsNew = true;
+        if (ButtonState.Length < 3)
+            ButtonState = "save0";
+    }
+
+    genericArgs = Program0.getValueKeyPair(entityName);
+
+    if (genericArgs[0] != null)
+    {
+
+        var x = genericArgs[0].GetPerisanName();
+
+
+        <h1>@x</h1>
+
+
+        formView = Program0.createForm(genericArgs[0], new List<Attribute>() { });
+        if (!valueIsNew)
+        {
+            value = (typeof(FormContainer).GetMethod(nameof(getValueFast), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.MakeGenericMethod(genericArgs[0])
+            .Invoke(this, new object[] { Id }));
+
+        }
+
+    }
+    Console.WriteLine($"value==null = {value == null}");
+
+
+
+
+
+}
+
+
+@if (valueIsNew)
+{
+    if (formView != null)
+    {
+        <div>@Program0.CreateDynamicComponent2(this,formView,value)</div>
+    }
+    if (Program0.checkPermission<Models.InsertAccess>(genericArgs[0]))
+    {
+        <Button Outlined="true" Clicked="@(async () => await Click())">@ButtonState</Button>
+    }
+
+
+}
+else
+{
+    <Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+        <Items>
+            <Tab Name="value">Value</Tab>
+            @foreach (var prop in genericArgs[0].GetProperties())
+            {
+                var y = prop.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
+                if (y != null)
+                    continue;
+                if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
+                {
+                    <Tab Name=@(prop.Name)>
+                        @prop.GetPerisanName()
+                    </Tab>
+                }
+
+
+            }
+            @foreach (var prop in genericArgs[0].GetMethods())
+            {
+                var y = prop.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
+                if (y != null)
+                    continue;
+                if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                {
+                    <Tab Name=@(prop.Name)>
+                        @prop.GetPerisanName()
+                    </Tab>
+                }
+            }
+        </Items>
+        <Content>
+            <TabPanel Name="value">
+                @if (formView != null)
+                {
+                    <div>@Program0.CreateDynamicComponent2(this,formView,value,onChangeRefrence0,null,ReadOnly)</div>
+                }
+                @if (Program0.checkPermission<Models.UpdateAccess>(genericArgs[0]))
+                {
+                    <Button Outlined="true" Clicked="@update">@ButtonState</Button>
+                }
+                <div> @Program0.CreateDynamicComponentActionbar(genericArgs[0],actionValue,value,genericArgs)</div>
+            </TabPanel>
+
+
+            @if (value != null)
+            {
+                foreach (var prop in genericArgs[0].GetProperties())
+                {
+                    var y = prop.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
+                    if (y != null)
+                        continue;
+                    if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
+                    {
+                        <TabPanel @key=@($"gfc/{(value as Models.IEntity0).getId().ToString()}/{prop.Name}") Name=@(prop.Name)>
+                            @CreateDynamicComponentGrid(prop.PropertyType.GetGenericArguments()[0],(value as Models.IEntity0).getId(),prop.Name)
+                        </TabPanel>
+                    }
+
+
+                }
+                foreach (var prop in genericArgs[0].GetMethods())
+                {
+                    if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                    {
+                        <TabPanel Label=@prop.GetPerisanName() @key=@($"gfc/{(value as Models.IEntity0).getId()}/{prop.Name}") Name=@(prop.Name)>
+                            @CreateDynamicComponentGrid(prop.ReturnType.GetGenericArguments()[0],(value as Models.IEntity0).getId(),prop.Name)
+                        </TabPanel>
+                    }
+                }
+
+            }
+        </Content>
+    </Tabs>
+
+
+}
+
+<div>
+    .. <br />
+    .. <br />
+    .. <br />
+</div>
+
+
+@code {
+
+
+    @inject NavigationManager NavigationManager;
+
+
+
+
+
+
+
+
+
+}

@@ -524,7 +524,64 @@ namespace AdminBaseComponenets
 
             return null;
         }
+
+
+        public static IAdminUser user;
+
         
+        public static bool checkPermission<T2>(Type T) where T2 : ACLAtr
+        {
+            return true;
+            if (typeof(T2) == typeof(ViewAccess))
+                return true;
+            if (typeof(T2) == typeof(SelectAccess))
+                return true;
+            try
+            {
+                var adminWriteBan = T.GetCustomAttributes(typeof(T2), true).ToList().GetFirst<object, T2>();
+                if (adminWriteBan == null || adminWriteBan.kinds.Intersect(user.roles).Count() == 0)
+                    return false;
+            }
+            catch
+            {
+                return false;
+            };
+            return true;
+
+        }
+        public static async Task<bool> CheckLogin(IJSRuntime JsRuntime)
+        {
+
+
+            var isAuthenticated = await JsRuntime.InvokeAsync<string>("blazorExtensions.GetCookie", new[] { "isAuthenticated" }) == "true";
+
+            try
+            {
+                var url = await JsRuntime.InvokeAsync<string>("blazorExtensions.GetCookie", new[] { "url" });
+                ClTool.WebClient.webClient.baseUrl = url;
+
+            }
+            catch
+            {
+
+            }
+
+            return isAuthenticated;
+
+
+
+        }
+        /*async Task CheckLogin()
+        {
+            var isAuthenticated = await Program0.CheckLogin(JsRuntime);
+            if (!isAuthenticated)
+            {
+                if (!NavigationManager.Uri.Contains("/login"))
+                {
+                    NavigationManager.NavigateTo("/login", false);
+                }
+            }
+        }*/
 
         public static Type getKeyType(Type entity){
             if (entity.IsAssignableTo(typeof(IIdMapper<string>)))
