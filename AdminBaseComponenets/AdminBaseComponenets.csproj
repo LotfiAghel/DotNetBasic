@@ -13,9 +13,9 @@
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <ProjectReference Include="..\Blazorise\Shared\Blazorise.Shared\Blazorise.Shared.csproj" />
-    <!-- <ProjectReference Include="..\Blazorise\Source\Blazorise.Bootstrap\Blazorise.Bootstrap.csproj" /> -->
+     
     <ProjectReference Include="..\Blazorise\Source\Blazorise.Material\Blazorise.Material.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Blazorise\Blazorise.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Components\Blazorise.Components.csproj" />
@@ -24,20 +24,43 @@
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.DataGrid\Blazorise.DataGrid.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Icons.FontAwesome\Blazorise.Icons.FontAwesome.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Icons.Material\Blazorise.Icons.Material.csproj" />
-  </ItemGroup>
+  </ItemGroup> -->
   
 <ItemGroup>
   
   
     <PackageReference Include="Blazor.PersianDatePicker" Version="1.0.1" />
   
-   
-
-
-
+  
+    <PackageReference Include="Blazorise" Version="1.3.2" />
   
   
-  <ProjectReference Include="..\BaseModels\BaseModels.csproj" />
+    <PackageReference Include="Blazorise.Components" Version="1.3.2" />
+  
+  
+    <PackageReference Include="Blazorise.DataGrid" Version="1.3.2" />
+  
+  
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.3.2" />
+  
+  
+    <PackageReference Include="Blazorise.Icons.Material" Version="1.3.2" />
+  
+  
+    <PackageReference Include="Blazorise.Material" Version="1.3.2" />
+  
+  
+    <PackageReference Include="Blazorise.RichTextEdit" Version="1.3.2" />
+  
+  
+    <PackageReference Include="Blazorise.Sidebar" Version="1.3.2" />
+  
+  
+    <PackageReference Include="Blazorise.Snackbar" Version="1.3.2" />
+  
+  
+  
+    <ProjectReference Include="..\BaseModels\BaseModels.csproj" />
 
 
   
@@ -65,14 +88,6 @@
     <ProjectReference Include="..\Client\Client.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="tools\" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="BaseComs\PArrayInput.razor">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
-  </ItemGroup>
 
 </Project>

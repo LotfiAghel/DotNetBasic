@@ -18,5 +18,11 @@ namespace AdminMsg
     }
 
 
+    public class LoginResponse : ClientMsgs.BooleanResponse 
+    {
+        public Models.IAdminUser user { get; set; }
+    }
+
+
 
 }
