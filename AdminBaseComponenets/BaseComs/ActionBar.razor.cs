@@ -27,7 +27,7 @@ namespace AdminBaseComponenets.BaseComs
 
 
         [Parameter]
-        public int entityId { get; set; }
+        public TKEY entityId { get; set; }
 
 
         public NewEntityService<TItem, TKEY> Data { get; set; } = null;

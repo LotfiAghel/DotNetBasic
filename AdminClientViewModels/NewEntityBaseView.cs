@@ -74,7 +74,7 @@ namespace AdminClientViewModels
          
             return res;
         }
-        public async Task<T> sendAction(int entityId,Models.IAction<T> inp)
+        public async Task<T> sendAction(TKEY entityId,Models.IAction<T> inp)
         {      
                 
             var r = await ocg.sendAction(entityId,inp);
