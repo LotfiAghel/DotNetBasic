@@ -112,10 +112,18 @@ namespace Models
                     List<Attribute> bb;
                     if (!ForeignKeyAttr.fpropertis.TryGetValue(pi, out bb))
                         ForeignKeyAttr.cacl(type);
-                    var aa=ForeignKeyAttr.fpropertis[pi].OfType<ForeignKeyAttr>();
-                    if (aa != null && aa.ToList().Count > 0)
+                }
+                {
+                    if (pi.PropertyType.IsClass)
                     {
-                        prop.Ignored = true;
+                        List<Attribute> bb;
+                        if (!ForeignKeyAttr.fpropertis.TryGetValue(pi, out bb))
+                            ForeignKeyAttr.cacl(type);
+                        var aa = ForeignKeyAttr.fpropertis[pi].OfType<ForeignKeyAttr>();
+                        if (aa != null && aa.ToList().Count > 0)
+                        {
+                            prop.Ignored = true;
+                        }
                     }
                 }
 

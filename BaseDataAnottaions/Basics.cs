@@ -101,8 +101,20 @@ public class ForeignKeyAttr : Attribute
             var s = pr.GetCustomAttribute<ForeignKeyAttribute>();
             if (!ForeignKeyAttr.fpropertis.ContainsKey(pr))
                 ForeignKeyAttr.fpropertis[pr] = new();
-            if (s != null)
-                ForeignKeyAttr.fpropertis[pr].Add(new ForeignKeyAttr(propertis.Find(x => x.Name == s.Name).PropertyType) );
+            if (s != null) {
+                
+                if (pr.PropertyType.IsClass)
+                {
+                    var rv = propertis.Find(x => x.Name == s.Name);
+                    ForeignKeyAttr.fpropertis[rv].Add(new ForeignKeyAttr(pr.PropertyType));
+                }
+                else
+                {
+                    var rv = propertis.Find(x => x.Name == s.Name);
+                    ForeignKeyAttr.fpropertis[pr].Add(new ForeignKeyAttr(rv.PropertyType));
+                }
+            }
+            
 
         }
     }
