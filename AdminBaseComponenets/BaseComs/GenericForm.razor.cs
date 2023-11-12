@@ -27,11 +27,7 @@ namespace AdminBaseComponenets.BaseComs
 
         public void cacl()
         {
-            foreach (var pr in propertis) {
-                var s = pr.GetCustomAttribute<ForeignKeyAttribute>();
-                if(s!=null)
-                    ForeignKeyAttr.fpropertis[propertis.Find(x => x.Name==s.Name)] = new() { new ForeignKeyAttr(pr.PropertyType) };
-            }
+            ForeignKeyAttr.calc(typeof(TItem));
         }
 
         public override bool inRowField() => false;

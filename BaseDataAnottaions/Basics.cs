@@ -2,6 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
@@ -86,6 +89,19 @@ public class ForeignKeyAttr : Attribute
     public Type[] getTypes()
     {
         return new Type[]{ type,tkey};
+    }
+    public static void  cacl(Type type)
+    {
+         List<System.Reflection.PropertyInfo> propertis = type.GetProperties(
+                          BindingFlags.Public |
+                          BindingFlags.NonPublic |
+                          BindingFlags.Instance).ToList();
+        foreach (var pr in propertis)
+        {
+            var s = pr.GetCustomAttribute<ForeignKeyAttribute>();
+            if (s != null)
+                ForeignKeyAttr.fpropertis[pr] = new() { new ForeignKeyAttr(propertis.Find(x => x.Name == s.Name).PropertyType) };
+        }
     }
 }
 
