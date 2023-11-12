@@ -99,8 +99,11 @@ public class ForeignKeyAttr : Attribute
         foreach (var pr in propertis)
         {
             var s = pr.GetCustomAttribute<ForeignKeyAttribute>();
+            if (!ForeignKeyAttr.fpropertis.ContainsKey(pr))
+                ForeignKeyAttr.fpropertis[pr] = new();
             if (s != null)
-                ForeignKeyAttr.fpropertis[pr] = new() { new ForeignKeyAttr(propertis.Find(x => x.Name == s.Name).PropertyType) };
+                ForeignKeyAttr.fpropertis[pr].Add(new ForeignKeyAttr(propertis.Find(x => x.Name == s.Name).PropertyType) );
+
         }
     }
 }
