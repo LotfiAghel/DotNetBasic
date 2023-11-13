@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 using Tools;
 
 namespace Models
@@ -129,11 +130,37 @@ namespace Models
 
                 prop.Converter = null;
                 prop.PropertyName = prop.UnderlyingName;
-
+               
 
             }
 
             return props;
         }
     }
+
+    public class MyContractResolver2 : MyContractResolver
+    {
+
+        public static MyContractResolver2 client2 = new MyContractResolver2() { tag = CustomIgnoreTag.Kind.CLIENT };
+        
+
+
+
+
+        
+        protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+        {
+
+            IList<JsonProperty> props = base.CreateProperties(type, memberSerialization);
+            var pp = type.GetProperties();
+            foreach (var prop in props)
+            {
+                //prop.PropertyName = prop.UnderlyingName;
+                prop.PropertyName = Char.ToLowerInvariant(prop.PropertyName[0]) + prop.PropertyName.Substring(1);
+            }
+
+            return props;
+        }
+    }
+
 }
