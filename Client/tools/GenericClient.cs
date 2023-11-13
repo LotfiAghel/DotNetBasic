@@ -22,9 +22,13 @@ namespace ClTool
 
     public class WebClient
     {
-        public static WebClient webClient = null;
+        public static WebClient webClient {
+            get; 
+            set; } = null;
         public static string pass;
-        public string baseUrl;
+        public string baseUrl { get; 
+            set; 
+        }
         public Action onLogout;
         public void setUrl(string s)
         {
@@ -318,7 +322,7 @@ namespace ClTool
         {
             return await webClient.fetch<IQueryContainer<T>, List<T>>(additinalUrl + typeof(T).GetUrlEncodeName() + "/getAll", HttpMethod.Post, new IQueryContainer<T>() {query= inp });
         }
-        public async Task<T> sendAction(int entityId, IAction<T> inp)
+        public async Task<T> sendAction(TKEY entityId, IAction<T> inp)
         {
             return await webClient.fetch<IAction<T>, T>($"{additinalUrl}{typeof(T).GetUrlEncodeName()}/{entityId}/runAction", HttpMethod.Post, inp);
         }
