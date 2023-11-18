@@ -9,7 +9,13 @@ using Models;
 
 namespace Tools
 {
-
+    public static class StringHelper
+    {
+        public static string getCamelParm(this string  s)
+        {
+            return  Char.ToLowerInvariant(s[0]) + s.Substring(1);
+        }
+    }
     public static class TypeHelper
     {
 
@@ -188,6 +194,7 @@ namespace Tools
             var assms = AppDomain.CurrentDomain.GetAssemblies();
             if (!T.IsAbstract || evenAbstracts)
                 classess.Add(T);
+
             foreach (var currentAssembly in assms)
             {
                 try
