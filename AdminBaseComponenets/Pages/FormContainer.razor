@@ -82,7 +82,7 @@ else
                 var y = prop.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
                 if (y != null)
                     continue;
-                if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IQueryable<>))
                 {
                     <Tab Name=@(prop.Name)>
                         @prop.GetPerisanName()
@@ -122,7 +122,7 @@ else
                 }
                 foreach (var prop in genericArgs[0].GetMethods())
                 {
-                    if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                    if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IQueryable<>))
                     {
                         <TabPanel Label=@prop.GetPerisanName() @key=@($"gfc/{(value as Models.IEntity0).getId()}/{prop.Name}") Name=@(prop.Name)>
                             @CreateDynamicComponentGrid(prop.ReturnType.GetGenericArguments()[0],(value as Models.IEntity0).getId(),prop.Name)
