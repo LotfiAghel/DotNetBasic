@@ -901,10 +901,8 @@ namespace AdminBaseComponenets
 
                 if (a != null)
                 {
-                    Console.WriteLine("formRenderer[typeof(Guid)] ");
-                    Console.WriteLine($"formRenderer[typeof(Guid)] ForeignKey2<{a.getTypes()}>");
                     var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
-                    //var gtc = gt.GetConstructor(new[] { typeof(int) });
+
 
                     return createForm(
                             gt,
@@ -912,7 +910,9 @@ namespace AdminBaseComponenets
                     );/**/
 
                 }
-                return new AdminBaseComponenets.BaseComs.StringInput();
+                
+               
+                return new AdminBaseComponenets.BaseComs.GuidInput();
             };
 
 

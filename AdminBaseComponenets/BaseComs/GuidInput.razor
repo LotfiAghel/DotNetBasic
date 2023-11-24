@@ -5,12 +5,12 @@
 @using Newtonsoft.Json.Linq;
 
 
-@inherits ValueInput<string>
+@inherits ValueInput<Guid>
 
 
         <TextEdit 
                    ReadOnly=@ReadOnly
-                   Text=@value
+          Text=@svalue
                    TextChanged=@Click2
          />
 
@@ -21,13 +21,13 @@
 
 @code
 {
-   
+    string svalue;
 
-    string prvValue;
+    Guid prvValue;
    
     async Task Click2(string  vv)
     {
-        this.value=vv;
+        this.value=Guid.Parse(vv);
         if (prvValue != value)
         {
 
