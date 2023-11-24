@@ -12,6 +12,8 @@ using Blazorise.DataGrid;
 using Models;
 using Tools;
 using Newtonsoft.Json;
+using Microsoft.JSInterop;
+using System.Threading;
 
 namespace AdminBaseComponenets.BaseComs
 {
@@ -38,7 +40,7 @@ namespace AdminBaseComponenets.BaseComs
         public RenderFragment<TItem> ChildContent { get; set; }
 
 
-
+        TItem selectedEmployee;
 
         bool widget = true;
 
@@ -49,13 +51,16 @@ namespace AdminBaseComponenets.BaseComs
             .Where(prop =>
             {
 
+                if (prop.GetCustomFirstAttributes<Models.IgnoreDefultGird>() != null)
+                    return !prop.GetCustomFirstAttributes<Models.IgnoreDefultGird>().isIgnore;
+
+
                 if (prop.PropertyType.IsGenericType
                 && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
                     return false;
 
                 
-                if (prop.GetCustomFirstAttributes<Models.IgnoreDefultGird>() != null)
-                    return false;
+                
                 if (prop.GetCustomFirstAttributes<JsonIgnoreAttribute>() != null)
                     return false;
                 return true;
@@ -71,8 +76,9 @@ namespace AdminBaseComponenets.BaseComs
 
 
 
-        void ModalShow()
+        void ModalShow(TItem t )
         {
+            //@Program0.CreateDynamicComponent2(this, w, prop.GetValue(context))
             var pr = typeof(TItem).GetProperty(itemName);
             ttvalue = (TItem)(typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }));
             w = Program0.createForm(typeof(TItem), new List<Attribute>());
@@ -95,6 +101,16 @@ namespace AdminBaseComponenets.BaseComs
                 NavManager.NavigateTo($"{EntityName}/edit/{itemId}");
             else
                 NavManager.NavigateTo($"{Url}/{itemId}");
+
+        }
+        public async Task onClick2(DataGridRowMouseEventArgs<TItem> e)
+        {
+
+
+            selectedEmployee = e.Item;
+            //var itemId = (e.Item as IIdMapper<TKEY>).id;
+            //object value1 = await JSRuntime.InvokeAsync<object>("open","blank");
+            
 
         }
 

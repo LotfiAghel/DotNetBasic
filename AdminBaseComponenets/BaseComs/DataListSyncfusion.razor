@@ -1,12 +1,14 @@
 ﻿@typeparam TItem
 @typeparam TKEY
 
+@using Microsoft.JSInterop;
 @using Models
 @using System.Collections.Generic
 @using Newtonsoft.Json.Linq;
 @inject NavigationManager NavManager
 @using Blazorise.DataGrid
 @inherits NullableInput2<IEnumerable<TItem>>
+@inject IJSRuntime jsRuntime
 
 @{
     if(value!=null)
@@ -15,9 +17,9 @@
         Console.WriteLine("data is null");
 }
 
-@if (itemName != null)
+@if (itemName != null || true)
 {
-    <button class="btn btn-primary" @onclick="@ModalShow">Show Dialog!</button>
+    
     @if (showModal)
     {
         <div class="modal fade show" id="myModal" style="display:block" aria-modal="true" role="dialog">
@@ -46,30 +48,116 @@
 <hr />
 
 
+<Modal @ref=@modalRef>
+    <ModalContent VerticalAlignment=@VerticalAlignment.Top Size=ModalSize.ExtraLarge>
+        <ModalHeader>
+            <ModalTitle>@(typeof(TItem).GetPerisanName())</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <GenericForm TItem=@TItem value=@selectedEmployee></GenericForm>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+            <Button Color="Color.Primary" Clicked="@SaveModal">Save Changes</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
 
 <DataGrid TItem="TItem"
         Data=@value
         RowDoubleClicked=onClick
+        RowClicked=onClick2
+        onclick=@NavigateToNewTab2
         Responsive
         ShowPager
         Borderless
         Resizable
-        
-        
-        >
-    <DataGridCommandColumn>
-        <NewCommandTemplate>
-            <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
-        </NewCommandTemplate>
+          
+          >
+     <DataGridColumns>
+            <!-- @bind-SelectedRow=@selectedEmployee<DataGridCommandColumn>
         <EditCommandTemplate>
-            <Button Color="Color.Primary" Clicked="@context.Clicked">Edit</Button>
+                <Button Color="Color.Primary" Clicked=@NavigateToNewTab2 >Edit</Button>
         </EditCommandTemplate>
-    </DataGridCommandColumn>
+    </DataGridCommandColumn> -->
     
     @foreach (var prop in propertis){
-                var persianLabel = prop.GetPerisanName();
-                <DataGridColumn TItem="TItem" Field=@prop.Name Caption=@persianLabel Editable="true" />
+        //var w = Program0.createWidget(prop.PropertyType, prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList());
+        //var f = Program0.createForm(prop.PropertyType, prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList());
+        var persianLabel = prop.GetPerisanName();
+        @if (false)
+        {
+            <DataGridColumn TItem="TItem" Field=@prop.Name Caption=@persianLabel Editable="true" >
+                        
+                            <DisplayTemplate>
+                                @Program0.CreateDynamicComponent2(this, w,prop.GetValue(context) )
+                            </DisplayTemplate>
+                
+            </DataGridColumn>
+        }else{
+            <DataGridColumn TItem="TItem" Field=@prop.Name Caption=@persianLabel >
+            </DataGridColumn>
+        }   
+
     }
+    </DataGridColumns>
+    <!-- <DetailRowTemplate>
+        @{
+            var f2 = Program0.createForm(typeof(TItem), new());
+            <div>@Program0.CreateDynamicComponent2(this, f2, context)</div>
+            
+        }
+    </DetailRowTemplate> -->
 </DataGrid>
 
 
+
+@code {
+
+    public async Task NavigateToNewTab()
+    {
+        
+        string url = "/counter";
+
+        await jsRuntime.InvokeAsync<object>("open", url, "_blank");
+
+    }
+    public async Task NavigateToNewTab2(MouseEventArgs args)
+    {
+        if(args.CtrlKey){
+            var itemId = selectedEmployee.id;
+            string url = $"{EntityName}/edit/{itemId}";
+
+            await jsRuntime.InvokeAsync<object>("open", url, "_blank");
+        }
+        if (args.AltKey)
+        {
+            ShowModal();
+        }
+
+    }
+
+
+    private Modal modalRef;
+
+    private Task ShowModal()
+    {
+        //newItem = new TItem();
+        //addingItem = typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
+        
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+
+        return modalRef.Hide();
+    }
+    private Task SaveModal()
+    {
+        //var dataManager=Program0.getEntityManager<TMASTER, TMKEY>();
+        //Data.post(addingItem);
+        return modalRef.Hide();
+    }
+}

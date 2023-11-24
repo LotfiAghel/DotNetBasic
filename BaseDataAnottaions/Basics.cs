@@ -24,7 +24,10 @@ namespace Models
     }
     public class IgnoreDefultGird : Attribute
     {
-
+        public bool isIgnore = true;
+        public IgnoreDefultGird(bool isIgnore=true) {
+            this.isIgnore = isIgnore;
+        }
     }
 
     public class IgnoreDefultForm : Attribute
@@ -76,6 +79,38 @@ namespace Models
 
 
 }
+
+public class MDPropInfo
+{
+    public PropertyInfo propertyInfo;
+    public List<Attribute> attrs=new();
+    public MDPropInfo(PropertyInfo pr)
+    {
+        this.propertyInfo = pr;
+    }
+}
+public class MDTypeInfo
+{
+    public static Dictionary<Type, MDTypeInfo> mp = new();
+    public Type type;
+    public List<Attribute> attrs=new();
+    public Dictionary<PropertyInfo, MDPropInfo> pattrs=new();
+    public MDTypeInfo(Type t)
+    {
+        type = t;
+        foreach (var x in t.GetProperties())
+            this.pattrs[x] = new MDPropInfo(x);
+    }
+    public static MDTypeInfo get(Type t)
+    {
+        MDTypeInfo z;
+        if (!mp.TryGetValue(t, out z))
+            mp[t] = z = new MDTypeInfo(t);
+        return z;
+    }
+
+}
+
 public class ForeignKeyAttr : Attribute
 {
     public Type type;
@@ -102,15 +137,14 @@ public class ForeignKeyAttr : Attribute
             if (!ForeignKeyAttr.fpropertis.ContainsKey(pr))
                 ForeignKeyAttr.fpropertis[pr] = new();
             if (s != null) {
-                
+                var rv = propertis.Find(x => x.Name == s.Name);
+                ForeignKeyAttr.fpropertis[rv].Add(new ForeignKeyAttribute(pr.Name));
                 if (pr.PropertyType.IsClass)
                 {
-                    var rv = propertis.Find(x => x.Name == s.Name);
                     ForeignKeyAttr.fpropertis[rv].Add(new ForeignKeyAttr(pr.PropertyType));
                 }
                 else
                 {
-                    var rv = propertis.Find(x => x.Name == s.Name);
                     ForeignKeyAttr.fpropertis[pr].Add(new ForeignKeyAttr(rv.PropertyType));
                 }
             }
