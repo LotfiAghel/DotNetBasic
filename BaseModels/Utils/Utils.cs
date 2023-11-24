@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -29,6 +30,23 @@ namespace SGSStandalone.Core
         public static long totalDays(this System.DateTime dt)
         {
             return (long)(dt - new System.DateTime(1970, 1, 1)).TotalDays;
+        }
+        public static DateTime FirstDate=new System.DateTime(1970, 1, 1);
+        public static long MothIndex0(this System.DateTime dt)
+        {
+            return (long)(dt.Year * 12 + (dt.Month - 1)) ;
+        }
+        public static long MothIndex(this System.DateTime dt)
+        {
+            return (long)(dt.MothIndex0() - FirstDate.MothIndex0());
+        }
+        public static DateTime IndexToMonth(this long dt)
+        {
+            return ((int)dt).IndexToMonth();
+        }
+        public static DateTime IndexToMonth(this int dt)
+        {
+            return new System.DateTime(1970 + dt / 12, dt % 12 + 1, 1);
         }
         public static long totalWeek(this System.DateTime dt)
         {

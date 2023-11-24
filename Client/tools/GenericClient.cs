@@ -83,7 +83,9 @@ namespace ClTool
                             match.Groups[1].ToString().Replace(" ", ""),
                             match.Groups[2].ToString(),
                             "/",
-                            request.Host.Split(':')[0]));
+                            request.Host.Split(':')[0]
+                            )
+                        );
                 }
             }
         }
