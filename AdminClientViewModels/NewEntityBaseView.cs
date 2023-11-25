@@ -6,6 +6,8 @@ using ClTool;
 using System;
 using Newtonsoft.Json.Linq;
 using System.Collections;
+using System.Reflection;
+
 namespace AdminClientViewModels
 {
 
@@ -92,10 +94,23 @@ namespace AdminClientViewModels
 
         }
 
-        public async Task<IReadOnlyCollection<T>> getAllSubTable<TMKEY>(string masterEntityName,string collectionName, TMKEY masterEnityId)
-        {      
-                
-            var d = await ocg.getAll3(masterEntityName,collectionName,masterEnityId);
+        public async Task<IReadOnlyCollection<T>> getAllSubTable<TMASTER, TMKEY>(string collectionName, TMKEY masterEnityId)
+        {
+            bool bigTable = typeof(TMASTER).GetProperty(collectionName)!.GetCustomAttributes(typeof(BigTable), true).ToList() != null;
+            if (bigTable)
+            {
+                var url=ocg.getSubTablePath<TMASTER, TMKEY>(collectionName, masterEnityId);
+                var x = new PaginateList<T, TKEY>()
+                {
+                    webClient = this.ocg.webClient,
+                    filter = url,
+                    pageSize = 50,
+
+                };
+                x.Count = await x.getSize();
+                return x;
+            }
+            var d = await ocg.getAll3<TMASTER, TMKEY>(collectionName,masterEnityId);
             var res=new List<T>();
             foreach (var r in d)
                 res.Add(insertOrUpdate(r));

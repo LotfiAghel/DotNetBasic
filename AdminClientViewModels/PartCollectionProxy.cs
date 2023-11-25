@@ -90,7 +90,7 @@ namespace AdminClientViewModels
         {
             return data;
         }
-        public async Task<IReadOnlyCollection<T>> getAllSubTable<TMKEY>(string masterEntityName, string collectionName, TMKEY masterEnityId)
+        public async Task<IReadOnlyCollection<T>> getAllSubTable<TMASTER, TMKEY>(string collectionName, TMKEY masterEnityId)
         {
 
             return data;

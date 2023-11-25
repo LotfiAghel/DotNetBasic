@@ -120,10 +120,10 @@ namespace AdminClientViewModels
             throw new NotImplementedException();
             
         }
-        public async Task<IReadOnlyCollection<T>> getAllSubTable<TMKEY>(string masterEntityName,string collectionName, TMKEY masterEnityId)
+        public async Task<IReadOnlyCollection<T>> getAllSubTable<TMASTER, TMKEY>(string collectionName, TMKEY masterEnityId)
         {      
                 
-            var d = await ocg.getAll3(masterEntityName,collectionName,masterEnityId );
+            var d = await ocg.getAll3<TMASTER, TMKEY>(collectionName,masterEnityId );
             var res=new List<T>();
             foreach (var r in d)
                 res.Add(r);

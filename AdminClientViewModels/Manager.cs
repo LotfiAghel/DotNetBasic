@@ -32,7 +32,7 @@ namespace AdminClientViewModels
     {
 
 
-        Task<IReadOnlyCollection<T>> getAllSubTable<TMKEY>(string masterEntityName, string collectionName, TMKEY masterEnityId);
+        Task<IReadOnlyCollection<T>> getAllSubTable<TMASTER,TMKEY>(string collectionName, TMKEY masterEnityId);
 
         Task<T> get(TKEY id);
         //Task<T> get0s(TKEY id);

@@ -40,7 +40,7 @@ namespace Models
     public class PhoneNumAttr : Attribute
     {
     }
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    //[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class BigTable : Attribute
     {
     }

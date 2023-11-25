@@ -51,7 +51,7 @@ namespace AdminBaseComponenets.BaseComs
                 Data = Program0.getEntityManager<TItem, TKEY>();
             Console.WriteLine("load getAll2");
             var masterEntityName= typeof(TMASTER).GetUrlEncodeName();
-            value = await Data.getAllSubTable(masterEntityName, collectionName, masterEnityId) as IReadOnlyCollection<TItem>;
+            value = await Data.getAllSubTable<TMASTER,TMKEY>(collectionName, masterEnityId) as IReadOnlyCollection<TItem>;
 
 
 

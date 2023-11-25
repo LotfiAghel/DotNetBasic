@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using Tools;
 using Models;
+using System.Collections;
 
 namespace ClTool
 {
@@ -337,6 +338,10 @@ namespace ClTool
         {
             return additinalUrl + typeof(T).GetUrlEncodeName();
         }
+        public string getSubTablePath<TMASTER, TMKEY>(string collectionName, TMKEY masterId)
+        {
+            return $"{typeof(T).GetUrlEncodeName()}/{masterId}/{collectionName}";
+        }
         public async Task<List<T>> getAll()
         {
             if (cash != null)
@@ -351,9 +356,9 @@ namespace ClTool
         {
             return await webClient.fetch<IAction<T>, T>($"{additinalUrl}{typeof(T).GetUrlEncodeName()}/{entityId}/runAction", HttpMethod.Post, inp);
         }
-        public async Task<List<T>> getAll3<TMKEY>(string masterEntityName, string collectionName, TMKEY masterId)
+        public async Task<List<T>> getAll3<TMASTER, TMKEY>(string collectionName, TMKEY masterId)
         {
-            return await webClient.fetch<T, List<T>>($"{masterEntityName}/{masterId}/{collectionName}", HttpMethod.Get, null);
+            return await webClient.fetch<T, List<T>>(getSubTablePath<TMASTER,TMKEY>(collectionName,masterId), HttpMethod.Get, null);
         }
         public async Task<List<T>> getAll(string itemName, TKEY value)
         {
