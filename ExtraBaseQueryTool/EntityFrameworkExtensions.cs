@@ -1,6 +1,9 @@
 ﻿using System.Linq;
 using System.Reflection;
 using System.Linq.Expressions;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace AdminPanel
 {
@@ -95,6 +98,64 @@ namespace AdminPanel
             var newQuery = (IOrderedQueryable)genericMethod.Invoke(genericMethod, new object[] { query, selector }) as IOrderedQueryable<TSource>;
             return newQuery;
         }
+
+
+        public static Tuple<int, int> convertToRange(this string range)
+        {
+
+            List<int> range2 = new List<int>() { 0, 100000000 };
+            try
+            {
+                var j = JToken.Parse(range);
+                range2 = j.ToObject<List<int>>();
+            }
+            catch
+            {
+
+            }
+            return new(range2[0], range2[1]);
+        }
+        public static IQueryable<TT> addPagination<TT>(this IQueryable<TT> q, Tuple<int, int> range, string sort, string filter)
+        {
+
+
+
+
+
+
+
+            try
+            {
+
+                try
+                {
+                    var j = JToken.Parse(sort);
+                    var sort2 = j.ToObject<List<string>>();
+                    //q = q.OrderByDescending(GetParm2<T, object>(sort2[0]));
+                    if (sort2[1] == "DESC")
+                        q = q.OrderByDescending<TT>(sort2[0]);
+                    else
+                        q = q.OrderBy<TT>(sort2[0]);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
+            }
+            catch
+            {
+
+            }
+
+
+
+            var x = q.Skip(range.Item1).Take(range.Item2);
+            return x;
+        }
+
+
+
     }
 
 }
