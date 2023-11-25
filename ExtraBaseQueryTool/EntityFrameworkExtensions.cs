@@ -100,6 +100,7 @@ namespace AdminPanel
         }
 
 
+
         public static Tuple<int, int> convertToRange(this string range)
         {
 
@@ -156,6 +157,21 @@ namespace AdminPanel
 
 
 
+
+        public static IOrderedQueryable<T> Where1<T>(this IQueryable<T> queryable, string propertyName, string propertyValue)
+        {
+            var parameterExp = Expression.Parameter(typeof(T), "type");
+            var propertyExp = Expression.Property(parameterExp, propertyName);
+            var method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+            var someValue = Expression.Constant(propertyValue, typeof(string));
+            var containsMethodExp = Expression.Call(propertyExp, method, someValue);
+
+            var expression = Expression.Lambda<Func<T, bool>>(containsMethodExp, parameterExp);
+
+            var expcall = Expression.Call(typeof(Queryable), "Where", new[] { typeof(T) }, queryable.Expression, Expression.Quote(expression));
+
+            return (IOrderedQueryable<T>)queryable.Provider.CreateQuery<T>(expcall);
+        }
     }
 
 }
