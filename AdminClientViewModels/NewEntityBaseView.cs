@@ -408,7 +408,7 @@ namespace AdminClientViewModels
                 string value = response.Headers.Get(i)!;
                 var z=value.Split("/");
                 var z0=z[0].Split("-");
-                int start= int.Parse(z0[0].Split(" ")[1]);
+                int start= int.Parse(z0[0].Split(" ").LastOrDefault());
                 int end = int.Parse(z0[1]);
                 int count = int.Parse(z[1]);
                 return new FetchR(){

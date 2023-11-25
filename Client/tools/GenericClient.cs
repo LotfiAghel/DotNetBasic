@@ -340,7 +340,7 @@ namespace ClTool
         }
         public string getSubTablePath<TMASTER, TMKEY>(string collectionName, TMKEY masterId)
         {
-            return $"{typeof(T).GetUrlEncodeName()}/{masterId}/{collectionName}";
+            return $"{typeof(TMASTER).GetUrlEncodeName()}/{masterId}/{collectionName}";
         }
         public async Task<List<T>> getAll()
         {
