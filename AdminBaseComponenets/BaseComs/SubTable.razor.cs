@@ -16,7 +16,7 @@ using Tools;
 namespace AdminBaseComponenets.BaseComs
 {
     
-    public partial class SubTable<TItem, TKEY, TMKEY,TMASTER> : NullableInput2<IEnumerable<TItem>>
+    public partial class SubTable<TItem, TKEY, TMKEY,TMASTER> : NullableInput2<IReadOnlyCollection<TItem>>
          where TItem : class, Models.IIdMapper<TKEY>
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
 
@@ -51,7 +51,7 @@ namespace AdminBaseComponenets.BaseComs
                 Data = Program0.getEntityManager<TItem, TKEY>();
             Console.WriteLine("load getAll2");
             var masterEntityName= typeof(TMASTER).GetUrlEncodeName();
-            value = await Data.getAllSubTable(masterEntityName, collectionName, masterEnityId) as IEnumerable<TItem>;
+            value = await Data.getAllSubTable(masterEntityName, collectionName, masterEnityId) as IReadOnlyCollection<TItem>;
 
 
 

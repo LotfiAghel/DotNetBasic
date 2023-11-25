@@ -6,8 +6,6 @@ using ClTool;
 using System;
 using Newtonsoft.Json.Linq;
 using System.Collections;
-
-
 namespace AdminClientViewModels
 {
 
@@ -53,18 +51,29 @@ namespace AdminClientViewModels
             return o;
 
         }
-        public async Task<IEnumerable<T>> getAll(bool forceReloadFromServer=false)
+        public async Task<IReadOnlyCollection<T>> getAll(bool forceReloadFromServer=false)
         {      
             bool bigTable=typeof(T).GetCustomAttributes(typeof(Attribute),true).ToList().GetFirst<object, Models.BigTable>()!=null;
-            if(bigTable)    
-                return new List<T>();
+            if (bigTable)
+            {
+                var x = new PaginateList<T, TKEY>()
+                {
+                    webClient = this.ocg.webClient,
+                    filter = ocg.getPath(),
+                    pageSize=50,
+                    
+                };
+                x.Count = await x.getSize();
+                return x;
+
+            }
             var d = await ocg.getAll();
             foreach (var r in d)
                 insertOrUpdate(r);
          
             return data;
         }
-        public async Task<IEnumerable<T>> getAll2(Models.IQuery<T> inp)
+        public async Task<IReadOnlyCollection<T>> getAll2(Models.IQuery<T> inp)
         {      
                 
             var d = await ocg.getAll2(inp);
@@ -83,7 +92,7 @@ namespace AdminClientViewModels
 
         }
 
-        public async Task<System.Collections.IEnumerable> getAllSubTable<TMKEY>(string masterEntityName,string collectionName, TMKEY masterEnityId)
+        public async Task<IReadOnlyCollection<T>> getAllSubTable<TMKEY>(string masterEntityName,string collectionName, TMKEY masterEnityId)
         {      
                 
             var d = await ocg.getAll3(masterEntityName,collectionName,masterEnityId);
@@ -272,4 +281,157 @@ namespace AdminClientViewModels
             return data.ConvertAll(x=>new ForeignKey2<T,TKEY>(x.id)).GetEnumerator();
         }
     }
+
+
+    public class IEnumeratorPagination<T, TKEY> : IEnumerator<T>, IEnumerator
+     where T : class, Models.IIdMapper<TKEY>
+     where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
+    {
+        public PaginateList<T, TKEY> parent;
+        public List<T> data = new List<T>();
+        public int index = -1, offset, count, pageSize = 50;
+
+
+        public IEnumeratorPagination(PaginateList<T, TKEY> ocg)
+        {
+            this.parent = ocg;
+        }
+
+        public T Current { get{
+                if (index >= offset+data.Count || index< offset)
+                {
+                    var r = parent.fetch(index, index + pageSize).Result;
+                    data = r.data;
+                    index = 0;
+                    offset = r.start;
+                    //TOOD get data from server
+                }
+                return data[index- offset];
+            } 
+        }
+
+        object IEnumerator.Current
+        {
+            get
+            {
+                if (index >= offset+data.Count || index < offset)
+                {
+                    var r = parent.fetch(index, index + pageSize).Result;
+                    data = r.data;
+                    index = 0;
+                    offset = r.start;
+                    //TOOD get data from server
+                }
+                return data[index- offset];
+            }
+        }
+
+        public void Dispose()
+        {
+
+        }
+
+        public bool MoveNext()
+        {
+            index++;
+            if (index >= parent.Count)
+                return false;
+            
+            return true; ;
+        }
+
+        public void Reset()
+        {
+            index = 0;
+        }
+    }
+
+
+    public class PaginateList<T, TKEY> : IReadOnlyCollection<T>
+        where T : class, Models.IIdMapper<TKEY>
+        where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
+    {
+
+
+        public WebClient webClient;
+        public string filter;
+        public List<T> data = new List<T>();
+        public int index,pageSize;
+        
+        GenericClientInt<T, TKEY> _ocg = null;
+        GenericClientInt<T, TKEY> ocg
+        {
+            get
+            {
+                if (_ocg == null)
+                    _ocg = new GenericClientInt<T, TKEY>(WebClient.webClient);
+                return _ocg;
+            }
+        }
+
+        public int Count { get; set; }
+
+        int IReadOnlyCollection<T>.Count => Count;
+
+        public class FetchR
+        {
+            public List<T> data;
+            public int start, end, count;
+        }
+        public async Task<FetchR> fetch(int index,int pageSize)
+        {
+            var response = await webClient.fetch014(filter + $"?range=[{index},{index + pageSize}]", null,HttpMethod.Get);
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+            var ss = reader.ReadToEnd();
+            var data=JToken.Parse(ss).ToObject<List<T>>(webClient.settings1);// (settings1);
+            string returnString = await reader.ReadToEndAsync();
+            for (int i = 0; i < response.Headers.Count; i++)
+            {
+                string name = response.Headers.GetKey(i);
+                if (name != "Content-Range")
+                    continue;
+                string value = response.Headers.Get(i)!;
+                var z=value.Split("/");
+                var z0=z[0].Split("-");
+                int start= int.Parse(z0[0].Split(" ")[1]);
+                int end = int.Parse(z0[1]);
+                int count = int.Parse(z[1]);
+                return new FetchR(){
+                    start=start,
+                    end=end,
+                    count=count,
+                    data= data
+                };
+            }
+            return new FetchR()
+            {
+                start = 0,
+                end = 0,
+                count=0,
+                data = data
+            };
+
+        }
+        public async Task<int> getSize()
+        {
+            return (await fetch(0,0)).count;
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return new IEnumeratorPagination<T,TKEY>(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new IEnumeratorPagination<T,TKEY>(this);
+        }
+
+        public List<T> GetRange(int virtualizeOffset, int virtualizeCount)
+        {
+            return fetch(virtualizeOffset, virtualizeCount).Result.data;
+        }
+    }
+
+
 }

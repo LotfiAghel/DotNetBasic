@@ -20,7 +20,7 @@ namespace AdminClientViewModels
 
         public int Count => data.Count;
 
-        public async Task<IEnumerable<T>> getAll(bool froceFromServer=false)
+        public async Task<IReadOnlyCollection<T>> getAll(bool froceFromServer=false)
         {
 
             //await Task.WhenAll(tasks: dd.ToArray());
@@ -120,7 +120,7 @@ namespace AdminClientViewModels
             throw new NotImplementedException();
             
         }
-        public async Task<System.Collections.IEnumerable> getAllSubTable<TMKEY>(string masterEntityName,string collectionName, TMKEY masterEnityId)
+        public async Task<IReadOnlyCollection<T>> getAllSubTable<TMKEY>(string masterEntityName,string collectionName, TMKEY masterEnityId)
         {      
                 
             var d = await ocg.getAll3(masterEntityName,collectionName,masterEnityId );

@@ -89,9 +89,7 @@ namespace ClTool
                 }
             }
         }
-
-
-        public virtual async Task<string> fetch(string url, string payload, HttpMethod method)
+        public virtual async Task<WebResponse> fetch014(string url, string payload, HttpMethod method)
         {
             Console.WriteLine("fetch url " + url);
             Console.WriteLine("with data :" + payload);
@@ -130,12 +128,12 @@ namespace ClTool
             {
                 response = request.GetResponse();
             }
-            catch(WebException e)
+            catch (WebException e)
             {
                 onLogout?.Invoke();
                 return null;
             }
-            
+
             HttpWebResponse responseWithLoginCookies = (HttpWebResponse)response;
             cookie = responseWithLoginCookies.Cookies;
             Console.WriteLine("---- " + responseWithLoginCookies.Headers.Count);
@@ -164,6 +162,23 @@ namespace ClTool
                 // Show the string representation of the cookie.
                 Console.WriteLine("String: {0}", cook.ToString());
             }
+
+            
+            return response;
+        }
+
+
+        public virtual async Task<string> fetch(string url, string payload, HttpMethod method)
+        {
+            
+            WebResponse response= await  fetch014(url,payload, method);
+
+            
+            HttpWebResponse responseWithLoginCookies = (HttpWebResponse)response;
+            cookie = responseWithLoginCookies.Cookies;
+            Console.WriteLine("---- " + responseWithLoginCookies.Headers.Count);
+
+            
 
             StreamReader reader = new StreamReader(response.GetResponseStream());
             string returnString = await reader.ReadToEndAsync();
@@ -273,6 +288,11 @@ namespace ClTool
             var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
             return x.ToObject<TOUT>(settings1);
         }
+        public async Task<TOUT> fetchWithHeader<TIN, TOUT>(string url, HttpMethod method, TIN payload)
+        {
+            var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
+            return x.ToObject<TOUT>(settings1);
+        }
         public async Task<object> fetch(string url, HttpMethod method, Type TOUT, object payload)
         {
             var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
@@ -313,12 +333,15 @@ namespace ClTool
             this.additinalUrl = additinalUrl;
 
         }
-
+        public string getPath()
+        {
+            return additinalUrl + typeof(T).GetUrlEncodeName();
+        }
         public async Task<List<T>> getAll()
         {
             if (cash != null)
                 return cash;
-            return cash = await webClient.fetch<T, List<T>>(additinalUrl + typeof(T).GetUrlEncodeName(), HttpMethod.Get, null);
+            return cash = await webClient.fetch<T, List<T>>(getPath(), HttpMethod.Get, null);
         }
         public async Task<List<T>> getAll2(IQuery<T> inp)
         {

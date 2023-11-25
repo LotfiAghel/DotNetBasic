@@ -48,7 +48,7 @@ namespace AdminClientViewModels
                     data.Add(row);
             }
         }
-        public async Task<IEnumerable<T>> getAll(bool froceReloadFromServer)
+        public async Task<IReadOnlyCollection<T>> getAll(bool froceReloadFromServer)
         {
             await masterManager.fetchFiltered(pr.Name, masterId);
             refresh();
@@ -90,7 +90,7 @@ namespace AdminClientViewModels
         {
             return data;
         }
-        public async Task<System.Collections.IEnumerable> getAllSubTable<TMKEY>(string masterEntityName, string collectionName, TMKEY masterEnityId)
+        public async Task<IReadOnlyCollection<T>> getAllSubTable<TMKEY>(string masterEntityName, string collectionName, TMKEY masterEnityId)
         {
 
             return data;

@@ -14,11 +14,12 @@ using Tools;
 using Newtonsoft.Json;
 using Microsoft.JSInterop;
 using System.Threading;
+using AdminClientViewModels;
 
 namespace AdminBaseComponenets.BaseComs
 {
     
-    public partial class DataListSyncfusion<TItem,TKEY> : NullableInput2<IEnumerable<TItem>>
+    public partial class DataListSyncfusion<TItem,TKEY> : NullableInput2<IReadOnlyCollection<TItem>>
          where TItem : class, Models.IIdMapper<TKEY>
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
@@ -40,7 +41,7 @@ namespace AdminBaseComponenets.BaseComs
         public RenderFragment<TItem> ChildContent { get; set; }
 
 
-        TItem selectedEmployee;
+        TItem selectedTItem;
 
         bool widget = true;
 
@@ -72,9 +73,29 @@ namespace AdminBaseComponenets.BaseComs
 
         bool showModal = false;
 
+        List<TItem> value2;
 
+        private int totalTItems;
 
-
+        private async Task OnReadData(DataGridReadDataEventArgs<TItem> e)
+        {
+            if (!e.CancellationToken.IsCancellationRequested)
+            {
+                List<TItem> response;
+                if (value is List<TItem> li) { 
+                    value2 = li;
+                    totalTItems = li.Count;
+                    return;
+                }
+                if (value is PaginateList<TItem,TKEY> pl)
+                {
+                    value2 = pl.GetRange((e.Page-1)*e.PageSize, e.PageSize);
+                    totalTItems = pl.Count;
+                    return;
+                }
+                
+            }
+        }
 
         void ModalShow(TItem t )
         {
@@ -107,7 +128,7 @@ namespace AdminBaseComponenets.BaseComs
         {
 
 
-            selectedEmployee = e.Item;
+            selectedTItem = e.Item;
             //var itemId = (e.Item as IIdMapper<TKEY>).id;
             //object value1 = await JSRuntime.InvokeAsync<object>("open","blank");
             

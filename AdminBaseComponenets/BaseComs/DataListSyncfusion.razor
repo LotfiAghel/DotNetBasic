@@ -7,12 +7,12 @@
 @using Newtonsoft.Json.Linq;
 @inject NavigationManager NavManager
 @using Blazorise.DataGrid
-@inherits NullableInput2<IEnumerable<TItem>>
+@inherits NullableInput2<IReadOnlyCollection<TItem>>
 @inject IJSRuntime jsRuntime
 
 @{
     if(value!=null)
-        Console.WriteLine("data size "+value.Count());
+        Console.WriteLine("data size "+value.Count);
     else
         Console.WriteLine("data is null");
 }
@@ -55,7 +55,7 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <GenericForm TItem=@TItem value=@selectedEmployee></GenericForm>
+            <GenericForm TItem=@TItem value=@selectedTItem></GenericForm>
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
@@ -65,15 +65,17 @@
 </Modal>
 
 <DataGrid TItem="TItem"
-        Data=@value
+        Data=@value2
+          ReadData=@OnReadData
         RowDoubleClicked=onClick
         RowClicked=onClick2
+          TotalItems="@totalTItems"
         onclick=@NavigateToNewTab2
         Responsive
         ShowPager
         Borderless
         Resizable
-          
+          PageSize=15
           >
      <DataGridColumns>
             <!-- @bind-SelectedRow=@selectedEmployee<DataGridCommandColumn>
@@ -115,18 +117,11 @@
 
 @code {
 
-    public async Task NavigateToNewTab()
-    {
-        
-        string url = "/counter";
-
-        await jsRuntime.InvokeAsync<object>("open", url, "_blank");
-
-    }
+    
     public async Task NavigateToNewTab2(MouseEventArgs args)
     {
         if(args.CtrlKey){
-            var itemId = selectedEmployee.id;
+            var itemId = selectedTItem.id;
             string url = $"{EntityName}/edit/{itemId}";
 
             await jsRuntime.InvokeAsync<object>("open", url, "_blank");

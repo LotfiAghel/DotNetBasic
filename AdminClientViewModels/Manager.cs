@@ -19,7 +19,7 @@ namespace AdminClientViewModels
     {
 
         Task<T> get01(object id);
-        Task<IEnumerable<T>> getAll(bool froceFromServer = false);
+        Task<IReadOnlyCollection<T>> getAll(bool froceFromServer = false);
         //IEnumerable<T> getAllFast();
         T getFast(string id);
         Task<T> post(T id);
@@ -32,7 +32,7 @@ namespace AdminClientViewModels
     {
 
 
-        Task<System.Collections.IEnumerable> getAllSubTable<TMKEY>(string masterEntityName, string collectionName, TMKEY masterEnityId);
+        Task<IReadOnlyCollection<T>> getAllSubTable<TMKEY>(string masterEntityName, string collectionName, TMKEY masterEnityId);
 
         Task<T> get(TKEY id);
         //Task<T> get0s(TKEY id);
