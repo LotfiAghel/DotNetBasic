@@ -125,6 +125,11 @@ namespace Models
                         {
                             prop.Ignored = true;
                         }
+                        var aa2 = ForeignKeyAttr.fpropertis[pi].OfType<ForeignKeyAttribute>();
+                        if (aa2 != null && aa2.ToList().Count > 0)
+                        {
+                            prop.Ignored = true;
+                        }
                     }
                 }
 
@@ -152,11 +157,15 @@ namespace Models
         {
 
             IList<JsonProperty> props = base.CreateProperties(type, memberSerialization);
-            var pp = type.GetProperties();
+            HashSet<string> names = new();
             foreach (var prop in props)
             {
                 //prop.PropertyName = prop.UnderlyingName;
-                prop.PropertyName = Char.ToLowerInvariant(prop.PropertyName[0]) + prop.PropertyName.Substring(1);
+                string name = prop.PropertyName.getCamelParm();
+                while (names.Contains(name))
+                    name += "u";
+
+                prop.PropertyName = name;
             }
 
             return props;

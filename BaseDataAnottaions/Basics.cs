@@ -142,6 +142,7 @@ public class ForeignKeyAttr : Attribute
                 if (!ForeignKeyAttr.fpropertis.ContainsKey(rv))
                     ForeignKeyAttr.fpropertis[rv] = new();
                 ForeignKeyAttr.fpropertis[rv].Add(new ForeignKeyAttribute(pr.Name));
+                ForeignKeyAttr.fpropertis[pr].Add(new ForeignKeyAttribute(rv.Name));
                 if (pr.PropertyType.IsClass)
                 {
                     ForeignKeyAttr.fpropertis[rv].Add(new ForeignKeyAttr(pr.PropertyType));
