@@ -89,7 +89,7 @@ namespace AdminBaseComponenets.BaseComs
                 }
                 if (value is PaginateList<TItem,TKEY> pl)
                 {
-                    value2 = pl.GetRange((e.Page-1)*e.PageSize, e.PageSize);
+                    value2 = await pl.GetRange((e.Page-1)*e.PageSize, e.PageSize);
                     totalTItems = pl.Count;
                     return;
                 }

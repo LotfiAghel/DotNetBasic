@@ -396,16 +396,12 @@ namespace AdminClientViewModels
         public async Task<FetchR> fetch(int index,int pageSize)
         {
             var response = await webClient.fetch014(filter + $"?range=[{index},{index + pageSize}]", null,HttpMethod.Get);
-            StreamReader reader = new StreamReader(response.GetResponseStream());
-            var ss = reader.ReadToEnd();
-            var data=JToken.Parse(ss).ToObject<List<T>>(webClient.settings1);// (settings1);
-            string returnString = await reader.ReadToEndAsync();
-            for (int i = 0; i < response.Headers.Count; i++)
+           
+            var data=JToken.Parse(response.body).ToObject<List<T>>(webClient.settings1);// (settings1);
+            
+            
             {
-                string name = response.Headers.GetKey(i);
-                if (name != "Content-Range")
-                    continue;
-                string value = response.Headers.Get(i)!;
+                string value = response.header["Content-Range"];
                 var z=value.Split("/");
                 var z0=z[0].Split("-");
                 int start= int.Parse(z0[0].Split(" ").LastOrDefault());
@@ -442,9 +438,9 @@ namespace AdminClientViewModels
             return new IEnumeratorPagination<T,TKEY>(this);
         }
 
-        public List<T> GetRange(int virtualizeOffset, int virtualizeCount)
+        public async Task<List<T>> GetRange(int virtualizeOffset, int virtualizeCount)
         {
-            return fetch(virtualizeOffset, virtualizeCount).Result.data;
+            return (await fetch(virtualizeOffset, virtualizeCount)).data;
         }
     }
 

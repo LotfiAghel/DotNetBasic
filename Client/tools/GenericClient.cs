@@ -90,7 +90,12 @@ namespace ClTool
                 }
             }
         }
-        public virtual async Task<WebResponse> fetch014(string url, string payload, HttpMethod method)
+        public class MyHttpResponse
+        {
+            public string body;
+            public Dictionary<string,string> header;
+        }
+        public virtual async Task<MyHttpResponse> fetch014(string url, string payload, HttpMethod method)
         {
             Console.WriteLine("fetch url " + url);
             Console.WriteLine("with data :" + payload);
@@ -163,27 +168,29 @@ namespace ClTool
                 // Show the string representation of the cookie.
                 Console.WriteLine("String: {0}", cook.ToString());
             }
+            var z=new StreamReader(response.GetResponseStream());
+            var ss=new MyHttpResponse()
+            {
+                body = await z.ReadToEndAsync(),
+                header = new()
+            };
 
-            
-            return response;
+            for (int i = 0; i < response.Headers.Count; i++)
+            {
+                string name = response.Headers.GetKey(i);
+                string value = response.Headers.Get(i)!;
+                ss.header[name] = value;
+            }
+            return ss;
         }
 
 
         public virtual async Task<string> fetch(string url, string payload, HttpMethod method)
         {
             
-            WebResponse response= await  fetch014(url,payload, method);
+            var response= await  fetch014(url,payload, method);
 
-            
-            HttpWebResponse responseWithLoginCookies = (HttpWebResponse)response;
-            cookie = responseWithLoginCookies.Cookies;
-            Console.WriteLine("---- " + responseWithLoginCookies.Headers.Count);
-
-            
-
-            StreamReader reader = new StreamReader(response.GetResponseStream());
-            string returnString = await reader.ReadToEndAsync();
-            return returnString;
+            return response.body;
         }
 
 
