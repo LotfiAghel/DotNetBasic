@@ -102,7 +102,7 @@ namespace MyRefelctionMirror
         static TypeNameSerializationBinder2()
         {
             global = new TypeNameSerializationBinder2();
-            global.Map2<NpgsqlTypes.NpgsqlRange<DateTime>>("Range<Date>");
+            //global.Map2<NpgsqlTypes.NpgsqlRange<DateTime>>("Range<Date>");
             global.Map2<FromBodyAttribute>("Microsoft.AspNetCore.Mvc.FromBodyAttribute");
             global.Map2<FromFormAttribute>("Microsoft.AspNetCore.Mvc.FromFormAttribute");
             global.Map2<FromQueryAttribute>("Microsoft.AspNetCore.Mvc.FromQueryAttribute");
