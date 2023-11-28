@@ -81,9 +81,8 @@ namespace AdminBaseComponenets.BaseComs
         {
             if (!e.CancellationToken.IsCancellationRequested)
             {
-                List<TItem> response;
                 if (value is List<TItem> li) { 
-                    value2 = li;
+                    value2 = li.GetRange((e.Page - 1) * e.PageSize, Math.Min(e.PageSize,li.Count - (e.Page - 1) * e.PageSize));
                     totalTItems = li.Count;
                     return;
                 }
