@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Client\Client.csproj" />
     <ProjectReference Include="..\BaseModels\BaseModels.csproj" />
-    <ProjectReference Include="..\ExtraBaseQueryTool\ExtraBaseQueryTool.csproj" />
   </ItemGroup>
 
 </Project>
