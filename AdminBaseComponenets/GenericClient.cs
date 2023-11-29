@@ -1,25 +1,10 @@
 using System;
-using Models;
 using System.Net;
-using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Text;
-using Newtonsoft.Json;
-
-
-
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.Design;
-using Npgsql.Replication.PgOutput.Messages;
-using NpgsqlTypes;
-using Tools;
 using System.Net.Http;
-using System.Net.Http.Json;
-using System.Collections;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 namespace ClTool2
