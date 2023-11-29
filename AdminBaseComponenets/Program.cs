@@ -111,14 +111,14 @@ namespace AdminBaseComponenets
                 return entityManagers[ty];
             object b = null;
             var keyTypes = new List<Type>(){ typeof(int), typeof(string), typeof(System.Guid) };
-            foreach (var KeyType in keyTypes )
+            foreach (var KeyType in keyTypes)
                 if (ty.IsAssignableTo(typeof(IIdMapper<>).MakeGenericType(KeyType)))
+                {
                     b = typeof(NewEntityService<,>).MakeGenericType(new Type[] { ty, KeyType }).GetConstructor(new Type[] { }).Invoke(new object[] { });
-
-            if (b != null)
-                entityManagers[ty] = b as IEntityService00;
-
-            return b as IEntityService00;
+                    entityManagers[ty] = b as IEntityService00;
+                    return b as IEntityService00;
+                }
+            return null;
         }
 
 
