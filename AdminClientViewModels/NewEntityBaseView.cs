@@ -96,7 +96,7 @@ namespace AdminClientViewModels
 
         public async Task<IReadOnlyCollection<T>> getAllSubTable<TMASTER, TMKEY>(string collectionName, TMKEY masterEnityId)
         {
-            bool bigTable = typeof(TMASTER).GetProperty(collectionName)!.GetCustomAttributes(typeof(BigTable), true).ToList() != null;
+            bool bigTable = typeof(TMASTER).GetProperty(collectionName)?.GetCustomAttributes(typeof(BigTable), true).ToList() != null;
             if (bigTable)
             {
                 var url=ocg.getSubTablePath<TMASTER, TMKEY>(collectionName, masterEnityId);
