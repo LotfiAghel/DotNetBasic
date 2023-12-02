@@ -35,11 +35,9 @@
 
 
 
-    [Parameter]
-    public DateTime? value { get; set; }
-
+    
     private string dateValue { get; set; } = DateTime.Now.ToPersianDateString("yyyy/MM/dd");
-    private string dateValue2 => value.Value.ToPersianDateString("yyyy/MM/dd");
+    private string dateValue2 => value.ToPersianDateString("yyyy/MM/dd");
     private DateTime? timeValue { get; set; } = DateTime.Now;
 
     DateTime? prvValue;
@@ -50,10 +48,10 @@
     protected override void OnInitialized()
     {
         Console.WriteLine($"PersianDateTimepicker OnInitialized");
-        if (value.HasValue && value.Value != DateTime.MinValue)
+        if ( value != DateTime.MinValue)
         {
             Console.WriteLine($"PersianDateTimepicker OnInitialized 1");
-             DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value.Value,  TimeZoneInfo.Local);
+             DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value,  TimeZoneInfo.Local);
 
             
             
@@ -66,7 +64,7 @@
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine($"PersianDateTimepicker OnInitializedAsync");
-        if (value.HasValue && value.Value != DateTime.MinValue)
+        if ( value != DateTime.MinValue)
         {
             Console.WriteLine($"PersianDateTimepicker OnInitializedAsync 1");
              
@@ -74,7 +72,7 @@
 
          
         
-            DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value.Value,  TimeZoneInfo.Local);
+            DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value,  TimeZoneInfo.Local);
 
             dateValue = databaseUtcTime.ToPersianDateString("yyyy/MM/dd");
             timeValue = databaseUtcTime;
