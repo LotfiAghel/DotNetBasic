@@ -20,22 +20,7 @@
     System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
 
     
-    public DateTime? _value;
-    [Parameter]
-    public DateTimeOffset? value
-    {
-        get
-        {
-            return _value;
-        }
-        set
-        {
-            if (value.HasValue)
-                _value = new DateTime(value.Value.Ticks);
-            else
-                _value = null;
-        }
-    }
+   
 
     private string dateValue { get; set; } = DateTime.Now.ToPersianDateString("yyyy/MM/dd");
     
@@ -48,10 +33,9 @@
         }
         set
         {
-            if (value.HasValue)
-                _timeValue = new DateTime(value.Value.Ticks);
-            else
-                _timeValue = null;
+            
+            _timeValue = new DateTime(value.Value.Ticks);
+            
         }
     }
 
@@ -63,9 +47,9 @@
 
     protected override void OnInitialized()
     {
-        if (value.HasValue && value.Value != DateTime.MinValue)
+        if (value != DateTime.MinValue)
         {
-            dateValue = value.Value.ToPersianDateString("yyyy/MM/dd");
+            dateValue = value.ToPersianDateString("yyyy/MM/dd");
             timeValue = value;
         }
     }
