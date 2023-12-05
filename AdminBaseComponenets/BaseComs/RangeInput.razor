@@ -1,0 +1,29 @@
+@typeparam TItem 
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+@using Microsoft.AspNetCore.Components.Rendering;
+@using  Newtonsoft.Json;
+@inherits EditBase2<Models.Range<TItem>>
+
+<EditForm Model="@value">
+
+
+    <Row>
+        <Column ColumnSize=ColumnSize.Is6>
+            @autoComp(()=> value.start)
+        </Column>
+        <Column ColumnSize=ColumnSize.Is6>
+            @autoComp(()=> value.end)
+        </Column>
+    </Row>
+</EditForm>
+
+@code{
+    
+}

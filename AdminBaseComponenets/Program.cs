@@ -1040,6 +1040,12 @@ namespace AdminBaseComponenets
                 
                 return generator;
             };
+            formRenderer2[typeof(Models.Range<>)] = (type, prps) =>
+            {
+                Console.WriteLine("formRenderer2(Range<>)");
+                return typeof(AdminBaseComponenets.BaseComs.RangeInput<>).MakeGenericType(type.GetGenericArguments()[0]);
+            };
+
             formRenderer2[typeof(List<>)] = (type, prps) =>
             {
                 Console.WriteLine("formRenderer2(List<>)");
