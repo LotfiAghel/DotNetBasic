@@ -6,6 +6,43 @@ using System.Threading.Tasks;
 
 namespace Models
 {
+    public class IntIntPair
+    {
+        public int key { get; set; }
+        public int count { get; set; }
+    }
+    public class IntRangeToIntPair
+    {
+        public IntRangeRequest key { get; set; }
+        public int count { get; set; }
+
+
+    }
+    public struct Range<T>
+    { //TODO must be struct
+        public T start { get; set; }
+        public T end { get; set; }
+    }
+    public struct TimeRangeRequest
+    {
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
+
+
+        public void setLastDays(int days)
+        {
+            start = DateTime.UtcNow.AddDays(-days);
+            end = DateTime.UtcNow;
+        }
+        public void setLast30Days() => setLastDays(30);
+    }
+    public class IntRangeRequest
+    {
+        public int start { get; set; }
+        public int end { get; set; }
+        public override string ToString() => $"[{start},{end}]";
+    }
+
     public interface IEntityManagerW<T, TKEY>
        where T : class, Models.IIdMapper<TKEY>
        where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
@@ -50,6 +87,11 @@ namespace Models
     {
 
         IQueryable<T> run(IQueryable<T> q);
+    }
+    public interface IQueryConvertor<T,T2>
+    {
+
+        IQueryable<T2> run(IQueryable<T> q);
     }
 
 
