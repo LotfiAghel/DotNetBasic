@@ -4,8 +4,8 @@
 @{
     Console.WriteLine($"PersianDateTimepicker {value}");
 }
-<div class="row pt-2 pb-2" @key="@($"id-{Guid.NewGuid().ToString()}")">
-    <div class="col-5" @key="@($"id-{Guid.NewGuid().ToString()}")" >
+<Row>
+    <Column ColumnSize=ColumnSize.Is4>
         <InputPersianDatePicker Id="@($"id-{Guid.NewGuid().ToString()}")" @key="@($"id-{Guid.NewGuid().ToString()}")"
                                 @bind-Value=@dateValue
                                 Visible="true"
@@ -22,28 +22,49 @@
                                 Theme="PickerTheme.Default"
                                 Style="font-family: tahoma; margin-left:20px; float: right"
                                 OnChange="@DateValueChangeHandler" />
-    </div>
-
+    </Column>
+    <Column ColumnSize=ColumnSize.Is4>
+        <Addons>
+            <Addon AddonType="AddonType.Body">
+                <TimePicker @ref="@timePicker" TValue="TimeSpan?" Time=@timeValue TimeChanged="@OnTimeChanged" />
+            </Addon>
+            <Addon AddonType="AddonType.End">
+                <Button Color="Color.Light" Clicked="@(()=>timePicker.ToggleAsync())">
+                    <Icon Name="IconName.CalendarDay" />
+                </Button>
+            </Addon>
+        </Addons>
+        <!--<TimeEdit TValue="TimeSpan?" Time=@timeValue TimeChanged="@OnTimeChanged"  /> -->
+    </Column>
     
-</div>
-<div>@($"{dateValue} --> {dateValue2}")</div>
+
+</Row>
+
+<div>@($"{dateValue} --> {dateValue2}  {value.ToString()}")</div>
 
 @code
 {
+    TimePicker<TimeSpan?> timePicker;
 
     System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
 
 
 
-    
+
     private string dateValue { get; set; } = DateTime.Now.ToPersianDateString("yyyy/MM/dd");
     private string dateValue2 => value.ToPersianDateString("yyyy/MM/dd");
-    private DateTime? timeValue { get; set; } = DateTime.Now;
+    private TimeSpan timeValue {
+        get; 
+        set; 
+    } = new TimeSpan(0);
 
     DateTime? prvValue;
+    private TimeSpan selectedTime;/*{ 
+    get => TimeZoneInfo.ConvertTimeFromUtc(value, TimeZoneInfo.Local) - TimeZoneInfo.ConvertTimeFromUtc(value, TimeZoneInfo.Local).Date;
+    set => this.value = TimeZoneInfo.ConvertTimeToUtc(TimeZoneInfo.ConvertTimeFromUtc(this.value, TimeZoneInfo.Local).Date + value);
+    }*/
 
-    
-     
+
 
     protected override void OnInitialized()
     {
@@ -51,13 +72,13 @@
         if ( value != DateTime.MinValue)
         {
             Console.WriteLine($"PersianDateTimepicker OnInitialized 1");
-             DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value,  TimeZoneInfo.Local);
+            DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value,  TimeZoneInfo.Local);
 
-            
-            
+
+
 
             dateValue = databaseUtcTime.ToPersianDateString("yyyy/MM/dd");
-            timeValue = databaseUtcTime;
+            timeValue = databaseUtcTime-databaseUtcTime.Date; ;
             Console.WriteLine($"PersianDateTimepicker OnInitialized {dateValue}");
         }
     }
@@ -67,28 +88,47 @@
         if ( value != DateTime.MinValue)
         {
             Console.WriteLine($"PersianDateTimepicker OnInitializedAsync 1");
-             
 
 
-         
-        
+
+
+
             DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value,  TimeZoneInfo.Local);
 
             dateValue = databaseUtcTime.ToPersianDateString("yyyy/MM/dd");
-            timeValue = databaseUtcTime;
+            timeValue = databaseUtcTime-databaseUtcTime.Date; ;
             Console.WriteLine($"PersianDateTimepicker OnInitializedAsync {dateValue}");
         }
     }
+    Task OnTimeChanged(TimeSpan? Time)
+    {
+        if (Time.HasValue)
+            timeValue = Time.Value;
+        else
+            timeValue = new TimeSpan(0);
+
+        var date = dateValue.toPersianDate();
+        DateTime databaseUtcTime = pc.ToDateTime(pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date), timeValue.Hours, timeValue.Minutes, timeValue.Seconds, 0);
+        value = TimeZoneInfo.ConvertTimeToUtc(databaseUtcTime, TimeZoneInfo.Local);
+        if (prvValue != value)
+        {
+            OnChange(value);
+        }
+        prvValue = value;
+
+        return Task.CompletedTask;
+    }
+   
 
     async Task DateValueChangeHandler()
     {
 
         var date = dateValue.toPersianDate();
         DateTime databaseUtcTime;
-        if (timeValue.HasValue)
-            databaseUtcTime = pc.ToDateTime(pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date), timeValue.Value.Hour, timeValue.Value.Minute, timeValue.Value.Second, 0);
-        else
-            databaseUtcTime = pc.ToDateTime(pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date), 0, 0, 0, 0);
+        //if (timeValue.HasValue)
+            databaseUtcTime = pc.ToDateTime(pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date), timeValue.Hours, timeValue.Minutes, timeValue.Seconds, 0);
+        //else
+        //    databaseUtcTime = pc.ToDateTime(pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date), 0, 0, 0, 0);
 
 
 
