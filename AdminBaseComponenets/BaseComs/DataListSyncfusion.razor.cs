@@ -74,24 +74,37 @@ namespace AdminBaseComponenets.BaseComs
         bool showModal = false;
 
         List<TItem> value2;
+        
 
         private int totalTItems;
-
+        private int chandeData=0;
+        private async Task GetRange(int s,int l)
+        {
+            if (value is List<TItem> li)
+            {
+                totalTItems = li.Count;
+                if(l>totalTItems-s)
+                    l=totalTItems-s;
+                value2 = li.GetRange(s,l);
+                
+                return;
+            }
+            if (value is PaginateList<TItem, TKEY> pl)
+            {
+                totalTItems = pl.Count;
+                if (l > totalTItems - s)
+                    l = totalTItems - s;
+                value2 = await pl.GetRange(s,l);
+                
+                return;
+            }
+        }
         private async Task OnReadData(DataGridReadDataEventArgs<TItem> e)
         {
+            
             if (!e.CancellationToken.IsCancellationRequested)
             {
-                if (value is List<TItem> li) { 
-                    value2 = li.GetRange((e.Page - 1) * e.PageSize, Math.Min(e.PageSize,li.Count - (e.Page - 1) * e.PageSize));
-                    totalTItems = li.Count;
-                    return;
-                }
-                if (value is PaginateList<TItem,TKEY> pl)
-                {
-                    value2 = await pl.GetRange((e.Page-1)*e.PageSize, e.PageSize);
-                    totalTItems = pl.Count;
-                    return;
-                }
+                await GetRange((e.Page - 1) * e.PageSize, e.PageSize);
                 
             }
         }

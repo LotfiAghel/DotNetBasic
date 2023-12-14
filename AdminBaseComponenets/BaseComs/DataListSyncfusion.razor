@@ -11,10 +11,16 @@
 @inject IJSRuntime jsRuntime
 
 @{
+
     if(value!=null)
         Console.WriteLine("data size "+value.Count);
     else
         Console.WriteLine("data is null");
+    if (value != null && chandeData!=value.GetHashCode() )
+    {
+        chandeData = value.GetHashCode();
+        GetRange(0,11);
+    }
 }
 
 @if (itemName != null || true)

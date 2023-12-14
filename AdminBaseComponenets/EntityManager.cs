@@ -272,7 +272,7 @@ namespace AdminBaseComponenets
 
         public void PopulateFeature()
         {
-            classess = typeof(T).GetSubClasses();
+            classess = typeof(T).GetSubClasses(false);
         }
 
         public PointerInputBase2()
