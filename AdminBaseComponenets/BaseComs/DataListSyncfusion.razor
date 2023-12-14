@@ -157,8 +157,8 @@
     }
     private Task SaveModal()
     {
-        //var dataManager=Program0.getEntityManager<TMASTER, TMKEY>();
-        //Data.post(addingItem);
+        var dataManager=Program0.getEntityManager<TItem, TKEY>();
+        dataManager.update(selectedTItem);
         return modalRef.Hide();
     }
 }
