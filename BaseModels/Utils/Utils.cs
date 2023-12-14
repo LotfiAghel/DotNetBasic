@@ -15,6 +15,12 @@ namespace SGSStandalone.Core
             return (new System.DateTime(1970, 1, 1)).AddMilliseconds(ts);
             //return (long)(dt - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
         }
+        public static double ToOADate(this long ts)
+        {
+            return ts.milliSecToUtc().ToOADate();
+            //return (long)(dt - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
+        }
+        
         public static long totalMilliSeconds(this System.DateTime dt)
         {
             return (long)(dt - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
