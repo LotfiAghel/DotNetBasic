@@ -82,11 +82,20 @@ namespace Models
 
 
     }
+    public interface IQuery0
+    {
 
-    public interface IQuery<T>
+    }
+    public interface IQuery<T>: IQuery0
     {
 
         IQueryable<T> run(IQueryable<T> q);
+    }
+
+     
+    public class DefultSortAttribute<T> : Attribute where T : IQuery0 
+    {
+        
     }
     public interface IQueryConvertor<T,T2>
     {

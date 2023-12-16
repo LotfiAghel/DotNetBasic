@@ -4,6 +4,8 @@ using System.Linq.Expressions;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System;
+using Models;
+using System.Security.Cryptography.X509Certificates;
 
 namespace AdminPanel
 {
@@ -116,14 +118,8 @@ namespace AdminPanel
             }
             return new(range2[0], range2[1]);
         }
-        public static IQueryable<TT> addPagination<TT>(this IQueryable<TT> q, Tuple<int, int> range, string sort, string filter)
+        public static Tuple<string, string> convertToSort(this string sort)
         {
-
-
-
-
-
-
 
             try
             {
@@ -132,11 +128,8 @@ namespace AdminPanel
                 {
                     var j = JToken.Parse(sort);
                     var sort2 = j.ToObject<List<string>>();
-                    //q = q.OrderByDescending(GetParm2<T, object>(sort2[0]));
-                    if (sort2[1] == "DESC")
-                        q = q.OrderByDescending<TT>(sort2[0]);
-                    else
-                        q = q.OrderBy<TT>(sort2[0]);
+                    return new Tuple<string, string>(sort2[0], sort2[1]);
+                    
                 }
                 catch (Exception e)
                 {
@@ -148,6 +141,32 @@ namespace AdminPanel
             {
 
             }
+            return null;
+        }
+        public static IQueryable<TT> addPagination<TT>(this IQueryable<TT> q, Tuple<int, int> range, Tuple<string,string> sr, string filter)
+        {
+
+
+
+
+            
+            if (sr == null)
+            {
+                var z=typeof(TT).GetCustomAttributes<Attribute>().Where(x=> x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition()==typeof(DefultSortAttribute<>)).FirstOrDefault();
+                if (z != null) {
+                    var t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { }) as IQuery<TT>;
+                    q = t.run(q);
+                }
+            }
+            else
+            {
+                if (sr.Item2 == "DESC")
+                    q = q.OrderByDescending<TT>(sr.Item1);
+                else
+                    q = q.OrderBy<TT>(sr.Item1);
+            }
+
+           
 
 
 
