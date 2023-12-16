@@ -144,7 +144,7 @@ namespace AdminPanel
             return null;
         }
 
-        public static IQueryable<TT> addSort<TT>(this IQueryable<TT> q, Tuple<string, string> sr)
+        public static IQueryable<TT> addSort<TT>(this IQueryable<TT> q, Tuple<string, string>? sr)
         {
             if (sr == null)
             {
