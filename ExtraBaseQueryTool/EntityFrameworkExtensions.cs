@@ -143,17 +143,14 @@ namespace AdminPanel
             }
             return null;
         }
-        public static IQueryable<TT> addPagination<TT>(this IQueryable<TT> q, Tuple<int, int> range, Tuple<string,string> sr, string filter)
+
+        public static IQueryable<TT> addSort<TT>(this IQueryable<TT> q, Tuple<string, string> sr)
         {
-
-
-
-
-            
             if (sr == null)
             {
-                var z=typeof(TT).GetCustomAttributes<Attribute>().Where(x=> x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition()==typeof(DefultSortAttribute<>)).FirstOrDefault();
-                if (z != null) {
+                var z = typeof(TT).GetCustomAttributes<Attribute>().Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(DefultSortAttribute<>)).FirstOrDefault();
+                if (z != null)
+                {
                     var t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { }) as IQuery<TT>;
                     q = t.run(q);
                 }
@@ -165,6 +162,16 @@ namespace AdminPanel
                 else
                     q = q.OrderBy<TT>(sr.Item1);
             }
+            return q;
+        }
+        public static IQueryable<TT> addPagination<TT>(this IQueryable<TT> q, Tuple<int, int> range, Tuple<string,string> sr, string filter)
+        {
+
+
+
+            q=q.addSort<TT>(sr);
+            
+            
 
            
 
