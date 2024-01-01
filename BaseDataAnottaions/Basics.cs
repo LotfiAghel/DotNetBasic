@@ -135,7 +135,7 @@ public class ForeignKeyAttr : Attribute
         {
             var s = pr.GetCustomAttribute<ForeignKeyAttribute>();
             if (!ForeignKeyAttr.fpropertis.ContainsKey(pr))
-                ForeignKeyAttr.fpropertis[pr] = new();
+                ForeignKeyAttr.fpropertis.Add(pr, new List<Attribute>());
 
             if (s != null) {
                 var rv = propertis.Find(x => x.Name == s.Name);
