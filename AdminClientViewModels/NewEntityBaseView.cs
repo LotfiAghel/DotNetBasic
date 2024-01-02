@@ -129,26 +129,43 @@ namespace AdminClientViewModels
             res.refresh();
             return res;
         }
-        public T getFast(string id){
-            T res=null;
+        public async Task<T> getWS(string id)
+        {
+            TKEY tid = default(TKEY);
+
+            T res = null;
             System.Console.WriteLine("getFast :" + id.ToString());
 
             if (typeof(TKEY) == typeof(Guid))
             {
-                id2En.TryGetValue((TKEY)((object)Guid.Parse(id)), out res);
+                tid = (TKEY)((object)Guid.Parse(id));
             }
 
             if (typeof(TKEY) == typeof(string))
             {
-                id2En.TryGetValue((TKEY)((object)id), out res);
+                tid = (TKEY)((object)id);
             }
             if (typeof(TKEY) == typeof(int))
             {
-                id2En.TryGetValue((TKEY)((object)Int32.Parse( (string)((object)id)  )), out res);
+                tid = (TKEY)((object)Int32.Parse((string)((object)id)));
             }
+            if (res == null)
+            {
+                res = await get(tid);
+            }
+
+            return res;
+        }
+        public T getFast(string id){
+            T res=null;
+            System.Console.WriteLine("getFast :" + id.ToString());
+            var tid=IEntityService00.ConvertS<TKEY>(id);
+            
+            id2En.TryGetValue(tid, out res);
             
             return res;
         }
+        
         public async Task<T> get(TKEY id)
         {
 

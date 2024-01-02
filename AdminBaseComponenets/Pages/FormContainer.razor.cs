@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 using System.Linq;
 using AdminBaseComponenets.BaseComs;
 using Tools;
-
+using AdminClientViewModels;
 
 namespace AdminBaseComponenets.Pages
 {
@@ -33,12 +33,20 @@ namespace AdminBaseComponenets.Pages
                 return await Program0.getEntityManager<T, TKEY>().get01(int.Parse(Id));
             if (typeof(TKEY) == typeof(Guid))
                 return await Program0.getEntityManager<T, TKEY>().get01(Guid.Parse(Id));
-            return await Program0.getEntityManager<T, TKEY>().get01(Id);
+            var t = Program0.getEntityManager<T, TKEY>();
+            if (t == null)
+                return null;
+            return await t.get01(Id);
         }
 
-        public static object getValueFast<TItem>(string Id)
+        public static async Task<object> getValueFast<T,TKEY>(string Id)
+             where T : class, Models.IIdMapper<TKEY>
+            where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
         {
-            return Program0.getEntityManager01<TItem>().getFast(Id);
+            var tid = IEntityService00.ConvertS<TKEY>(Id);
+
+            
+            return await Program0.getEntityManager<T,TKEY>().get( tid);
         }
 
         public static async Task<object> postValue<TItem>(TItem Id)
