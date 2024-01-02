@@ -39,14 +39,16 @@ namespace AdminBaseComponenets.Pages
             return await t.get01(Id);
         }
 
-        public static async Task<object> getValueFast<T,TKEY>(string Id)
+        public static T getValueFast<T,TKEY>(string Id)
              where T : class, Models.IIdMapper<TKEY>
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
         {
             var tid = IEntityService00.ConvertS<TKEY>(Id);
 
-            
-            return await Program0.getEntityManager<T,TKEY>().get( tid);
+
+            var z = Task.Run(async () => await Program0.getEntityManager<T, TKEY>().get(tid));
+            z.Wait();
+            return z.Result;
         }
 
         public static async Task<object> postValue<TItem>(TItem Id)

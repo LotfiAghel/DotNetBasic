@@ -30,8 +30,9 @@
         formView = Program0.createForm(genericArgs[0], new List<Attribute>() { });
         if (!valueIsNew)
         {
+            
             value = (typeof(FormContainer).GetMethod(nameof(getValueFast), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.MakeGenericMethod(genericArgs)
-            .InvokeAsync(this, new object[] { Id })).Result;
+            .Invoke(this, new object[] { Id }));
 
         }
 
