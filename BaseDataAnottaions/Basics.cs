@@ -119,7 +119,12 @@ public class ForeignKeyAttr : Attribute
     public ForeignKeyAttr(Type t)
     {
         type = t;
-        this.tkey=t.GetProperty("id").PropertyType;
+        var p = t.GetProperty("id");
+        if (p == null)
+        {
+            Console.WriteLine("ff");
+        }
+        this.tkey=p.PropertyType;
     }
     public Type[] getTypes()
     {
@@ -143,7 +148,7 @@ public class ForeignKeyAttr : Attribute
                     ForeignKeyAttr.fpropertis[rv] = new();
                 ForeignKeyAttr.fpropertis[rv].Add(new ForeignKeyAttribute(pr.Name));
                 ForeignKeyAttr.fpropertis[pr].Add(new ForeignKeyAttribute(rv.Name));
-                if (pr.PropertyType.IsClass)
+                if (pr.PropertyType.IsClass && pr.PropertyType!=typeof(String) && pr.PropertyType != typeof(string) && pr.PropertyType != typeof(Guid))
                 {
                     ForeignKeyAttr.fpropertis[rv].Add(new ForeignKeyAttr(pr.PropertyType));
                 }
