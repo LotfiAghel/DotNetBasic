@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,8 +21,44 @@ namespace Models
     }
     public struct Range<T>
     { //TODO must be struct
+        
+        public Range(T v, T count) 
+        {
+            this.start = v;
+            this.end = count;
+        }
+
         public T start { get; set; }
         public T end { get; set; }
+    }
+    public struct IntRange: IEnumerator<int>
+    {
+        public IntRange(Range<int> range) : this()
+        {
+            this.range = range;
+        }
+
+        public Range<int> range { get; set; }
+
+        public int Current { get; set; }
+
+        object IEnumerator.Current => throw new NotImplementedException();
+
+        public void Dispose()
+        {
+            
+        }
+
+        public bool MoveNext()
+        {
+            Current++;
+            return Current < range.end;
+        }
+
+        public void Reset()
+        {
+            Current=range.start;
+        }
     }
     public struct TimeRangeRequest
     {
