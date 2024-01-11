@@ -54,6 +54,14 @@ namespace SGSStandalone.Core
         {
             return new System.DateTime(1970 + dt / 12, dt % 12 + 1, 1);
         }
+        public static DateTime IndexToDay(this long dt)
+        {
+            return ((int)dt).IndexToDay();
+        }
+        public static DateTime IndexToDay(this int dt)
+        {
+            return new System.DateTime(1970 ,  1, 1).AddDays(dt);
+        }
         public static long totalWeek(this System.DateTime dt)
         {
             return (long)(dt - new System.DateTime(1970, 1, 1)).TotalDays / 7;
