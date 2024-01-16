@@ -27,7 +27,8 @@ namespace AdminBaseComponenets.BaseComs
 
         public void cacl()
         {
-            ForeignKeyAttr.cacl(typeof(TItem));
+            MDTypeInfo.get(typeof(TItem));
+            //ForeignKeyAttr.cacl(typeof(TItem));
         }
 
         public override bool inRowField() => false;
