@@ -104,12 +104,20 @@ public class MDTypeInfo
     public static MDTypeInfo get(Type t)
     {
         MDTypeInfo z;
-        if (!mp.TryGetValue(t, out z))
-            mp[t] = z = new MDTypeInfo(t);
+        lock (t)
+        {
+            
+            if (!mp.TryGetValue(t, out z))
+            {
+                mp[t] = z = new MDTypeInfo(t);
+                ForeignKeyAttr.cacl(z);
+            }
+        }
         return z;
     }
 
 }
+
 
 public class ForeignKeyAttr : Attribute
 {
@@ -130,34 +138,37 @@ public class ForeignKeyAttr : Attribute
     {
         return new Type[]{ type,tkey};
     }
-    public static void  cacl(Type type)
+    public static void cacl(MDTypeInfo md)
     {
-         List<System.Reflection.PropertyInfo> propertis = type.GetProperties(
-                          BindingFlags.Public |
-                          BindingFlags.NonPublic |
-                          BindingFlags.Instance).ToList();
-        foreach (var pr in propertis)
+        
         {
-            var s = pr.GetCustomAttribute<ForeignKeyAttribute>();
-            if (!ForeignKeyAttr.fpropertis.ContainsKey(pr))
-                ForeignKeyAttr.fpropertis.Add(pr, new List<Attribute>());
-
-            if (s != null) {
-                var rv = propertis.Find(x => x.Name == s.Name);
-                if (!ForeignKeyAttr.fpropertis.ContainsKey(rv))
-                    ForeignKeyAttr.fpropertis.Add(rv, new List<Attribute>());
-                ForeignKeyAttr.fpropertis[rv].Add(new ForeignKeyAttribute(pr.Name));
-                ForeignKeyAttr.fpropertis[pr].Add(new ForeignKeyAttribute(rv.Name));
-                if (pr.PropertyType.IsClass && pr.PropertyType!=typeof(String) && pr.PropertyType != typeof(string) && pr.PropertyType != typeof(Guid))
-                {
-                    ForeignKeyAttr.fpropertis[rv].Add(new ForeignKeyAttr(pr.PropertyType));
-                }
-                else
-                {
-                    ForeignKeyAttr.fpropertis[pr].Add(new ForeignKeyAttr(rv.PropertyType));
-                }
-            }
             
+            
+            List<System.Reflection.PropertyInfo> propertis = md.type.GetProperties(
+                             BindingFlags.Public |
+                             BindingFlags.NonPublic |
+                             BindingFlags.Instance).ToList();
+            foreach (var pr in propertis)
+            {
+                var s = pr.GetCustomAttribute<ForeignKeyAttribute>();
+                
+                if (s != null)
+                {
+                    var rv = propertis.Find(x => x.Name == s.Name);
+                    md.pattrs[rv].attrs.Add(new ForeignKeyAttribute(pr.Name));
+                    md.pattrs[pr].attrs.Add(new ForeignKeyAttribute(rv.Name));
+                    if (pr.PropertyType.IsClass && pr.PropertyType != typeof(String) && pr.PropertyType != typeof(string) && pr.PropertyType != typeof(Guid))
+                    {
+                        md.pattrs[rv].attrs.Add(new ForeignKeyAttr(pr.PropertyType));
+                    }
+                    else
+                    {
+                        md.pattrs[pr].attrs.Add(new ForeignKeyAttr(rv.PropertyType));
+                    }
+                }
+
+
+            }
 
         }
     }

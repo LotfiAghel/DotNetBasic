@@ -397,10 +397,10 @@ namespace AdminBaseComponenets
 
             var type = property.PropertyType;
             var attrs = property.GetCustomAttributes<Attribute>(false).ToList();
-            
-            List<Attribute> extaAtr;
-            if (ForeignKeyAttr.fpropertis.TryGetValue(property, out extaAtr))
-                attrs.AddRange(extaAtr);
+            //ForeignKeyAttr.cacl(property.DeclaringType);
+            var md=MDTypeInfo.get(property.DeclaringType);
+            var extaAtr= md.pattrs[property].attrs;
+            attrs.AddRange(extaAtr);
             if (inPropRender.ContainsKey(type))
             {
                 return createForm(property.PropertyType, attrs);

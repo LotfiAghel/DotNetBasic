@@ -74,6 +74,8 @@ namespace Models
 
             IList<JsonProperty> props = base.CreateProperties(type, memberSerialization);
             var pp = type.GetProperties();
+            var md = MDTypeInfo.get(type);
+            //ForeignKeyAttr.cacl(type);
             foreach (var prop in props)
             {
 
@@ -109,23 +111,17 @@ namespace Models
                         prop.Ignored = true;
                     }
                 }
-                {
-                    List<Attribute> bb;
-                    if (!ForeignKeyAttr.fpropertis.TryGetValue(pi, out bb))
-                        ForeignKeyAttr.cacl(type);
-                }
+                
                 {
                     if (pi.PropertyType.IsClass)
                     {
-                        List<Attribute> bb;
-                        if (!ForeignKeyAttr.fpropertis.TryGetValue(pi, out bb))
-                            ForeignKeyAttr.cacl(type);
-                        var aa = ForeignKeyAttr.fpropertis[pi].OfType<ForeignKeyAttr>();
+                        List<Attribute> bb = md.pattrs[pi].attrs;
+                        var aa = bb.OfType<ForeignKeyAttr>();
                         if (aa != null && aa.ToList().Count > 0)
                         {
                             prop.Ignored = true;
                         }
-                        var aa2 = ForeignKeyAttr.fpropertis[pi].OfType<ForeignKeyAttribute>();
+                        var aa2 = bb.OfType<ForeignKeyAttribute>();
                         if (aa2 != null && aa2.ToList().Count > 0)
                         {
                             prop.Ignored = true;
