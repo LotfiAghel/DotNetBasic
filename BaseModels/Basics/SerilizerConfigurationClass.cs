@@ -160,7 +160,7 @@ namespace Models
                 string name = prop.PropertyName.getCamelParm();
                 while (names.Contains(name))
                     name += "u";
-
+                names.Add(name);
                 prop.PropertyName = name;
             }
 
