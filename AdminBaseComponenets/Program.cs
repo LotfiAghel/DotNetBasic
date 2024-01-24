@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.ComponentModel;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Newtonsoft.Json;
 using Models;
 using Microsoft.JSInterop;
@@ -152,7 +152,7 @@ namespace AdminBaseComponenets
 
                   var gt = c.GetType();
 
-
+                  
                   
                   builder.OpenComponent(0, gt);
                   foreach (var gti in gt.GetProperties())
@@ -193,8 +193,11 @@ namespace AdminBaseComponenets
                       {
                           vv = valuePr.PropertyType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { vv });
                       }
-
-
+                      
+                      if (gt.GetProperty("value").PropertyType != vv.GetType())
+                      {
+                          Console.Error.WriteLine("type!!");
+                      }
 
                       builder.AddAttribute(1, "value0", vv);
                       PropertyInfo pr = gt.GetProperty("__valueIsNull");
@@ -795,9 +798,11 @@ namespace AdminBaseComponenets
 
                     if (a != null)
                     {
-                        var ct = a.type;
-                        var gt = typeof(ForeignKey<>).MakeGenericType(ct);
 
+                        var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
+                        //var gtc = gt.GetConstructor(new[] { typeof(int) });
+
+                        
 
                         return typeof(AdminBaseComponenets.BaseComs.NullabeType<>).MakeGenericType(new Type[] { gt });
 
@@ -974,6 +979,12 @@ namespace AdminBaseComponenets
                 return new AdminBaseComponenets.BaseComs.PrimitiveInput<decimal>();
 
                 
+            };
+
+            formRenderer[typeof(float)] = (prps) =>
+            {
+                return new AdminBaseComponenets.BaseComs.PrimitiveInput<float>();
+
             };
 
 
