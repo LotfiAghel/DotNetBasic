@@ -31,8 +31,8 @@
         if (!valueIsNew)
         {
             
-            value = (typeof(FormContainer).GetMethod(nameof(getValueFast), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.MakeGenericMethod(genericArgs)
-            .Invoke(this, new object[] { Id }));
+            value = (typeof(FormContainer).GetMethod(nameof(getValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.MakeGenericMethod(genericArgs)
+            .InvokeAsync(this, new object[] { Id })).Result;
 
         }
 
