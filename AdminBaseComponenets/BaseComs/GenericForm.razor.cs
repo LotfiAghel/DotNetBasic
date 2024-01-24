@@ -20,7 +20,7 @@ namespace AdminBaseComponenets.BaseComs
 
         public List<System.Reflection.PropertyInfo> propertis = typeof(TItem).GetProperties(
                           BindingFlags.Public |
-                          BindingFlags.NonPublic |
+                          //BindingFlags.NonPublic |
                           BindingFlags.Instance ).ToList();
         
 
