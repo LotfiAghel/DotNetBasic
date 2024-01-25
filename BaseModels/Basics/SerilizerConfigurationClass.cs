@@ -76,6 +76,7 @@ namespace Models
             var pp = type.GetProperties();
             var md = MDTypeInfo.get(type);
             //ForeignKeyAttr.cacl(type);
+            //var res = new List<JsonProperty>();
             foreach (var prop in props)
             {
 
@@ -135,7 +136,7 @@ namespace Models
 
             }
 
-            return props;
+            return props.Where(x => !x.Ignored).ToList();
         }
     }
 
@@ -158,13 +159,13 @@ namespace Models
             {
                 //prop.PropertyName = prop.UnderlyingName;
                 string name = prop.PropertyName.getCamelParm();
-                while (names.Contains(name))
-                    name += "u";
+                /*while (names.Contains(name))
+                    name += "u";*/
                 names.Add(name);
                 prop.PropertyName = name;
             }
 
-            return props;
+            return props.Where(x => !x.Ignored).ToList();
         }
     }
 
