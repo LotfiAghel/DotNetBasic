@@ -20,7 +20,11 @@ namespace Models
             return await t.FindAsync(id);
         }
 
-        public static async ValueTask<TEntity> MyFindAsync2<TEntity>(this DbSet<TEntity> t, ForeignKey<TEntity> id) where TEntity : Entity
+        public static async ValueTask<TEntity> MyFindAsync2<TEntity>(this DbSet<TEntity> t, ForeignKey<TEntity> id) where TEntity : class,IIdMapper<int>
+        {
+            return await t.FindAsync(id.Value);
+        }
+        public static async ValueTask<TEntity> MyFindAsync2<TEntity>(this DbSet<TEntity> t, ForeignKey2<TEntity,Guid> id) where TEntity :class, IIdMapper<Guid>
         {
             return await t.FindAsync(id.Value);
         }
