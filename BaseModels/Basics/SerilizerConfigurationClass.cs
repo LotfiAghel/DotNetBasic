@@ -114,7 +114,7 @@ namespace Models
                 }
                 
                 {
-                    if (pi.PropertyType.IsClass)
+                    if (pi.PropertyType.IsClass && pi.PropertyType!=typeof(string) && pi.PropertyType != typeof(String) && pi.PropertyType != typeof(Guid))
                     {
                         List<Attribute> bb = md.pattrs[pi].attrs;
                         var aa = bb.OfType<ForeignKeyAttr>();
