@@ -51,6 +51,21 @@ namespace Models
         public ChangeEventList onChanges { get; set; }
 
     }
+    public static class IDEXT
+    {
+        public static Type getKeyType(this Type entity)
+        {
+            if (entity.IsAssignableTo(typeof(IIdMapper<string>)))
+                return typeof(string);
+            if (entity.IsAssignableTo(typeof(IIdMapper<Guid>)))
+                return typeof(Guid);
+
+            if (entity.IsAssignableTo(typeof(IIdMapper<int>)))
+                return typeof(int);
+            return null;
+
+        }
+    }
     
 
     [ShowClassHirarci]
