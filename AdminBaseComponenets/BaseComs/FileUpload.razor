@@ -39,6 +39,9 @@
                             خطا در آپلود فایل
                         </span>
                     }
+                    <div class="progress mb-3" style="height: 20px;">
+                        <div class="progress-bar" role="progressbar" style="width: @ProgressPercentage%;" aria-valuenow="@ProgressPercentage" aria-valuemin="0" aria-valuemax="100">@ProgressPercentage% Complete</div>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -47,16 +50,17 @@
 
 @code {
 
-    
-    
+
+
     private File files = null;
     private UploadResult uploadResults = null;
     private int maxAllowedFiles = 1;
     private bool shouldRender;
-
+    private IBrowserFile file;
+    int ProgressPercentage = 0;
     protected override bool ShouldRender() => shouldRender;
     //string  serverUrl = "https://localhost:5000/";
-    
+
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
         shouldRender = false;
@@ -64,13 +68,15 @@
         var upload = false;
 
         using var content = new MultipartFormDataContent();
-
+        var buffers = new byte[1024*8];
         foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
         {
             if (uploadResults is null)
             {
-                var fileContent = new StreamContent(file.OpenReadStream());
-
+                //await myFile.OpenReadStream(maxAllowedSize: 1024 * 300).ReadAsync(buffers);
+                //await file.OpenReadStream(maxAllowedSize: 1024*1024*1024 ).ReadAsync(buffers);
+                var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 1024));
+                byte[] b = new byte[1024 * 1024];
                 files =
                     new File()
                     {
@@ -79,12 +85,34 @@
 
                 if (file.Size < maxFileSize)
                 {
-                    content.Add(
-                        content: fileContent,
-                        name: "\"files\"",
-                        fileName: file.Name);
+                    long totalBytesRead = 0;
+                    long fileSize = file.Size;
+                    var oldBase = ClTool.WebClient.webClient;
+                    //await oldBase.fetch("", null, HttpMethod.Get);
+                    var tmp = await oldBase.fetch<Models.CreateSessionParams, Models.SessionCreationStatusResponse>("api/file/create", HttpMethod.Post, new Models.CreateSessionParams()
+                        {
+                            FileName = file.Name,
+                            ChunkSize = b.Length,
+                            TotalSize = file.Size
+                        });
+                    value = tmp.FileName;
+                    OnChange(value);
+                    var fs = file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 1024);
+                    ProgressPercentage = 0;
+                    
+                    while ( true)
+                    {
+                        var s=await fs.ReadAsync(b, 0, b.Length);
+                        if (s < 1)
+                            break;
+                        await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, b);
+                        totalBytesRead += s;
+                        ProgressPercentage = (int)(totalBytesRead * 100 / fileSize);
+                        //Console.WriteLine(temp.GetString(b));
+                    }
 
-                    upload = true;
+                    uploadResults = null;
+                    OnChange(value);
                 }
                 else
                 {
@@ -104,13 +132,7 @@
         {
 
 
-            var oldBase =ClTool.WebClient.webClient;
-            await oldBase.fetch("", null, HttpMethod.Get);
-            uploadResults = await oldBase.sendFile("v1/file", content);
-            value = uploadResults.StoredFileName;
-            value=ClTool.WebClient.webClient.baseUrl + "StaticFiles/" + uploadResults.StoredFileName;
-            uploadResults=null;
-            OnChange(value);
+            
 
 
 
@@ -122,8 +144,12 @@
 
     protected override void OnInitialized()
     {
-        var valueArray = value.Split('/');
-        string fileName = valueArray[valueArray.Length - 1];
+        string fileName=null;
+        if(value!=null){
+            var valueArray = value.Split('/');
+        
+            fileName = valueArray[valueArray.Length - 1];
+        }
 
         files = new File()
         {

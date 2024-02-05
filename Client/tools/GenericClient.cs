@@ -15,6 +15,8 @@ using System.Text.RegularExpressions;
 using Tools;
 using Models;
 using System.Collections;
+using NSubstitute;
+using ChunkedUploadWebApi.Model;
 
 namespace ClTool
 {
@@ -242,9 +244,97 @@ namespace ClTool
 
 
         }
+        
+        public virtual async Task<SessionCreationStatusResponse> createFileSession(string url,int chS,int tS)
+        {
+            
+            
+           
+
+            var cookieContainer = new CookieContainer();
+            if(cookie!=null)
+                cookieContainer.Add(cookie);
+            HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
+            //handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            Console.WriteLine("fetch url " + url);
+            using (var client = new HttpClient(handler))
+            {
+
+
+                client.BaseAddress = new Uri(baseUrl);
+
+
+                var csps=new CreateSessionParams()
+                {
+                    ChunkSize = chS,
+                    TotalSize = tS
+                };
+
+
+                var request = new HttpRequestMessage(HttpMethod.Post, baseUrl + url);
+
+
+
+
+                var result = await client.SendAsync(request);
+
+                string resultContent = await result.Content.ReadAsStringAsync();
+                return JToken.Parse(resultContent).ToObject<SessionCreationStatusResponse>();
+
+            }
+
+
+        }
+
+        public virtual async Task<UploadResult> uploadFileSection(string url,string sId,int chunkNumber, byte[] fileContent)
+        {
+            using var content = new MultipartFormDataContent();
+            content.Add(
+                       content: new ByteArrayContent(fileContent),
+                       name: "\"inputFile\"",
+                       fileName: "file.Name");
+            
+            var cookieContainer = new CookieContainer();
+            cookieContainer.Add(cookie);
+            HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
+            //handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            Console.WriteLine("fetch url " + url);
+            using (var client = new HttpClient(handler))
+            {
+
+
+                client.BaseAddress = new Uri(baseUrl);
+
+
+
+
+
+                var request = new HttpRequestMessage(HttpMethod.Put, baseUrl + url+"/"+sId+"/"+ chunkNumber)
+                {
+                    Content = content,
+                    
+                };
+
+
+
+
+                var result = await client.SendAsync(request);
+
+                string resultContent = await result.Content.ReadAsStringAsync();
+                return JToken.Parse(resultContent).ToObject<UploadResult>();
+
+            }
+
+
+        }
+
         public virtual async Task<UploadResult> sendFile(string url, MultipartFormDataContent content)
         {
-            HttpClientHandler handler = new HttpClientHandler();
+           var cookieContainer = new CookieContainer();
+            cookieContainer.Add(cookie);
+            HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
             //handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
             Console.WriteLine("fetch url " + url);
@@ -262,8 +352,9 @@ namespace ClTool
                 {
                     Content = content
                 };
-                request.Headers.Add("adminToken", WebClient.pass);
-
+                
+                
+               
 
                 var result = await client.SendAsync(request);
 
