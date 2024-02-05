@@ -70,30 +70,6 @@ namespace Models
     public abstract class Id4Entity : Entity
     {
 
-        [PersianLabel("تاریخ ایجاد")]
-        [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
-        [ReadOnly(true)]
-        public DateTime createdAt { get; set; }
-
-
-        [PersianLabel("تاریخ ویرایش")]
-        [CustomIgnoreTag(CustomIgnoreTag.Kind.ADMIN)]
-        [ReadOnly(true)]
-        public DateTime updatedAt { get; set; }
-
-
-        [PersianLabel("تاریخ حذف")]
-        [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
-        [ReadOnly(true)]
-        [Models.IgnoreDefultGird]
-        public DateTime? deletedAt { get; set; }
-        public static void cloneFromOld(Id4Entity newRow, Models.CUAT t)
-        {
-            newRow.createdAt = t.createdAt.HasValue ? t.createdAt.Value.UtcDateTime : DateTime.MinValue;
-            newRow.updatedAt = t.updatedAt.HasValue ? t.updatedAt.Value.UtcDateTime : DateTime.MinValue;
-            newRow.deletedAt = t.deletedAt.HasValue ? t.deletedAt.Value.UtcDateTime : null;
-        }
-
         public static int CompareDinosByLength(Id4Entity x, Id4Entity y)
         {
             

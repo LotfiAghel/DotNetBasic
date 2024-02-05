@@ -22,19 +22,19 @@ namespace Models
         
         [ReadOnly(true)]
         [Models.PersianLabel("تاریخ ساخت")]
-        public DateTimeOffset? createdAt { get; set; }
+        public DateTime createdAt { get; set; }
 
         //[Models.IgnoreDefultForm]
         
         [ReadOnly(true)]
         [Models.PersianLabel("تاریخ اخرین تغیر")]
-        public DateTimeOffset? updatedAt { get; set; }
+        public DateTime? updatedAt { get; set; }
 
         
         //[Models.IgnoreDefultForm]
         [ReadOnly(true)]
         [Models.PersianLabel("تاریخ حذف")]
-        public DateTimeOffset? deletedAt { get; set; }
+        public DateTime? deletedAt { get; set; }
     }
     
 
