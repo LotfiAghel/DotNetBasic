@@ -127,7 +127,7 @@ namespace AdminBaseComponenets.Pages
             }
             ReadOnly = !Program0.checkPermission<Models.UpdateAccess>(genericArgs[0]);
 
-
+            
 
             //formView=(ComponentBase)(typeof(GenericForm<>).MakeGenericType(new Type[] {  genericArgs[0] }).GetConstructor(new Type[]{}).Invoke(new object[]{}));//new GenericForm<genericArgs[0]>()
 
@@ -141,10 +141,20 @@ namespace AdminBaseComponenets.Pages
                 Console.WriteLine("go to load value of form");
                 Console.WriteLine($"{genericArgs[0].Name}");
                 Console.WriteLine($"{genericArgs[1].Name}");
-                value = await (Task<object>)(typeof(FormContainer).GetMethod(nameof(getValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
-                    .MakeGenericMethod(genericArgs)
-                  .Invoke(this, new object[] { Id }));
-                Console.WriteLine($"get value {value.GetType().Name}");
+                if (Id == "new")
+                {
+                    value = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
+                    valueIsNew = true;
+                    if (ButtonState.Length < 3)
+                        ButtonState = "save0";
+                }
+                else
+                {
+                    value = await (Task<object>)(typeof(FormContainer).GetMethod(nameof(getValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
+                        .MakeGenericMethod(genericArgs)
+                      .Invoke(this, new object[] { Id }));
+                    Console.WriteLine($"get value {value.GetType().Name}");
+                }
 
             }
             Console.WriteLine("value " + value.GetType().Name);
