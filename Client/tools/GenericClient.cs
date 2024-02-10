@@ -107,20 +107,34 @@ namespace ClTool
         public Dictionary<string, string> headres = null;
         public virtual async Task<MyHttpResponse> fetch014(string url, string payload, HttpMethod method)
         {
-            Console.WriteLine("fetch url " + url);
-            Console.WriteLine("with data :" + payload);
+            Console.WriteLine("fetch url =" + baseUrl + url);
+            if(payload!=null)
+                Console.WriteLine("body =" + payload);
             HttpWebRequest request = HttpWebRequest.Create(baseUrl + url) as HttpWebRequest;
             request.Method = method.ToString();
             if (request.CookieContainer == null && cookie != null)
             {
                 request.CookieContainer = new CookieContainer();
                 request.CookieContainer.Add(cookie);
+                Console.WriteLine("cookie =");
+                foreach (Cookie cook in cookie)
+                    Console.WriteLine($"  - {cook.Name} ={cook.Value};");
             }
+            
+                
             if (headres != null)
             {
-                foreach(var e in headres)
+                Console.WriteLine("Headers =");
+                foreach (var e in headres)
+                {
                     request.Headers[e.Key] = e.Value;
+                    Console.WriteLine($"  - {e.Key}=\"{e.Value}\"");
+                }
+                
+                //foreach (var h in request.Headers)
+                    
             }
+            
             if (payload != null)
             {
                 request.ContentType = "application/json";
@@ -157,11 +171,11 @@ namespace ClTool
             HttpWebResponse responseWithLoginCookies = (HttpWebResponse)response;
             cookie = responseWithLoginCookies.Cookies;
             
-            Console.WriteLine("---- " + responseWithLoginCookies.Headers.Count);
+            
             CookieContainer cookieJar = new CookieContainer();
             cookieJar.GetCookies(request.RequestUri);
             fixCookies(request, responseWithLoginCookies);
-            {
+            /*{
                 Console.WriteLine($"Cookie  : {responseWithLoginCookies.Headers["Set-Cookie"]}");
 
 
@@ -183,7 +197,7 @@ namespace ClTool
                 Console.WriteLine("Version: RFC {0}", cook.Version == 1 ? "2109" : "2965");
                 // Show the string representation of the cookie.
                 Console.WriteLine("String: {0}", cook.ToString());
-            }
+            }*/
             var z=new StreamReader(response.GetResponseStream());
             var ss=new MyHttpResponse()
             {
