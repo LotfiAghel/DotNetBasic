@@ -75,8 +75,8 @@
             {
                 //await myFile.OpenReadStream(maxAllowedSize: 1024 * 300).ReadAsync(buffers);
                 //await file.OpenReadStream(maxAllowedSize: 1024*1024*1024 ).ReadAsync(buffers);
-                var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 1024));
-                byte[] b = new byte[1024 * 1024];
+                //var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 1024));
+                
                 files =
                     new File()
                     {
@@ -85,34 +85,7 @@
 
                 if (file.Size < maxFileSize)
                 {
-                    long totalBytesRead = 0;
-                    long fileSize = file.Size;
-                    var oldBase = ClTool.WebClient.webClient;
-                    //await oldBase.fetch("", null, HttpMethod.Get);
-                    var tmp = await oldBase.fetch<Models.CreateSessionParams, Models.SessionCreationStatusResponse>("api/file/create", HttpMethod.Post, new Models.CreateSessionParams()
-                        {
-                            FileName = file.Name,
-                            ChunkSize = b.Length,
-                            TotalSize = file.Size
-                        });
-                    value = tmp.FileName;
-                    OnChange(value);
-                    var fs = file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 1024);
-                    ProgressPercentage = 0;
-                    
-                    while ( true)
-                    {
-                        var s=await fs.ReadAsync(b, 0, b.Length);
-                        if (s < 1)
-                            break;
-                        await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, b);
-                        totalBytesRead += s;
-                        ProgressPercentage = (int)(totalBytesRead * 100 / fileSize);
-                        //Console.WriteLine(temp.GetString(b));
-                    }
-
-                    uploadResults = null;
-                    OnChange(value);
+                   Upload(file);
                 }
                 else
                 {
@@ -132,7 +105,7 @@
         {
 
 
-            
+
 
 
 
@@ -147,7 +120,7 @@
         string fileName=null;
         if(value!=null){
             var valueArray = value.Split('/');
-        
+
             fileName = valueArray[valueArray.Length - 1];
         }
 
@@ -155,6 +128,39 @@
         {
             Name = fileName
         };
+    }
+    public async Task Upload(IBrowserFile file)
+    {
+        byte[] b = new byte[1024 * 50];
+        long totalBytesRead = 0;
+        long fileSize = file.Size;
+        var oldBase = ClTool.WebClient.webClient;
+        //await oldBase.fetch("", null, HttpMethod.Get);
+        var tmp = await oldBase.fetch<Models.CreateSessionParams, Models.SessionCreationStatusResponse>("api/file/create", HttpMethod.Post, new Models.CreateSessionParams()
+            {
+                FileName = file.Name,
+                ChunkSize = b.Length,
+                TotalSize = file.Size
+            });
+        value = tmp.FileName;
+        OnChange(value);
+        var fs = file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 1024);
+        ProgressPercentage = 0;
+
+        while (true)
+        {
+            var s = await fs.ReadAsync(b, 0, b.Length);
+            if (s < 1)
+                break;
+            await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, b);
+            totalBytesRead += s;
+            ProgressPercentage = (int)(totalBytesRead * 100 / fileSize);
+            StateHasChanged();
+            //Console.WriteLine(temp.GetString(b));
+        }
+
+        uploadResults = null;
+        OnChange(value);
     }
 
 

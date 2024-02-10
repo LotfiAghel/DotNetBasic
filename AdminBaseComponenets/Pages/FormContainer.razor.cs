@@ -154,6 +154,7 @@ namespace AdminBaseComponenets.Pages
                         .MakeGenericMethod(genericArgs)
                       .Invoke(this, new object[] { Id }));
                     Console.WriteLine($"get value {value.GetType().Name}");
+                    StateHasChanged();
                 }
 
             }

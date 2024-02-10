@@ -845,17 +845,17 @@ namespace AdminBaseComponenets
                     if (x != null && x.DataType == DataType.Upload)
                         return new AdminBaseComponenets.BaseComs.FileUpload();
                 }
-                /*{
-                    var x = prps.GetFirst<Attribute, AdminBaseComponenets.BaseComs.SmallPicShow>();
+                {
+                    var x = prps.GetFirst<Attribute, Models.SmallPicShow>();
                     if (x != null)
                         return new AdminBaseComponenets.BaseComs.FileUpload();
                 }
                 if (true)
                 {
-                    var x = prps.GetFirst<Attribute, AdminBaseComponenets.BaseComs.SmallVideoShow>();
+                    var x = prps.GetFirst<Attribute, Models.SmallVideoShow>();
                     if (x != null)
-                        return new AdminBaseComponenets.BaseComs.VideoUpload();
-                }*/
+                        return new AdminBaseComponenets.BaseComs.FileUpload();
+                }
                 return new AdminBaseComponenets.BaseComs.StringInput();
             };
             formRenderer[typeof(DateTime)] = (prps) =>

@@ -26,13 +26,16 @@
 
         <h1>@x</h1>
 
-
-        formView = Program0.createForm(genericArgs[0], new List<Attribute>() { });
+        if(formView==null)
+            formView = Program0.createForm(genericArgs[0], new List<Attribute>() { });
         if (!valueIsNew)
         {
             
-            value = (typeof(FormContainer).GetMethod(nameof(getValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.MakeGenericMethod(genericArgs)
+            /*value = (typeof(FormContainer).GetMethod(nameof(getValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.MakeGenericMethod(genericArgs)
             .InvokeAsync(this, new object[] { Id })).Result;
+            value = await(Task<object>)(typeof(FormContainer).GetMethod(nameof(getValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
+                        .MakeGenericMethod(genericArgs)
+                      .Invoke(this, new object[] { Id }));/**/
 
         }
 

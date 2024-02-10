@@ -9,6 +9,10 @@
   <ItemGroup>
     <Compile Remove="BaseComs\IntegerFSmallView .razor.cs" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="BaseComs\BigFileUpload.razor" />
+  </ItemGroup>
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
@@ -87,6 +91,8 @@
     <ProjectReference Include="..\BaseModels\BaseModels.csproj" />
     <ProjectReference Include="..\Client\Client.csproj" />
   </ItemGroup>
+  
+
 
 
 
