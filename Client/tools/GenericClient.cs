@@ -17,6 +17,8 @@ using Models;
 using System.Collections;
 using NSubstitute;
 using ChunkedUploadWebApi.Model;
+using System.Web;
+using Microsoft.Net.Http.Headers;
 
 namespace ClTool
 {
@@ -42,6 +44,7 @@ namespace ClTool
 
         public JsonSerializer settings1;
         CookieCollection cookie = null;
+        object cookie2 = null;
         public WebClient(string baseurl)
         {
 
@@ -75,8 +78,12 @@ namespace ClTool
                 string name = response.Headers.GetKey(i);
                 if (name != "Set-Cookie")
                     continue;
+
                 string value = response.Headers.Get(i);
-                foreach (var singleCookie in value.Split(','))
+                value=value.Replace("expires=Fri,", "expires=Fri ");
+            //var cc = new CookieHeaderValue(value);
+            //cookie2 = CookieHeaderValue.Parse(value);
+            foreach (var singleCookie in value.Split(','))
                 {
                     System.Text.RegularExpressions.Match match = Regex.Match(singleCookie, "(.+?)=(.+?);");
                     if (match.Captures.Count == 0)
@@ -97,6 +104,7 @@ namespace ClTool
             public string body;
             public Dictionary<string,string> header;
         }
+        public Dictionary<string, string> headres = null;
         public virtual async Task<MyHttpResponse> fetch014(string url, string payload, HttpMethod method)
         {
             Console.WriteLine("fetch url " + url);
@@ -108,7 +116,11 @@ namespace ClTool
                 request.CookieContainer = new CookieContainer();
                 request.CookieContainer.Add(cookie);
             }
-
+            if (headres != null)
+            {
+                foreach(var e in headres)
+                    request.Headers[e.Key] = e.Value;
+            }
             if (payload != null)
             {
                 request.ContentType = "application/json";
@@ -144,8 +156,10 @@ namespace ClTool
 
             HttpWebResponse responseWithLoginCookies = (HttpWebResponse)response;
             cookie = responseWithLoginCookies.Cookies;
+            
             Console.WriteLine("---- " + responseWithLoginCookies.Headers.Count);
-
+            CookieContainer cookieJar = new CookieContainer();
+            cookieJar.GetCookies(request.RequestUri);
             fixCookies(request, responseWithLoginCookies);
             {
                 Console.WriteLine($"Cookie  : {responseWithLoginCookies.Headers["Set-Cookie"]}");
