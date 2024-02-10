@@ -216,3 +216,74 @@ public class ForeignKeyConverter : JsonConverter<IForeignKey2<int>>
 
 
 
+public class ForeignKeyConverter2 : JsonConverter<IForeignKey2<Guid>>
+{
+    public override void WriteJson(JsonWriter writer, IForeignKey2<Guid> value, JsonSerializer seForeignKeyizer)
+    {
+        writer.WriteValue(value.getFValue());
+    }
+
+    public override IForeignKey2<Guid> ReadJson(JsonReader reader, Type objectType, IForeignKey2<Guid> existingValue, bool hasExistingValue, JsonSerializer seForeignKeyizer)
+    {
+
+       
+        if (reader.Value is string stringV)
+        {
+            return objectType.GetConstructor(new Type[] { typeof(Guid) }).Invoke(new object[] { Guid.Parse(stringV) }) as IForeignKey2<Guid>;
+        }
+        return objectType.GetConstructor(new Type[] { typeof(Guid) }).Invoke(new object[] { Guid.Empty }) as IForeignKey2<Guid>;
+
+
+    }
+}
+public class ForeignKeyConverter3 : JsonConverter<IForeignKey2<string>>
+{
+    public override void WriteJson(JsonWriter writer, IForeignKey2<string> value, JsonSerializer seForeignKeyizer)
+    {
+        writer.WriteValue(value.getFValue());
+    }
+
+    public override IForeignKey2<string> ReadJson(JsonReader reader, Type objectType, IForeignKey2<string> existingValue, bool hasExistingValue, JsonSerializer seForeignKeyizer)
+    {
+
+
+        if (reader.Value is string stringV)
+        {
+            return objectType.GetConstructor(new Type[] { typeof(string) }).Invoke(new object[] { stringV }) as IForeignKey2<string>;
+        }
+        return objectType.GetConstructor(new Type[] { typeof(string) }).Invoke(new object[] { null }) as IForeignKey2<string>;
+
+
+    }
+}
+
+public class ForeignKeyConverter2<T> : JsonConverter<IForeignKey2<T>>
+{
+    public override void WriteJson(JsonWriter writer, IForeignKey2<T> value, JsonSerializer seForeignKeyizer)
+    {
+        writer.WriteValue(value.getFValue());
+    }
+
+    public override IForeignKey2<T> ReadJson(JsonReader reader, Type objectType, IForeignKey2<T> existingValue, bool hasExistingValue, JsonSerializer seForeignKeyizer)
+    {
+
+        if (reader.Value is int intV)
+        {
+            return objectType.GetConstructor(new Type[] { typeof(T) }).Invoke(new object[] { intV }) as IForeignKey2<T>;
+        }
+        if (reader.Value is Int64 intV64)
+        {
+            return objectType.GetConstructor(new Type[] { typeof(T) }).Invoke(new object[] { (int)intV64 }) as IForeignKey2<T>;
+        }
+
+        if (reader.Value is string stringV)
+        {
+            return objectType.GetConstructor(new Type[] { typeof(T) }).Invoke(new object[] { Int32.Parse(stringV) }) as IForeignKey2<T>;
+        }
+        return objectType.GetConstructor(new Type[] { typeof(T) }).Invoke(new object[] { default(T) }) as IForeignKey2<T>;
+
+
+    }
+}
+
+
