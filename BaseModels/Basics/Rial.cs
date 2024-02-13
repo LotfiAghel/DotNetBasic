@@ -181,3 +181,39 @@ public class RialConverter : JsonConverter<Rial>
         return  Rial.Parse(s);
     }
 }
+
+public class DateConverter : JsonConverter<DateTime>
+{
+    public override void WriteJson(JsonWriter writer, DateTime value, JsonSerializer serializer)
+    {
+        writer.WriteValue(value.ToString("yyyy-MM-ddTHH:mm:ssK"));
+    }
+
+    public override DateTime ReadJson(JsonReader reader, Type objectType, DateTime existingValue, bool hasExistingValue, JsonSerializer serializer)
+    {
+
+        if (reader.Value is int intV)
+        {
+            return (new DateTime()).AddMicroseconds(intV);
+        }
+        if (reader.Value is Int64 intV64)
+        {
+            return (new DateTime()).AddMicroseconds(intV64);
+        }
+
+        if (reader.Value is string stringV)
+        {
+            return DateTime.Parse(stringV, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            //return DateTime.Parse(stringV);
+        }
+        if (reader.Value is DateTime dateTime)
+        {
+            return dateTime;
+            //return DateTime.Parse(stringV);
+        }
+
+
+
+        return DateTime.MinValue;
+    }
+}
