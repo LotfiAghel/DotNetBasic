@@ -69,7 +69,10 @@ namespace ClTool
             settings1.Converters.Add(new ForeignKeyConverter());
             settings1.Converters.Add(new ForeignKeyConverter2());
             settings1.Converters.Add(new ForeignKeyConverter3());
+            settings1.Converters.Add(new DateConverter());
             
+
+
 
 
         }

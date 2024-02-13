@@ -44,7 +44,7 @@ namespace AdminBaseComponenets
         public ValueInput0 createProp0(PropertyInfo property, bool propertyReadOnly = false)
         {
 
-            return  Program0.createForm2(property);
+            return  Program0.createForm2<T>(property);
             
         }
         public RenderFragment showProp(PropertyInfo property,ComponentBase w, bool propertyReadOnly = false)
