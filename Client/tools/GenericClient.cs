@@ -67,9 +67,9 @@ namespace ClTool
             settings1.Converters.Add(new RialConverter());
             settings1.Converters.Add(new PerimitveContainerConvertor());
             settings1.Converters.Add(new ForeignKeyConverter());
-            settings1.Converters.Add(new ForeignKeyConverter2());
+            /*settings1.Converters.Add(new ForeignKeyConverter2());
             settings1.Converters.Add(new ForeignKeyConverter3());
-            settings1.Converters.Add(new DateConverter());
+            settings1.Converters.Add(new DateConverter());*/
             
 
 
