@@ -9,8 +9,22 @@ using System.Threading.Tasks;
 namespace Models
 {
 
+    public class BaseUser : IdMapper<Guid>
+    {
 
-   
+    }
+    public interface IUserServiceBase
+    {
+        Guid getUserId();
+    }
+    public class UserServiceBase : IUserServiceBase
+    {
+        public Guid v;
+        public Guid getUserId()
+        {
+            return v;
+        }
+    }
 
     [Models.GeneratedControllerAttribute]
     [UpdateAccess(AdminUserRole.SUPER_USER)]

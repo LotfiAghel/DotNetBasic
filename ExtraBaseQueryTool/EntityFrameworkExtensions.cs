@@ -143,7 +143,40 @@ namespace AdminPanel
             }
             return null;
         }
+        static object GetObject() { return null; }
+        static void SetObject(object obj) { }
 
+        static string GetString() { return ""; }
+        static void SetString(string str) { }
+        public static IQueryable<TT> addSecurityFilter<TT>(this IQueryable<TT> q)
+        {
+            {
+                IEnumerable<string> strings = new List<string>();
+                // An object that is instantiated with a more derived type argument
+                // is assigned to an object instantiated with a less derived type argument.
+                // Assignment compatibility is preserved.
+                IEnumerable<object> objects = strings;
+
+                Func<object> del = GetString;
+
+                // Contravariance. A delegate specifies a parameter type as string,  
+                // but you can assign a method that takes an object.  
+                Action<string> del2 = SetObject;
+            }
+            var zl = typeof(TT).GetCustomAttributes<Attribute>().Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(FroceFillter<>));
+            foreach (var z in zl)
+            {
+                object t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { });
+                //if(t.GetType().IsInstanceOfType(typeof(IQuery<>)) && t.GetType().GetGenericTypeDefinition() == typeof(IQuery<>))
+                {
+                    var f=t.GetType().GetMethod("run").MakeGenericMethod(new Type[] { typeof(TT)});
+                    q = f.Invoke(t, new object[] { q}) as IQueryable<TT>;
+                }
+                //q = t.run(q);//have probelm with IOuery only work with IQuery2
+            }
+
+            return q;
+        }
         public static IQueryable<TT> addSort<TT>(this IQueryable<TT> q, Tuple<string, string>? sr)
         {
             if (sr == null)
@@ -167,15 +200,7 @@ namespace AdminPanel
         public static IQueryable<TT> addPagination<TT>(this IQueryable<TT> q, Tuple<int, int> range, Tuple<string,string> sr, string filter)
         {
 
-
-
             q=q.addSort<TT>(sr);
-            
-            
-
-           
-
-
 
             var x = q.Skip(range.Item1).Take(range.Item2);
             return x;

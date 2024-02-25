@@ -127,9 +127,34 @@ namespace Models
     {
 
         IQueryable<T> run(IQueryable<T> q);
+        
+
+    }
+    
+
+    public interface IQuery2<T> : IQuery0
+    {
+
+        
+        IQueryable<T2> run<T2>(IQueryable<T2> q) where T2 : T;
+
     }
 
-     
+
+    public class FroceFillter<T> : Attribute where T : IQuery0
+    {
+        
+        public HashSet<CustomIgnoreTag.Kind> kinds;
+        public FroceFillter(params CustomIgnoreTag.Kind[] args)
+        {
+            kinds = new HashSet<CustomIgnoreTag.Kind>();
+            foreach (var t in args)
+                kinds.Add(t);
+        }
+
+    }
+    
+    
     public class DefultSortAttribute<T> : Attribute where T : IQuery0 
     {
         
