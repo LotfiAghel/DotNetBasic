@@ -72,7 +72,14 @@
         if ( value != DateTime.MinValue)
         {
             Console.WriteLine($"PersianDateTimepicker OnInitialized 1");
-            DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value,  TimeZoneInfo.Local);
+            DateTime databaseUtcTime;
+            try{
+                databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value,  TimeZoneInfo.Local);
+            }
+            catch
+            {
+                databaseUtcTime = value;
+            }
 
 
 
@@ -90,10 +97,15 @@
             Console.WriteLine($"PersianDateTimepicker OnInitializedAsync 1");
 
 
-
-
-
-            DateTime databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value,  TimeZoneInfo.Local);
+            DateTime databaseUtcTime=value;
+            try
+            {
+                databaseUtcTime = TimeZoneInfo.ConvertTimeFromUtc(value, TimeZoneInfo.Local);
+            }
+            catch
+            {
+                
+            }
 
             dateValue = databaseUtcTime.ToPersianDateString("yyyy/MM/dd");
             timeValue = databaseUtcTime-databaseUtcTime.Date; ;

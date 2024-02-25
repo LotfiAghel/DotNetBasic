@@ -393,15 +393,16 @@ namespace AdminBaseComponenets
             return createForm(type, attrs);
         }
 
-        public static ValueInput0 createForm2(PropertyInfo property)
+        public static ValueInput0 createForm2<TItem>(PropertyInfo property)
         {
 
 
-
-            var type = property.PropertyType;
-            var attrs = property.GetCustomAttributes<Attribute>(false).ToList();
+            var type0 =  typeof(TItem);
+            var type  =  property.PropertyType;
+            var attrs =  property.GetCustomAttributes<Attribute>(false).ToList();
             //ForeignKeyAttr.cacl(property.DeclaringType);
-            var md=MDTypeInfo.get(property.DeclaringType);
+            var md=MDTypeInfo.get(type0);
+            property.GetHashCode();
             var extaAtr= md.pattrs[property].attrs;
             attrs.AddRange(extaAtr);
             if (inPropRender.ContainsKey(type))
