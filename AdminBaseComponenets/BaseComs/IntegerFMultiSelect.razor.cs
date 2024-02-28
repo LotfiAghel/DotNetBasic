@@ -117,8 +117,4 @@ namespace AdminBaseComponenets.BaseComs
     }
 
 
-    public class IntegerFMultiSelect<TEntity> : IntegerFMultiSelect<TEntity, int>
-            where TEntity : class, Models.IIdMapper<int>
-              
-    { }
 }
