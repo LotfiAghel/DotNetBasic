@@ -11,22 +11,22 @@ namespace AdminBaseComponenets.BaseComs
 {
 
 
-    public partial class IntegerFMultiSelect<TEntity,TKEY> : EnumArrayInput<ForeignKey2<TEntity, TKEY>>
+    public partial class IntegerFMultiSelect<TEntity, TKEY> : EnumArrayInput<ForeignKey2<TEntity, TKEY>>
           where TEntity : class, Models.IIdMapper<TKEY>
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
 
-        
 
-        
 
-        
+
+
+
 
         protected override async Task OnInitializedAsync()
         {
             await load();
-            
+
         }
 
         protected async Task cc(int vs)
@@ -35,24 +35,24 @@ namespace AdminBaseComponenets.BaseComs
 
             StateHasChanged();
         }
-        
 
 
-        protected async Task Click3(ForeignKey2<TEntity,TKEY> vs)
+
+        protected async Task Click3(ForeignKey2<TEntity, TKEY> vs)
         {
-            
 
-            value.Add(new ForeignKey2<TEntity,TKEY>(vs));
-            generator.onAdd(vs);    
 
-            
+            value.Add(new ForeignKey2<TEntity, TKEY>(vs));
+            generator.onAdd(vs);
+
+
 
         }
         protected async Task remove(TKEY vs)
         {
             Console.WriteLine("remove " + vs);
             value.RemoveAll(x => x.Value.Equals(vs));
-            generator.onRemove(vs); 
+            generator.onRemove(vs);
 
 
             StateHasChanged();
@@ -88,14 +88,14 @@ namespace AdminBaseComponenets.BaseComs
         {
 
 
-            return value.FindIndex(x => x .Equals(itemId));
+            return value.FindIndex(x => x.Equals(itemId));
         }
 
         void Drop(TKEY itemId)
         {
 
             {
-                Console.WriteLine($"Drop item { itemId}");
+                Console.WriteLine($"Drop item {itemId}");
                 var index = GetIndex(itemId);
                 Console.WriteLine($"Drop index is {index}, move from {currentIndex}");
                 // get0s current item
@@ -117,4 +117,7 @@ namespace AdminBaseComponenets.BaseComs
     }
 
 
+    public partial class IntegerFMultiSelect<TEntity> : IntegerFMultiSelect<TEntity, int>
+         where TEntity : class, Models.IIdMapper<int>{
+    }
 }

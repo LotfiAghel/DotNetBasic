@@ -81,7 +81,8 @@ namespace Models
             {
 
                 var pi = type.GetProperty(prop.UnderlyingName);
-                
+                if (pi == null)
+                    continue;
                 prop.Ignored = false;
                 {
                     var aa =pi.GetCustomAttributes<CustomIgnoreTag>();
@@ -133,6 +134,45 @@ namespace Models
                 prop.Converter = null;
                 prop.PropertyName = prop.UnderlyingName;
                
+
+            }
+            foreach (var prop in props)
+            {
+
+                var pi = type.GetField(prop.UnderlyingName);
+                if (pi == null)
+                    continue;
+                prop.Ignored = false;
+                {
+                    var aa = pi.GetCustomAttributes<CustomIgnoreTag>();
+
+                    if (aa != null && aa.ToList().Count > 0)
+                    {
+                        if (aa.ToList()[0].kinds.Contains(tag))
+                            prop.Ignored = true;
+                    }
+                    {
+                        var bb = pi.GetCustomAttributes<JsonIgnoreAttribute>();
+                        if (bb != null && bb.Count() > 0)
+                        {
+                            prop.Ignored = true;
+                        }
+                    }
+                }
+                {
+                    var aa = pi.GetCustomAttributes<JsonIgnoreAttribute>();
+                    if (aa != null && aa.ToList().Count > 0)
+                    {
+                        prop.Ignored = true;
+                    }
+                }
+               
+
+                
+
+                prop.Converter = null;
+                prop.PropertyName = prop.UnderlyingName;
+
 
             }
 
