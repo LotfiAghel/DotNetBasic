@@ -65,4 +65,11 @@ namespace ModelsManager
 
     }
 
+
+    public abstract class IEntityManager<T> : IEntityManager<T, int> where T : Models.IIdMapper<int>
+    {
+        //private static IEntityManager<T,int> instance { get =>}
+    }
+
+
 }
