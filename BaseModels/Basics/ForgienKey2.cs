@@ -90,7 +90,7 @@ public struct ForeignKey2<T,TKEY> : IComparable<ForeignKey2<T,TKEY>>, IEquatable
 
     public override string ToString()
     {
-        return "" + Value;
+        return Value.ToString();
         //return ToString(CultureInfo.InvariantCulture);
     }
 
