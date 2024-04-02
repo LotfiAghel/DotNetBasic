@@ -19,7 +19,13 @@
 
 
 @if(!ReadOnly){
+    <Row>
+                                
+                                    <Column ColumnSize=ColumnSize.Is1>
+                                        
     <Button Color="Color.Primary" Clicked="@OnButtonClicked" Size="Size.ExtraSmall"><Icon Name="IconName.Link" /></Button>
+        </Column>
+    <Column ColumnSize=ColumnSize.Is11>
     @if(optionGenerator!=null ){
         
         <Select TValue=TKEY SelectedValue=@value.getFValue()
@@ -38,6 +44,8 @@
                 }
         </Select>
     }
+        </Column>
+    </Row>
 }
 <!-- <div>@optionGenerator.GetHashCode()</div>
 <div>@optionGenerator.Count()</div>-->
