@@ -8,6 +8,14 @@
 
 @{
     Console.WriteLine("fffffffffff");
+    genericArgs = Program0.getValueKeyPair(entityName);
+    if (value != null && !value.GetType().IsAssignableTo(genericArgs[0]))
+    {
+        value = (typeof(FormContainer).GetMethod(nameof(getValueFast0), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
+                        .MakeGenericMethod(genericArgs)
+                      .Invoke(this, new object[] { Id }));
+
+    }
     if (Id == "new")
     {
         value = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
@@ -16,7 +24,7 @@
             ButtonState = "save0";
     }
 
-    genericArgs = Program0.getValueKeyPair(entityName);
+    
 
     if (genericArgs[0] != null)
     {
@@ -26,7 +34,10 @@
 
         <h1>@x</h1>
 
-        if(formView==null)
+        
+
+
+        if (formView == null || !formView.GetType().IsInstanceOfType(typeof(EditBase2<>).MakeGenericType(new Type[] { genericArgs[0] })))
             formView = Program0.createForm(genericArgs[0], new List<Attribute>() { });
         if (!valueIsNew)
         {

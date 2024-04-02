@@ -38,6 +38,12 @@ namespace AdminBaseComponenets.Pages
                 return null;
             return await t.get01(Id);
         }
+        public static T getValueFast0<T, TKEY>(string Id)
+             where T : class, Models.IIdMapper<TKEY>
+            where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
+        {
+            return Program0.getEntityManager<T, TKEY>().getFast(Id);
+        }
 
         public static T getValueFast<T,TKEY>(string Id)
              where T : class, Models.IIdMapper<TKEY>
@@ -106,10 +112,36 @@ namespace AdminBaseComponenets.Pages
         private ComponentBase formView = null;
 
         Action<object> onChangeRefrence0 = null;
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
 
             base.OnInitialized();
+            genericArgs = Program0.getValueKeyPair(entityName);
+            if (value == null || !value.GetType().IsInstanceOfType(genericArgs[0]))
+            {
+                Console.WriteLine("go to load value of form");
+                if (Id == "new")
+                {
+                    value = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
+                    valueIsNew = true;
+                    if (ButtonState.Length < 3)
+                        ButtonState = "save0";
+                }
+                else
+                {
+                    value = (typeof(FormContainer).GetMethod(nameof(getValueFast0), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
+                        .MakeGenericMethod(genericArgs)
+                      .Invoke(this, new object[] { Id }));
+                    Console.WriteLine($"get value {value.GetType().Name}");
+                    StateHasChanged();
+                }
+
+            }
+        }
+        protected override async Task OnInitializedAsync()
+        {
+
+            await base.OnInitializedAsync();
             genericArgs = Program0.getValueKeyPair(entityName);
 
 
@@ -136,7 +168,7 @@ namespace AdminBaseComponenets.Pages
 
             //await Program0.CheckLogin();
 
-            if (value == null)
+            if (value == null || !value.GetType().IsInstanceOfType(genericArgs[0]))
             {
                 Console.WriteLine("go to load value of form");
                 Console.WriteLine($"{genericArgs[0].Name}");
