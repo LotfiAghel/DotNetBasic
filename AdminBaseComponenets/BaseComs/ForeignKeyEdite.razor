@@ -19,7 +19,7 @@
 
 
 @if(!ReadOnly){
-    <Button Color="Color.Primary" Clicked="@OnButtonClicked">Click me</Button>
+    <Button Color="Color.Primary" Clicked="@OnButtonClicked" Size="Size.ExtraSmall"><Icon Name="IconName.Link" /></Button>
     @if(optionGenerator!=null ){
         
         <Select TValue=TKEY SelectedValue=@value.getFValue()
