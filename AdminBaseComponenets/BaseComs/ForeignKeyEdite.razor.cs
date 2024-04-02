@@ -1,11 +1,25 @@
-using Microsoft.AspNetCore.Components;
-
 using System.Threading.Tasks;
 using System;
-using System.Net.Http;
-using AdminClientViewModels;
+using System.Collections.Generic;
+using Tools;
+
+using System.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
+using Microsoft.AspNetCore.Components;
+using Blazorise.DataGrid;
+using Models;
+using Tools;
+using Newtonsoft.Json;
+using Microsoft.JSInterop;
+using System.Threading;
+using AdminClientViewModels;
 
 namespace AdminBaseComponenets.BaseComs
 {
@@ -58,14 +72,20 @@ namespace AdminBaseComponenets.BaseComs
         public async Task load()
         {
             var tmp = Program0.getEntityManager<TEntity, TKEY> ();
-
+            if (!value.Equals( default(TKEY)))
+                await tmp.get(value);
 
             if (optionGenerator == null)
                 optionGenerator = tmp;//.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id)); 
+            
             // StateHasChanged();
 
 
 
+        }
+        public void OnButtonClicked()
+        {
+            NavManager.NavigateTo($"{typeof(TEntity).GetUrlEncodeName()}/edit/{value.Value}");
         }
 
     }

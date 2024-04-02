@@ -1,6 +1,6 @@
 @typeparam TEntity
 @typeparam TKEY
-
+@inject NavigationManager NavManager
 
 
 
@@ -19,7 +19,9 @@
 
 
 @if(!ReadOnly){
+    <Button Color="Color.Primary" Clicked="@OnButtonClicked">Click me</Button>
     @if(optionGenerator!=null ){
+        
         <Select TValue=TKEY SelectedValue=@value.getFValue()
                 SelectedValueChanged=@Click2
                 ReadOnly=@ReadOnly>
