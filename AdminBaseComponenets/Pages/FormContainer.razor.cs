@@ -132,7 +132,7 @@ namespace AdminBaseComponenets.Pages
                     value = (typeof(FormContainer).GetMethod(nameof(getValueFast0), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
                         .MakeGenericMethod(genericArgs)
                       .Invoke(this, new object[] { Id }));
-                    Console.WriteLine($"get value {value.GetType().Name}");
+                    //Console.WriteLine($"get value {value.GetType().Name}");
                     StateHasChanged();
                 }
 
