@@ -199,7 +199,7 @@ namespace AdminBaseComponenets
                           Console.Error.WriteLine("type!!");
                       }
 
-                      builder.AddAttribute(1, "value0", vv);
+                      builder.AddAttribute(1, nameof(ValueInput0.value0), vv);
                       PropertyInfo pr = gt.GetProperty("__valueIsNull");
                       if (pr != null)
                       {
