@@ -102,6 +102,7 @@ namespace AdminClientViewModels
                 var url=ocg.getSubTablePath<TMASTER, TMKEY>(collectionName, masterEnityId);
                 var x = new PaginateList<T, TKEY>()
                 {
+                    parent=this,
                     webClient = this.ocg.webClient,
                     filter = url,
                     pageSize = 50,
@@ -384,7 +385,7 @@ namespace AdminClientViewModels
         where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
-
+        public IEntityService<T, TKEY> parent;
         public WebClient webClient;
         public string filter;
         public List<T> data = new List<T>();
@@ -457,7 +458,12 @@ namespace AdminClientViewModels
 
         public async Task<List<T>> GetRange(int virtualizeOffset, int virtualizeCount)
         {
-            return (await fetch(virtualizeOffset, virtualizeCount)).data;
+            var res= (await fetch(virtualizeOffset, virtualizeCount)).data;
+            foreach(var item in res)
+            {
+                parent.insertOrUpdate(item);
+            }
+            return res;
         }
     }
 

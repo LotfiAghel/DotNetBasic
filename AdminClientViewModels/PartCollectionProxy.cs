@@ -27,9 +27,14 @@ namespace AdminClientViewModels
             data.Add(t);
             return t;
         }
+        public T insertOrUpdate(T inp)
+        {
+            return masterManager.insertOrUpdate(inp);
+        }
 
-       
-       
+
+
+
         public T getFast(string id)
         {
             return masterManager.getFast(id);

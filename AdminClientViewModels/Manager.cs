@@ -12,7 +12,7 @@ namespace AdminClientViewModels
     
     public interface IEntityService00
     {
-
+        
         Task<object> get0s(string id);
 
         Task<object> get00(object id);
@@ -38,13 +38,14 @@ namespace AdminClientViewModels
 
     public interface IEntityService01<T>: IEntityService00 , IReadOnlyCollection<T>
     {
-
+        
         Task<T> get01(object id);
         Task<IReadOnlyCollection<T>> getAll(bool froceFromServer = false);
         //IEnumerable<T> getAllFast();
         T getFast(string id);
         Task<T> post(T id);
         Task<T> update(T id);
+        
     }
 
     public interface IEntityService<T, TKEY> : IEntityService01<T>, IEnumerable<T>,IReadOnlyCollection<ForeignKey2<T,TKEY>>
@@ -52,7 +53,9 @@ namespace AdminClientViewModels
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
+        public static IEntityService<T, TKEY> instance;
 
+        public T insertOrUpdate(T e);
         Task<IReadOnlyCollection<T>> getAllSubTable<TMASTER,TMKEY>(string collectionName, TMKEY masterEnityId);
 
         Task<T> get(TKEY id);

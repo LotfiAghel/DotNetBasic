@@ -15,11 +15,38 @@ namespace AdminClientViewModels
         }
 
         public List<T> data = null;
+        Dictionary<TKEY, T> id2En = new();
         public List<Task<List<T>>> dd = new List<Task<List<T>>>();
         Task<List<T>> prv=null;
 
         public int Count => data.Count;
+        public T insertOrUpdate(T inp)
+        {
+            T o;
+            if (!id2En.TryGetValue(inp.id, out o))
+            {
+                data.Add(inp);
+                id2En[inp.id] = inp;
+                return inp;
+            }
+            foreach (var pr in typeof(T).GetProperties())
+            {
+                var setMethod = pr.GetSetMethod();
+                if (setMethod != null)
+                    pr.SetValue(o, pr.GetValue(inp));
 
+            }
+            try
+            {
+                o.onChanges?.invokeAll();
+            }
+            catch
+            {
+
+            }
+            return o;
+
+        }
         public async Task<IReadOnlyCollection<T>> getAll(bool froceFromServer=false)
         {
 
@@ -124,9 +151,13 @@ namespace AdminClientViewModels
         {      
                 
             var d = await ocg.getAll3<TMASTER, TMKEY>(collectionName,masterEnityId );
+            
             var res=new List<T>();
             foreach (var r in d)
+            {
+                //IEntityService<TMKEY>.instance.addOrUpdate(r);
                 res.Add(r);
+            }
          
             return res;
         }
