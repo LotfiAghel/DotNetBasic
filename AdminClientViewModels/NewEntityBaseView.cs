@@ -58,7 +58,7 @@ namespace AdminClientViewModels
             bool bigTable=typeof(T).GetCustomAttributes(typeof(Attribute),true).ToList().GetFirst<object, Models.BigTable>()!=null;
             if (bigTable)
             {
-                var x = new PaginateList<T, TKEY>()
+                var x = new PaginateList<T, TKEY>(this)
                 {
                     webClient = this.ocg.webClient,
                     filter = ocg.getPath(),
@@ -100,9 +100,8 @@ namespace AdminClientViewModels
             if (bigTable)
             {
                 var url=ocg.getSubTablePath<TMASTER, TMKEY>(collectionName, masterEnityId);
-                var x = new PaginateList<T, TKEY>()
+                var x = new PaginateList<T, TKEY>(this)
                 {
-                    parent=this,
                     webClient = this.ocg.webClient,
                     filter = url,
                     pageSize = 50,
@@ -401,7 +400,11 @@ namespace AdminClientViewModels
                 return _ocg;
             }
         }
-
+        public PaginateList(IEntityService<T, TKEY> parent)
+        {
+            this.parent = parent;
+            
+        }
         public int Count { get; set; }
 
         int IReadOnlyCollection<T>.Count => Count;
