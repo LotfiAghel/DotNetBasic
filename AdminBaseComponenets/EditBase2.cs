@@ -81,15 +81,44 @@ namespace AdminBaseComponenets
                 };
 
 
+                var types=w.GetType().GetGenericArguments();
+                //var a = property.GetCustomFirstAttributes<ForeignKeyAttr>();
+
+                //if (a != null)
+                {
+                    Console.WriteLine("formRenderer[typeof(int)] ");
+                    //var ct = a.type;
+                    //Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{ct}>");
+                    prVal = typeof(ForeignKey2<,>).MakeGenericType(types).GetConstructor(new Type[] { types[1] }).Invoke(new object[] { prVal });
+                    //var gtc = gt.GetConstructor(new[] { typeof(int) });
+
+
+
+                }
+
+
+            }
+            if(false)foreach(var keyT in new Type[] { typeof(string), typeof(String), typeof(Guid), typeof(int) })
+            if (property.PropertyType == typeof(string)
+                && w.GetType().IsGenericInstanceOf(typeof(AdminBaseComponenets.BaseComs.ForeignKeyEdite<,>)))
+            {
+                onChange = (x) =>
+                {
+                    property.SetValue(value, ((IForeignKey20)x).getFValue0());
+                    if (OnChange != null)
+                        OnChange(value);
+                };
+
+
 
                 var a = property.GetCustomFirstAttributes<ForeignKeyAttr>();
 
-                if (a != null)
+                //if (a != null)
                 {
                     Console.WriteLine("formRenderer[typeof(int)] ");
-                    var ct = a.type;
-                    Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{ct}>");
-                    prVal = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes()).GetConstructor(new Type[] { a.getTypes()[1] }).Invoke(new object[] { prVal });
+
+                    Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{a.type}>");
+                    prVal = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes()).GetConstructor(new Type[] { keyT }).Invoke(new object[] { prVal });
                     //var gtc = gt.GetConstructor(new[] { typeof(int) });
 
 
@@ -110,14 +139,15 @@ namespace AdminBaseComponenets
 
 
 
-                var a = property.GetCustomFirstAttributes<ForeignKeyAttr>();
-
-                if (a != null)
+                var types0 = w.GetType().GetGenericArguments().ToList();
+                types0.Add(typeof(int));
+                var types = types0.ToArray();
+                //if (a != null)
                 {
                     Console.WriteLine("formRenderer[typeof(int)] ");
 
-                    Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{a.type}>");
-                    prVal = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes()).GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { prVal });
+                    Console.WriteLine($"formRenderer[typeof(int)] ForeignKey<{types[0]}>");
+                    prVal = typeof(ForeignKey2<,>).MakeGenericType(types).GetConstructor(new Type[] { types[1] }).Invoke(new object[] { prVal });
                     //var gtc = gt.GetConstructor(new[] { typeof(int) });
 
 
