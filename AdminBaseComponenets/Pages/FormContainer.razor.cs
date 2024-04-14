@@ -204,7 +204,7 @@ namespace AdminBaseComponenets.Pages
             }
         }
 
-        string ButtonState = "--";
+        string ButtonState = "save";
         public async Task Click()
         {
             try
