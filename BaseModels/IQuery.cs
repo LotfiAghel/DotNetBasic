@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Models
 {
@@ -153,8 +154,20 @@ namespace Models
         }
 
     }
-    
-    
+    public class FroceAction<T> : Attribute where T : IAction0
+    {
+
+        public HashSet<CustomIgnoreTag.Kind> kinds;
+        public FroceAction(params CustomIgnoreTag.Kind[] args)
+        {
+            kinds = new HashSet<CustomIgnoreTag.Kind>();
+            foreach (var t in args)
+                kinds.Add(t);
+        }
+
+    }
+
+
     public class DefultSortAttribute<T> : Attribute where T : IQuery0 
     {
         
@@ -164,9 +177,9 @@ namespace Models
 
         IQueryable<T2> run(IQueryable<T> q);
     }
+    public interface IAction0 { }
 
-
-    public interface IAction<T> //where T :Entity
+    public interface IAction<T>: IAction0 //where T :Entity
     {
         //public ForeignKey<T> foreignKey;       
         public Task<T> run(T entity, IServiceProvider Services);
