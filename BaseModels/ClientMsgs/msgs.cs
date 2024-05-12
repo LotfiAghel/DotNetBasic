@@ -12,9 +12,9 @@ namespace ClientMsgs
         public string text { get; set; }
     }
     
-    public class GetIds
+    public class GetIds<KEY>
     {
-        public List<int> ids { get; set; }
+        public List<KEY> ids { get; set; }
     }
     public class GetIdsResponse<T> : BooleanResponse where T : IEntity0
     {

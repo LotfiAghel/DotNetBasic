@@ -22,18 +22,21 @@ namespace Models
         
         [ReadOnly(true)]
         [Models.PersianLabel("تاریخ ساخت")]
+        [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
         public DateTime createdAt { get; set; }
 
         //[Models.IgnoreDefultForm]
         
         [ReadOnly(true)]
         [Models.PersianLabel("تاریخ اخرین تغیر")]
+        [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
         public DateTime? updatedAt { get; set; }
 
         
         //[Models.IgnoreDefultForm]
         [ReadOnly(true)]
         [Models.PersianLabel("تاریخ حذف")]
+        [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
         public DateTime? deletedAt { get; set; }
     }
     
