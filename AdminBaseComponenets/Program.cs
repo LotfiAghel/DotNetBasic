@@ -110,7 +110,7 @@ namespace AdminBaseComponenets
             if (entityManagers.ContainsKey(ty))
                 return entityManagers[ty];
             object b = null;
-            var keyTypes = new List<Type>(){ typeof(int), typeof(string), typeof(System.Guid) };
+            var keyTypes = new List<Type>(){ typeof(int), typeof(string), typeof(System.Guid) , typeof(long) };
             foreach (var KeyType in keyTypes)
                 if (ty.IsAssignableTo(typeof(IIdMapper<>).MakeGenericType(KeyType)))
                 {
@@ -595,6 +595,8 @@ namespace AdminBaseComponenets
 
             if (entity.IsAssignableTo(typeof(IIdMapper<int>)))
                 return typeof(int);
+            if (entity.IsAssignableTo(typeof(IIdMapper<long>)))
+                return typeof(long);
             throw new NotImplementedException();
 
         }
