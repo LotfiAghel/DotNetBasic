@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using Models;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AdminPanel
 {
@@ -148,6 +149,8 @@ namespace AdminPanel
 
         static string GetString() { return ""; }
         static void SetString(string str) { }
+        static public Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+
         public static IQueryable<TT> addSecurityFilter<TT>(this IQueryable<TT> q)
         {
             {
@@ -166,10 +169,13 @@ namespace AdminPanel
             var zl = typeof(TT).GetCustomAttributes<Attribute>().Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(FroceFillter<>));
             foreach (var z in zl)
             {
-                object t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { });
+                var t=serviceCollection.BuildServiceProvider().GetService(z.GetType().GenericTypeArguments[0]);
+                //object t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { });
                 //if(t.GetType().IsInstanceOfType(typeof(IQuery<>)) && t.GetType().GetGenericTypeDefinition() == typeof(IQuery<>))
                 {
-                    var f=t.GetType().GetMethod("run").MakeGenericMethod(new Type[] { typeof(TT)});
+                    var f = t.GetType().GetMethod("run");
+                    if(f.IsGenericMethod)
+                        f=f.MakeGenericMethod(new Type[] { typeof(TT)});
                     q = f.Invoke(t, new object[] { q}) as IQueryable<TT>;
                 }
                 //q = t.run(q);//have probelm with IOuery only work with IQuery2
