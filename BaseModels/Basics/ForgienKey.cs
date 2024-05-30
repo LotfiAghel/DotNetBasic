@@ -225,10 +225,28 @@ public class ForeignKeyConverter2 : JsonConverter<IForeignKey2<Guid>>
 
     public override IForeignKey2<Guid> ReadJson(JsonReader reader, Type objectType, IForeignKey2<Guid> existingValue, bool hasExistingValue, JsonSerializer seForeignKeyizer)
     {
-
-       
-        if (reader.Value is string stringV)
+        
+        int t = 0;
+       while(reader.TokenType != JsonToken.String)
         {
+            if (reader.TokenType == JsonToken.StartObject)
+                ++t;
+            reader.Read();
+        }
+        var rV=reader.Value;
+        
+        while(t>0)
+        {
+            reader.Read();
+            if (reader.TokenType == JsonToken.EndObject)
+                --t;
+        }
+        if (rV is string stringV)
+        {
+            if (stringV == "Value")
+            {
+                
+            }
             return objectType.GetConstructor(new Type[] { typeof(Guid) }).Invoke(new object[] { Guid.Parse(stringV) }) as IForeignKey2<Guid>;
         }
         return objectType.GetConstructor(new Type[] { typeof(Guid) }).Invoke(new object[] { Guid.Empty }) as IForeignKey2<Guid>;

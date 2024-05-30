@@ -151,7 +151,7 @@ namespace AdminPanel
         static void SetString(string str) { }
         static public Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
 
-        public static IQueryable<TT> addSecurityFilter<TT>(this IQueryable<TT> q)
+        public static IQueryable<TT> addSecurityFilter<TT>(this IQueryable<TT> q, CustomIgnoreTag.Kind kind=CustomIgnoreTag.Kind.CLIENT)
         {
             {
                 IEnumerable<string> strings = new List<string>();
@@ -166,9 +166,11 @@ namespace AdminPanel
                 // but you can assign a method that takes an object.  
                 Action<string> del2 = SetObject;
             }
-            var zl = typeof(TT).GetCustomAttributes<Attribute>().Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(FroceFillter<>));
+            var zl = typeof(TT).GetCustomAttributes<FroceFillter0>(true).Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(FroceFillter<>));
             foreach (var z in zl)
             {
+                if (!z.kinds.Contains(kind))
+                    continue;
                 var t=serviceCollection.BuildServiceProvider().GetService(z.GetType().GenericTypeArguments[0]);
                 //object t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { });
                 //if(t.GetType().IsInstanceOfType(typeof(IQuery<>)) && t.GetType().GetGenericTypeDefinition() == typeof(IQuery<>))
@@ -183,10 +185,11 @@ namespace AdminPanel
 
             return q;
         }
-        public static IQueryable<TT> addSort<TT>(this IQueryable<TT> q, Tuple<string, string>? sr)
+        public static IQueryable<TT> addSort<TT>(this IQueryable<TT> q, Tuple<string, string>? sr,bool isAdminMsg=false)
         {
             if (sr == null)
             {
+
                 var z = typeof(TT).GetCustomAttributes<Attribute>().Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(DefultSortAttribute<>)).FirstOrDefault();
                 if (z != null)
                 {
@@ -203,10 +206,10 @@ namespace AdminPanel
             }
             return q;
         }
-        public static IQueryable<TT> addPagination<TT>(this IQueryable<TT> q, Tuple<int, int> range, Tuple<string,string> sr, string filter)
+        public static IQueryable<TT> addPagination<TT>(this IQueryable<TT> q, Tuple<int, int> range, Tuple<string,string> sr, string filter,bool isAdmin=false)
         {
 
-            q=q.addSort<TT>(sr);
+            q=q.addSort<TT>(sr,isAdmin);
 
             var x = q.Skip(range.Item1).Take(range.Item2);
             return x;
