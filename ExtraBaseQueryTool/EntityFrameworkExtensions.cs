@@ -150,22 +150,11 @@ namespace AdminPanel
         static string GetString() { return ""; }
         static void SetString(string str) { }
         static public Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+        //static public ServiceProvider serviceProvider = null;
 
         public static IQueryable<TT> addSecurityFilter<TT>(this IQueryable<TT> q, CustomIgnoreTag.Kind kind=CustomIgnoreTag.Kind.CLIENT)
         {
-            {
-                IEnumerable<string> strings = new List<string>();
-                // An object that is instantiated with a more derived type argument
-                // is assigned to an object instantiated with a less derived type argument.
-                // Assignment compatibility is preserved.
-                IEnumerable<object> objects = strings;
-
-                Func<object> del = GetString;
-
-                // Contravariance. A delegate specifies a parameter type as string,  
-                // but you can assign a method that takes an object.  
-                Action<string> del2 = SetObject;
-            }
+           
             var zl = typeof(TT).GetCustomAttributes<FroceFillter0>(true).Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(FroceFillter<>));
             foreach (var z in zl)
             {
@@ -175,7 +164,7 @@ namespace AdminPanel
                 //object t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { });
                 //if(t.GetType().IsInstanceOfType(typeof(IQuery<>)) && t.GetType().GetGenericTypeDefinition() == typeof(IQuery<>))
                 {
-                    var f = t.GetType().GetMethod("run");
+                    var f = t.GetType().GetMethod(nameof(IQuery2<BaseUser>.run));
                     if(f.IsGenericMethod)
                         f=f.MakeGenericMethod(new Type[] { typeof(TT)});
                     q = f.Invoke(t, new object[] { q}) as IQueryable<TT>;
@@ -193,8 +182,17 @@ namespace AdminPanel
                 var z = typeof(TT).GetCustomAttributes<Attribute>().Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(DefultSortAttribute<>)).FirstOrDefault();
                 if (z != null)
                 {
-                    var t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { }) as IQuery<TT>;
-                    q = t.run(q);
+                    var ty=z.GetType().GenericTypeArguments[0];
+                    if(ty.IsGenericType)
+                        ty=ty.MakeGenericType(new Type[] { typeof(TT)});
+                    var f=ty.GetMethod(nameof(IQuery2<BaseUser>.run));
+                    dynamic t = ty.GetConstructor(new Type[] { }).Invoke(new object[] { });
+                    var tt = ty.GetMethod("run");
+                    if (tt.IsGenericMethod)
+                        tt = tt.MakeGenericMethod(new Type[] { typeof(TT)});
+                    q =tt.Invoke(t,new object[] { q});
+
+                    //q = t.run();
                 }
             }
             else
