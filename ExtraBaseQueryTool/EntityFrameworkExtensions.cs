@@ -108,6 +108,8 @@ namespace AdminPanel
         {
 
             List<int> range2 = new List<int>() { 0, 100000000 };
+            if (range == null)
+                return new(0, 10000000);
             try
             {
                 var j = JToken.Parse(range);
@@ -125,18 +127,13 @@ namespace AdminPanel
             try
             {
 
-                try
-                {
-                    var j = JToken.Parse(sort);
-                    var sort2 = j.ToObject<List<string>>();
-                    return new Tuple<string, string>(sort2[0], sort2[1]);
+                if (sort == null)
+                    return null;
+                var j = JToken.Parse(sort);
+                var sort2 = j.ToObject<List<string>>();
+                return new Tuple<string, string>(sort2[0], sort2[1]);
                     
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-
+               
             }
             catch
             {
@@ -152,15 +149,15 @@ namespace AdminPanel
         static public Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
         //static public ServiceProvider serviceProvider = null;
 
-        public static IQueryable<TT> addSecurityFilter<TT>(this IQueryable<TT> q, CustomIgnoreTag.Kind kind=CustomIgnoreTag.Kind.CLIENT)
+        public static IQueryable<TT> addSecurityFilter<TT>(this IQueryable<TT> q, IServiceProvider Services, CustomIgnoreTag.Kind kind=CustomIgnoreTag.Kind.CLIENT)
         {
-           
             var zl = typeof(TT).GetCustomAttributes<FroceFillter0>(true).Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(FroceFillter<>));
             foreach (var z in zl)
             {
                 if (!z.kinds.Contains(kind))
                     continue;
-                var t=serviceCollection.BuildServiceProvider().GetService(z.GetType().GenericTypeArguments[0]);
+                //var t=serviceCollection.BuildServiceProvider()
+                var t= Services.GetService(z.GetType().GenericTypeArguments[0]);
                 //object t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { });
                 //if(t.GetType().IsInstanceOfType(typeof(IQuery<>)) && t.GetType().GetGenericTypeDefinition() == typeof(IQuery<>))
                 {
