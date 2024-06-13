@@ -225,31 +225,31 @@ public class ForeignKeyConverter2 : JsonConverter<IForeignKey2<Guid>>
 
     public override IForeignKey2<Guid> ReadJson(JsonReader reader, Type objectType, IForeignKey2<Guid> existingValue, bool hasExistingValue, JsonSerializer seForeignKeyizer)
     {
-        IForeignKey2<Guid> res=null;
+        
         int t = 0;
-        if (reader.TokenType == JsonToken.StartObject)
+       while(reader.TokenType != JsonToken.String)
         {
-            reader.Skip();
-            //reader.Value
-            t++;
+            if (reader.TokenType == JsonToken.StartObject)
+                ++t;
+            reader.Read();
         }
-        if (reader.TokenType == JsonToken.PropertyName)
+        var rV=reader.Value;
+        
+        while(t>0)
         {
-            reader.Skip();
-            //t++;
+            reader.Read();
+            if (reader.TokenType == JsonToken.EndObject)
+                --t;
         }
+        if (rV is string stringV)
         {
-            if (reader.Value is string stringV)
+            if (stringV == "Value")
             {
-                res = objectType.GetConstructor(new Type[] { typeof(Guid) }).Invoke(new object[] { Guid.Parse(stringV) }) as IForeignKey2<Guid>;
+                
             }
-            if(res==null)
-                res = objectType.GetConstructor(new Type[] { typeof(Guid) }).Invoke(new object[] { Guid.Empty }) as IForeignKey2<Guid>;
+            return objectType.GetConstructor(new Type[] { typeof(Guid) }).Invoke(new object[] { Guid.Parse(stringV) }) as IForeignKey2<Guid>;
         }
-        for(int i=0; i<t; ++i)
-            reader.Skip();
-
-        return res;
+        return objectType.GetConstructor(new Type[] { typeof(Guid) }).Invoke(new object[] { Guid.Empty }) as IForeignKey2<Guid>;
 
 
     }

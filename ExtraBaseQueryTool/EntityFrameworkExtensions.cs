@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using Models;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AdminPanel
 {
@@ -107,6 +108,8 @@ namespace AdminPanel
         {
 
             List<int> range2 = new List<int>() { 0, 100000000 };
+            if (range == null)
+                return new(0, 10000000);
             try
             {
                 var j = JToken.Parse(range);
@@ -124,18 +127,13 @@ namespace AdminPanel
             try
             {
 
-                try
-                {
-                    var j = JToken.Parse(sort);
-                    var sort2 = j.ToObject<List<string>>();
-                    return new Tuple<string, string>(sort2[0], sort2[1]);
+                if (sort == null)
+                    return null;
+                var j = JToken.Parse(sort);
+                var sort2 = j.ToObject<List<string>>();
+                return new Tuple<string, string>(sort2[0], sort2[1]);
                     
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-
+               
             }
             catch
             {
@@ -148,28 +146,24 @@ namespace AdminPanel
 
         static string GetString() { return ""; }
         static void SetString(string str) { }
-        public static IQueryable<TT> addSecurityFilter<TT>(this IQueryable<TT> q)
+        static public Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+        //static public ServiceProvider serviceProvider = null;
+
+        public static IQueryable<TT> addSecurityFilter<TT>(this IQueryable<TT> q, IServiceProvider Services, CustomIgnoreTag.Kind kind=CustomIgnoreTag.Kind.CLIENT)
         {
-            {
-                IEnumerable<string> strings = new List<string>();
-                // An object that is instantiated with a more derived type argument
-                // is assigned to an object instantiated with a less derived type argument.
-                // Assignment compatibility is preserved.
-                IEnumerable<object> objects = strings;
-
-                Func<object> del = GetString;
-
-                // Contravariance. A delegate specifies a parameter type as string,  
-                // but you can assign a method that takes an object.  
-                Action<string> del2 = SetObject;
-            }
-            var zl = typeof(TT).GetCustomAttributes<Attribute>().Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(FroceFillter<>));
+            var zl = typeof(TT).GetCustomAttributes<FroceFillter0>(true).Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(FroceFillter<>));
             foreach (var z in zl)
             {
-                object t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { });
+                if (!z.kinds.Contains(kind))
+                    continue;
+                //var t=serviceCollection.BuildServiceProvider()
+                var t= Services.GetService(z.GetType().GenericTypeArguments[0]);
+                //object t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { });
                 //if(t.GetType().IsInstanceOfType(typeof(IQuery<>)) && t.GetType().GetGenericTypeDefinition() == typeof(IQuery<>))
                 {
-                    var f=t.GetType().GetMethod("run").MakeGenericMethod(new Type[] { typeof(TT)});
+                    var f = t.GetType().GetMethod(nameof(IQuery2<BaseUser>.run));
+                    if(f.IsGenericMethod)
+                        f=f.MakeGenericMethod(new Type[] { typeof(TT)});
                     q = f.Invoke(t, new object[] { q}) as IQueryable<TT>;
                 }
                 //q = t.run(q);//have probelm with IOuery only work with IQuery2
@@ -177,15 +171,25 @@ namespace AdminPanel
 
             return q;
         }
-        public static IQueryable<TT> addSort<TT>(this IQueryable<TT> q, Tuple<string, string>? sr)
+        public static IQueryable<TT> addSort<TT>(this IQueryable<TT> q, Tuple<string, string>? sr,bool isAdminMsg=false)
         {
             if (sr == null)
             {
+
                 var z = typeof(TT).GetCustomAttributes<Attribute>().Where(x => x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(DefultSortAttribute<>)).FirstOrDefault();
                 if (z != null)
                 {
-                    var t = z.GetType().GenericTypeArguments[0].GetConstructor(new Type[] { }).Invoke(new object[] { }) as IQuery<TT>;
-                    q = t.run(q);
+                    var ty=z.GetType().GenericTypeArguments[0];
+                    if(ty.IsGenericType)
+                        ty=ty.MakeGenericType(new Type[] { typeof(TT)});
+                    var f=ty.GetMethod(nameof(IQuery2<BaseUser>.run));
+                    dynamic t = ty.GetConstructor(new Type[] { }).Invoke(new object[] { });
+                    var tt = ty.GetMethod("run");
+                    if (tt.IsGenericMethod)
+                        tt = tt.MakeGenericMethod(new Type[] { typeof(TT)});
+                    q =tt.Invoke(t,new object[] { q});
+
+                    //q = t.run();
                 }
             }
             else
@@ -197,10 +201,10 @@ namespace AdminPanel
             }
             return q;
         }
-        public static IQueryable<TT> addPagination<TT>(this IQueryable<TT> q, Tuple<int, int> range, Tuple<string,string> sr, string filter)
+        public static IQueryable<TT> addPagination<TT>(this IQueryable<TT> q, Tuple<int, int> range, Tuple<string,string> sr, string filter,bool isAdmin=false)
         {
 
-            q=q.addSort<TT>(sr);
+            q=q.addSort<TT>(sr,isAdmin);
 
             var x = q.Skip(range.Item1).Take(range.Item2);
             return x;

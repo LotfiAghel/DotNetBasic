@@ -140,12 +140,15 @@ namespace Models
         IQueryable<T2> run<T2>(IQueryable<T2> q) where T2 : T;
 
     }
+    public abstract class FroceFillter0 : Attribute 
+    {
+        public HashSet<CustomIgnoreTag.Kind> kinds;
+    }
 
-
-    public class FroceFillter<T> : Attribute where T : IQuery0
+    public class FroceFillter<T> : FroceFillter0 where T : IQuery0
     {
         
-        public HashSet<CustomIgnoreTag.Kind> kinds;
+        
         public FroceFillter(params CustomIgnoreTag.Kind[] args)
         {
             kinds = new HashSet<CustomIgnoreTag.Kind>();
