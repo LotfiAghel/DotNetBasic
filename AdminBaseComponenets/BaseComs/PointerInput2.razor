@@ -83,7 +83,7 @@
 @code
 {
     public override bool inRowField()=>false;
-    
+
     public bool openOject = true;
     ElementReference MyElementReference;
     ComponentBase widget = null;
@@ -105,15 +105,18 @@
         Console.WriteLine("Click2 <>");
         Console.WriteLine(bv!=null?bv.GetHashCode():"null");
         Console.WriteLine(vv!=null?vv.GetHashCode():"null");
-        
+
         if (bv != null&& value!=null && bv.GetHashCode() == vv.GetHashCode())
             return;
         if(bv==null && value==null)
             return;
-        
 
-        OnChange(value);            
-        widget = Program0.createForm(vv.GetType(), new List<Attribute>() { });
+
+        OnChange(value);
+        if (vv != null)
+            widget = Program0.createForm(vv.GetType(), new List<Attribute>() { });
+        else
+            widget = null;
         Console.WriteLine("Click2 <3>");
 
 

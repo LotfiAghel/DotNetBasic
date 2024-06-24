@@ -180,7 +180,7 @@ namespace AdminPanel
                 if (z != null)
                 {
                     var ty=z.GetType().GenericTypeArguments[0];
-                    if(ty.IsGenericType)
+                    if(ty.IsGenericType && !ty.IsConstructedGenericType)
                         ty=ty.MakeGenericType(new Type[] { typeof(TT)});
                     var f=ty.GetMethod(nameof(IQuery2<BaseUser>.run));
                     dynamic t = ty.GetConstructor(new Type[] { }).Invoke(new object[] { });
