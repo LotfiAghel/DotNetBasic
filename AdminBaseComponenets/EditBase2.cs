@@ -159,8 +159,8 @@ namespace AdminBaseComponenets
 
             if (property.PropertyType == typeof(Nullable<int>) && w.GetType().IsGenericType
                     && w.GetType().GetGenericTypeDefinition() == typeof(AdminBaseComponenets.BaseComs.NullabeType<>)
-                    && w.GetType().GetGenericArguments()[0].IsGenericType
-                    && w.GetType().GetGenericArguments()[0].GetGenericTypeDefinition() == typeof(ForeignKey<>))
+                    //&& w.GetType().GetGenericArguments()[0].IsGenericType
+                    && w.GetType().GetGenericArguments()[0].IsAssignableTo( typeof(IForeignKey2<int>)))
             {
                 onChange = (x) =>
                 {
