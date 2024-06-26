@@ -145,6 +145,7 @@ namespace Models
         public HashSet<CustomIgnoreTag.Kind> kinds;
     }
 
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     public class FroceFillter<T> : FroceFillter0 where T : IQuery0
     {
         
