@@ -220,14 +220,16 @@ namespace Models
         public static Expression<Func<Guid, Guid, bool>> equal = (x, y) => x == y;
         public static Expression<Func<T, bool>> Equal(Expression<Func<T, Guid>> prop, Guid keyword)
         {
-            return Expression.Lambda<Func<T, bool>>(
-                Expression.Call(
-                    typeof(DbFunctionsExtensions),
+            var exp = Expression.Call(
+                     Expression.Constant(keyword),
                     nameof(DbFunctionsExtensions.Equals),
-                    null,
-                    Expression.Constant(EF.Functions),
-                    prop.Body,
-                    Expression.Constant(keyword)),
+                    null//new Type[] { typeof(Guid),typeof(Guid)}
+                    ,
+                    //Expression.Constant(EF.Functions),
+                    prop.Body
+                   );
+            return Expression.Lambda<Func<T, bool>>(
+                exp,
                 prop.Parameters);
         }
         public static Expression<Func<T, bool>> Equal2(Expression<Func<T, Guid, bool>> prop, Guid keyword)
