@@ -196,7 +196,19 @@ namespace Models
         public IQuery<T> query { get; set; }
     }
 
+    public static class EXTENCTION
+    {
 
+        public static System.Guid getUserId(this HttpContext a)
+        {
+            object res = null;
+            if (a.Items.TryGetValue("userId", out res) && res is Guid)
+                return (Guid)res;
+            return Guid.Empty;
+
+        }
+
+    }
     public class AccessCheckerVersion1<T> : IQuery<T>
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
