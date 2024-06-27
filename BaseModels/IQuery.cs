@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Collections.Specialized.BitVector32;
@@ -192,4 +195,50 @@ namespace Models
     public class IQueryContainer<T>{
         public IQuery<T> query { get; set; }
     }
+
+
+    public class AccessCheckerVersion1<T> : IQuery<T>
+    {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public AccessCheckerVersion1(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+        public static Expression<Func<Guid, Guid, bool>> equal = (x, y) => x == y;
+        public static Expression<Func<T, bool>> Equal(Expression<Func<T, Guid>> prop, Guid keyword)
+        {
+            return Expression.Lambda<Func<T, bool>>(
+                Expression.Call(
+                    typeof(DbFunctionsExtensions),
+                    nameof(DbFunctionsExtensions.Equals),
+                    null,
+                    Expression.Constant(EF.Functions),
+                    prop.Body,
+                    Expression.Constant(keyword)),
+                prop.Parameters);
+        }
+        public static Expression<Func<T, bool>> Equal2(Expression<Func<T, Guid, bool>> prop, Guid keyword)
+        {
+            var parameters = prop.Parameters.ToList();
+            parameters.RemoveAll(x => x.Name == "userId");
+            //parameters[1] = ParameterExpression.();
+            return Expression.Lambda<Func<T, bool>>(
+                prop.Body,
+                parameters);
+        }
+        public IQueryable<T> run(IQueryable<T> q)
+        {
+            var concatMethod = typeof(Guid).GetMethod(nameof(Guid.Equals), new[] { typeof(Guid), typeof(Guid) });
+
+
+            var userId = _httpContextAccessor.HttpContext.getUserId();
+            //var t = q.Where(x => x.leitnerCardUser.CustomerId == userId);
+            var t2 = q.Where(Equal(access, userId));
+            //var t3 = q.Where(Equal2(UserLeitnerCardCheckPoint.access2, userId));
+            return t2;
+        }
+        public static Expression<Func<T, Guid>> access;
+    }
+
 }

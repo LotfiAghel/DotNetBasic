@@ -13,8 +13,28 @@ namespace Models
     {
         object getId();
     }
+    public interface ICUAT
+    {
+        [ReadOnly(true)]
+        [Models.PersianLabel("تاریخ ساخت")]
+        [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
+        public DateTime createdAt { get; set; }
 
-    public class CUAT
+        //[Models.IgnoreDefultForm]
+
+        [ReadOnly(true)]
+        [Models.PersianLabel("تاریخ اخرین تغیر")]
+        [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
+        public DateTime? updatedAt { get; set; }
+
+
+        //[Models.IgnoreDefultForm]
+        [ReadOnly(true)]
+        [Models.PersianLabel("تاریخ حذف")]
+        [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
+        public DateTime? deletedAt { get; set; }
+    }
+    public abstract class CUAT:ICUAT
     {
 
 
