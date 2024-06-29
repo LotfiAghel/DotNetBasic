@@ -232,6 +232,20 @@ namespace Models
                 exp,
                 prop.Parameters);
         }
+        public static Expression<Func<T, bool>> Equal3(Expression<Func<T, Guid,bool>> accessCheck, Guid keyword)
+        {
+            var exp = Expression.Call(
+                     Expression.Constant(keyword),
+                    nameof(DbFunctionsExtensions.Equals),
+                    null//new Type[] { typeof(Guid),typeof(Guid)}
+                    ,
+                    //Expression.Constant(EF.Functions),
+                    accessCheck.Body
+                   );
+            return Expression.Lambda<Func<T, bool>>(
+                accessCheck,
+                accessCheck.Parameters);
+        }
         public static Expression<Func<T, bool>> Equal2(Expression<Func<T, Guid, bool>> prop, Guid keyword)
         {
             var parameters = prop.Parameters.ToList();
@@ -243,16 +257,18 @@ namespace Models
         }
         public IQueryable<T> run(IQueryable<T> q)
         {
-            var concatMethod = typeof(Guid).GetMethod(nameof(Guid.Equals), new[] { typeof(Guid), typeof(Guid) });
+            
 
 
             var userId = _httpContextAccessor.HttpContext.getUserId();
-            //var t = q.Where(x => x.leitnerCardUser.CustomerId == userId);
-            var t2 = q.Where(Equal(access, userId));
-            //var t3 = q.Where(Equal2(UserLeitnerCardCheckPoint.access2, userId));
+            
+            var t2 = q.Where(Equal(access, userId));// thats work well
+            
+            //var t2 = q.Where(Equal3(accessCheck, userId));
             return t2;
         }
         public static Expression<Func<T, Guid>> access;
+        //public static Expression<Func<T, Guid,bool>> accessCheck;
     }
 
 }
