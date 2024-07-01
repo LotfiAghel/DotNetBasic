@@ -18,7 +18,7 @@ using System.Collections;
 using NSubstitute;
 using ChunkedUploadWebApi.Model;
 using System.Web;
-using Microsoft.Net.Http.Headers;
+//using Microsoft.Net.Http.Headers;
 
 namespace ClTool
 {
@@ -27,24 +27,57 @@ namespace ClTool
 
     public class WebClient
     {
-        public static WebClient webClient {
-            get; 
-            set; } = null;
+        public static WebClient webClient
+        {
+            get;
+            set;
+        } = null;
         public static string pass;
-        public string baseUrl { get; 
-            set; 
+        public string baseUrl
+        {
+            get;
+            set;
         }
         public Action onLogout;
         public void setUrl(string s)
         {
             baseUrl = s;
         }
-        
+
 
 
         public JsonSerializer settings1;
-        CookieCollection cookie = null;
+        public CookieCollection cookie = null;
         object cookie2 = null;
+        public virtual void SaveCookie()
+        {
+            if (cookie != null)
+            {
+                var jk=JToken.FromObject(cookie);
+                StreamWriter sr = new StreamWriter("cookie.txt");
+                //Read the first line of text
+                sr.WriteLine(jk.ToString());
+                sr.Close();
+            }
+        }
+        public virtual  void LoadCookie()
+        {
+            try
+            {
+               
+                var sr = new StreamReader("cookie.txt");
+                //Read the first line of text
+                var js=sr.ReadToEnd();
+                sr.Close();
+                var jso=JToken.Parse(js);
+                cookie=jso.ToObject<CookieCollection>();
+
+            }
+            catch
+            {
+                cookie = null;
+            }
+        }
         public WebClient(string baseurl)
         {
 
@@ -67,11 +100,8 @@ namespace ClTool
             settings1.Converters.Add(new RialConverter());
             settings1.Converters.Add(new PerimitveContainerConvertor());
             settings1.Converters.Add(new ForeignKeyConverter());
-            /*settings1.Converters.Add(new ForeignKeyConverter2());
+            settings1.Converters.Add(new ForeignKeyConverter2());
             settings1.Converters.Add(new ForeignKeyConverter3());
-            settings1.Converters.Add(new DateConverter());*/
-            
-
 
 
 
@@ -85,10 +115,10 @@ namespace ClTool
                     continue;
 
                 string value = response.Headers.Get(i);
-                value=value.Replace("expires=Fri,", "expires=Fri ");
-            //var cc = new CookieHeaderValue(value);
-            //cookie2 = CookieHeaderValue.Parse(value);
-            foreach (var singleCookie in value.Split(','))
+                value = value.Replace("expires=Fri,", "expires=Fri ");
+                //var cc = new CookieHeaderValue(value);
+                //cookie2 = CookieHeaderValue.Parse(value);
+                foreach (var singleCookie in value.Split(','))
                 {
                     System.Text.RegularExpressions.Match match = Regex.Match(singleCookie, "(.+?)=(.+?);");
                     if (match.Captures.Count == 0)
@@ -107,13 +137,13 @@ namespace ClTool
         public class MyHttpResponse
         {
             public string body;
-            public Dictionary<string,string> header;
+            public Dictionary<string, string> header;
         }
         public Dictionary<string, string> headres = null;
         public virtual async Task<MyHttpResponse> fetch014(string url, string payload, HttpMethod method)
         {
             Console.WriteLine("fetch url =" + baseUrl + url);
-            if(payload!=null)
+            if (payload != null)
                 Console.WriteLine("body =" + payload);
             HttpWebRequest request = HttpWebRequest.Create(baseUrl + url) as HttpWebRequest;
             request.Method = method.ToString();
@@ -125,8 +155,8 @@ namespace ClTool
                 foreach (Cookie cook in cookie)
                     Console.WriteLine($"  - {cook.Name} ={cook.Value};");
             }
-            
-                
+
+
             if (headres != null)
             {
                 Console.WriteLine("Headers =");
@@ -135,11 +165,11 @@ namespace ClTool
                     request.Headers[e.Key] = e.Value;
                     Console.WriteLine($"  - {e.Key}=\"{e.Value}\"");
                 }
-                
+
                 //foreach (var h in request.Headers)
-                    
+
             }
-            
+
             if (payload != null)
             {
                 request.ContentType = "application/json";
@@ -175,8 +205,8 @@ namespace ClTool
 
             HttpWebResponse responseWithLoginCookies = (HttpWebResponse)response;
             cookie = responseWithLoginCookies.Cookies;
-            
-            
+
+
             CookieContainer cookieJar = new CookieContainer();
             cookieJar.GetCookies(request.RequestUri);
             fixCookies(request, responseWithLoginCookies);
@@ -203,8 +233,8 @@ namespace ClTool
                 // Show the string representation of the cookie.
                 Console.WriteLine("String: {0}", cook.ToString());
             }*/
-            var z=new StreamReader(response.GetResponseStream());
-            var ss=new MyHttpResponse()
+            var z = new StreamReader(response.GetResponseStream());
+            var ss = new MyHttpResponse()
             {
                 body = await z.ReadToEndAsync(),
                 header = new()
@@ -222,10 +252,10 @@ namespace ClTool
 
         public virtual async Task<string> fetch(string url, string payload, HttpMethod method)
         {
-            
-            var response= await  fetch014(url,payload, method);
 
-            return response.body;
+            var response = await fetch014(url, payload, method);
+
+            return response?.body;
         }
 
 
@@ -277,15 +307,22 @@ namespace ClTool
 
 
         }
-        
-        public virtual async Task<SessionCreationStatusResponse> createFileSession(string url,int chS,int tS)
+
+        class Point
         {
-            
-            
-           
+            public int x, y;
+        }
+        public virtual async Task<SessionCreationStatusResponse> createFileSession(string url, int chS, int tS)
+        {
+
+            Point p = new Point();
+            p.x = 10;
+
+
+
 
             var cookieContainer = new CookieContainer();
-            if(cookie!=null)
+            if (cookie != null)
                 cookieContainer.Add(cookie);
             HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
             //handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
@@ -298,7 +335,7 @@ namespace ClTool
                 client.BaseAddress = new Uri(baseUrl);
 
 
-                var csps=new CreateSessionParams()
+                var csps = new CreateSessionParams()
                 {
                     ChunkSize = chS,
                     TotalSize = tS
@@ -320,14 +357,14 @@ namespace ClTool
 
         }
 
-        public virtual async Task<UploadResult> uploadFileSection(string url,string sId,int chunkNumber, byte[] fileContent)
+        public virtual async Task<UploadResult> uploadFileSection(string url, string sId, int chunkNumber, byte[] fileContent)
         {
             using var content = new MultipartFormDataContent();
             content.Add(
                        content: new ByteArrayContent(fileContent),
                        name: "\"inputFile\"",
                        fileName: "file.Name");
-            
+
             var cookieContainer = new CookieContainer();
             cookieContainer.Add(cookie);
             HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
@@ -344,10 +381,10 @@ namespace ClTool
 
 
 
-                var request = new HttpRequestMessage(HttpMethod.Put, baseUrl + url+"/"+sId+"/"+ chunkNumber)
+                var request = new HttpRequestMessage(HttpMethod.Put, baseUrl + url + "/" + sId + "/" + chunkNumber)
                 {
                     Content = content,
-                    
+
                 };
 
 
@@ -365,7 +402,7 @@ namespace ClTool
 
         public virtual async Task<UploadResult> sendFile(string url, MultipartFormDataContent content)
         {
-           var cookieContainer = new CookieContainer();
+            var cookieContainer = new CookieContainer();
             cookieContainer.Add(cookie);
             HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
             //handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
@@ -385,9 +422,9 @@ namespace ClTool
                 {
                     Content = content
                 };
-                
-                
-               
+
+
+
 
                 var result = await client.SendAsync(request);
 
@@ -481,7 +518,7 @@ namespace ClTool
         }
         public async Task<List<T>> getAll2(IQuery<T> inp)
         {
-            return await webClient.fetch<IQueryContainer<T>, List<T>>(additinalUrl + typeof(T).GetUrlEncodeName() + "/getAll", HttpMethod.Post, new IQueryContainer<T>() {query= inp });
+            return await webClient.fetch<IQueryContainer<T>, List<T>>(additinalUrl + typeof(T).GetUrlEncodeName() + "/getAll", HttpMethod.Post, new IQueryContainer<T>() { query = inp });
         }
         public async Task<T> sendAction(TKEY entityId, IAction<T> inp)
         {
@@ -489,7 +526,7 @@ namespace ClTool
         }
         public async Task<List<T>> getAll3<TMASTER, TMKEY>(string collectionName, TMKEY masterId)
         {
-            return await webClient.fetch<T, List<T>>(getSubTablePath<TMASTER,TMKEY>(collectionName,masterId), HttpMethod.Get, null);
+            return await webClient.fetch<T, List<T>>(getSubTablePath<TMASTER, TMKEY>(collectionName, masterId), HttpMethod.Get, null);
         }
         public async Task<List<T>> getAll(string itemName, TKEY value)
         {
@@ -530,12 +567,12 @@ namespace ClTool
         }
 
     }
-    public class GenericClientInt<T,TKEY> : GenericClient0<T, TKEY>
-        where T :class, Models.IIdMapper<TKEY>
+    public class GenericClientInt<T, TKEY> : GenericClient0<T, TKEY>
+        where T : class, Models.IIdMapper<TKEY>
         where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
         public GenericClientInt(ClTool.WebClient w, string additinalUrl = null) : base(w, additinalUrl) { }
     }
-   
+
 
 }

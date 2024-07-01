@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
+using System.IO;
 
 namespace ClTool2
 {
@@ -21,6 +22,14 @@ namespace ClTool2
 
 
 
+        }
+        public override void SaveCookie()
+        {
+            //await JsRuntime.InvokeAsync<string>("blazorExtensions.SetCookie", new[] { "isAuthenticated", "true" });
+        }
+        public override void LoadCookie()
+        {
+            
         }
         public override async Task<MyHttpResponse> fetch014(string url, string payload, HttpMethod method)
         {
