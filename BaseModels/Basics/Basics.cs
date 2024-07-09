@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Models
 {
@@ -34,6 +35,15 @@ namespace Models
         [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
         public DateTime? deletedAt { get; set; }
     }
+
+    public class SortByCreateAt<T> : IQuery<T> where T : ICUAT
+    {
+        public IQueryable<T> run(IQueryable<T> q)
+        {
+            return q.OrderBy(x => x.createdAt);
+        }
+    }
+
     public abstract class CUAT:ICUAT
     {
 
