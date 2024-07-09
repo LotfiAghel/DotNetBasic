@@ -35,12 +35,18 @@ namespace Models
         [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
         public DateTime? deletedAt { get; set; }
     }
-
     public class SortByCreateAt<T> : IQuery<T> where T : ICUAT
     {
         public IQueryable<T> run(IQueryable<T> q)
         {
             return q.OrderBy(x => x.createdAt);
+        }
+    }
+    public class SortByCreateAtDescending<T> : IQuery<T> where T : ICUAT
+    {
+        public IQueryable<T> run(IQueryable<T> q)
+        {
+            return q.OrderByDescending(x => x.createdAt);
         }
     }
 
