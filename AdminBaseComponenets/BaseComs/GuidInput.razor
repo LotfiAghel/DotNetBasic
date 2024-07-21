@@ -10,7 +10,7 @@
 
         <TextEdit 
                    ReadOnly=@ReadOnly
-          Text=@svalue
+          Text=@value.ToString()
                    TextChanged=@Click2
          />
 
@@ -24,10 +24,17 @@
     string svalue;
 
     Guid prvValue;
-   
+
     async Task Click2(string  vv)
     {
-        this.value=Guid.Parse(vv);
+        try
+        {
+            this.value = Guid.Parse(vv);
+        }
+        catch
+        {
+            
+        }
         if (prvValue != value)
         {
 

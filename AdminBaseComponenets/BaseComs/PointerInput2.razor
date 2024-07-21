@@ -110,9 +110,10 @@
             return;
         if(bv==null && value==null)
             return;
+            
+        if (OnChange!=null)
+            OnChange(value);
 
-
-        OnChange(value);
         if (vv != null)
             widget = Program0.createForm(vv.GetType(), new List<Attribute>() { });
         else
