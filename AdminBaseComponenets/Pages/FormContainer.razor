@@ -37,7 +37,10 @@
 
 
         if (formView == null || !formView.GetType().IsInstanceOfType(typeof(EditBase2<>).MakeGenericType(new Type[] { genericArgs[0] })))
-            formView = Program0.createForm(genericArgs[0], new List<Attribute>() { });
+            if (genericArgs[0].IsAbstract)
+                formView = Program0.createForm3(genericArgs[0]);
+            else
+                formView = Program0.createForm(genericArgs[0], new List<Attribute>() { });
         if (!valueIsNew)
         {
             
