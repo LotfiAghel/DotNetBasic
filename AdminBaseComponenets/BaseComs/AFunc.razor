@@ -20,7 +20,7 @@
             @autoComp( () => value.inp)
         </div>
     }
-    <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+    <Button Outlined="true" Clicked="@Click">@title [@ButtonState]</Button>
     @if(value!=null && value.output!=null){
         <div>
             @autoComp( () => value.output,true)

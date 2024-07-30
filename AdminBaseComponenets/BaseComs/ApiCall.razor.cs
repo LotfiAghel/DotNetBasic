@@ -30,17 +30,29 @@ namespace AdminBaseComponenets.BaseComs
         [Parameter]
         public HttpMethod method {get;set;}
 
+
+        [Parameter]
+        public string title { get; set; }
+        [Parameter]
+        public Type type { get; set; } = null;
+
+       
+
         public object methodValue;
         public string ButtonState="send Action";
         public ComponentBase comp;
-        public Type type;
-
+        
         public void reload(){
-            type=Program0.getFuncType(url);
-            comp=Program0.createForm(type, new List<Attribute>() { });
-            ((dynamic)comp).url = url;
-            ((dynamic)comp).method = method;
-            methodValue = type.GetConstructor(new Type[] {}).Invoke(new object[] { });
+            if(type==null)
+                type=Program0.getFuncType(url);
+            if (type != null)
+            {
+                comp = Program0.createForm(type, new List<Attribute>() { });
+                ((dynamic)comp).url = url;
+                ((dynamic)comp).title = title;
+                ((dynamic)comp).method = method;
+                methodValue = type.GetConstructor(new Type[] { }).Invoke(new object[] { });
+            }
         }
         
         

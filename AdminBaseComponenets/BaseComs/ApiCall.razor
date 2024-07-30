@@ -5,7 +5,8 @@
 @{
     reload();
 }
-@if(comp!=null){
+@if (comp != null && methodValue!=null)
+{
     <div>@Program0.CreateDynamicComponent2(this,comp,methodValue)</div>
 }else{
     <div>function not found</div>

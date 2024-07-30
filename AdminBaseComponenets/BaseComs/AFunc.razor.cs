@@ -28,7 +28,11 @@ namespace AdminBaseComponenets.BaseComs
 
 
 
-        public string ButtonState = "send Action";
+        public string ButtonState = "ready to Click";
+
+        [Parameter]
+        public string title { get; set; } = "";
+        
         public void setUrl(string u)
         {
             url = u;
