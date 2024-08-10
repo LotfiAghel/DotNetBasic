@@ -14,6 +14,18 @@ namespace Models
     {
         object getId();
     }
+    public interface IU
+    {
+    
+
+        [ReadOnly(true)]
+        [Models.PersianLabel("تاریخ اخرین تغیر")]
+        [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
+        public DateTime updatedAt { get; set; }
+
+
+    
+    }
     public interface ICUAT
     {
         [ReadOnly(true)]
@@ -35,6 +47,7 @@ namespace Models
         [CustomIgnoreTag(CustomIgnoreTag.Kind.CLIENT)]
         public DateTime? deletedAt { get; set; }
     }
+
     public class SortByCreateAt<T> : IQuery<T> where T : ICUAT
     {
         public IQueryable<T> run(IQueryable<T> q)
