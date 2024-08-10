@@ -3,24 +3,6 @@ using System;
 using System.Collections.Generic;
 using Tools;
 
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
-using Microsoft.AspNetCore.Components;
-using Blazorise.DataGrid;
-using Models;
-using Tools;
-using Newtonsoft.Json;
-using Microsoft.JSInterop;
-using System.Threading;
-using AdminClientViewModels;
-
 namespace AdminBaseComponenets.BaseComs
 {
 
@@ -32,15 +14,27 @@ namespace AdminBaseComponenets.BaseComs
         
         bool panelOpenState;
 
-        
-        
-        
 
-
-        
+        Type[] genericArgs = new Type[] { null, typeof(int) };
 
 
 
+
+
+
+
+        Type gridMetaClass = null;
+
+
+        bool showModal = false;
+
+
+        void ModalCancel() => showModal = false;
+        void ModalOk()
+        {
+            Console.WriteLine("Modal ok");
+            showModal = false;
+        }
         protected override async Task OnInitializedAsync()
         {
             itemComponenet = Program0.createWidget(typeof(ForeignKey2<TEntity, TKEY>), new List<Attribute>());
@@ -86,6 +80,11 @@ namespace AdminBaseComponenets.BaseComs
         public void OnButtonClicked()
         {
             NavManager.NavigateTo($"{typeof(TEntity).GetUrlEncodeName()}/edit/{value.Value}");
+        }
+        public void OnSearchClick()
+        {
+            showModal = true;
+            
         }
 
     }

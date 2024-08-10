@@ -12,10 +12,26 @@
 @using System.Collections.Generic
 
 
+@using Models
 @using Newtonsoft.Json.Linq;
 
 @inherits ForeignKeyEditeBase<TEntity,TKEY>
 
+@functions {
+
+    //<DataList TItem2=@Coach TItem=@Coach url="/old/" url2=@Text >
+    RenderFragment CreateDynamicComponent2() => builder =>
+       {
+
+       Console.WriteLine("CreateDynamicComponent2 " + genericArgs[0]);
+
+       gridMetaClass = typeof(SearchPage<,>).MakeGenericType(genericArgs);
+
+       builder.OpenComponent(0, gridMetaClass);
+
+       builder.CloseComponent();
+       };
+}
 
 
 @if (!ReadOnly)
@@ -28,7 +44,7 @@
                 <Button Color="Color.Primary" Clicked="@OnButtonClicked" Size="Size.ExtraSmall"><Icon Name="IconName.Link" /></Button>
             -->
         </Column>
-        <Column ColumnSize=ColumnSize.Is11>
+        <Column ColumnSize=ColumnSize.Is10>
             @if (optionGenerator != null)
             {
 
@@ -49,6 +65,40 @@
                 </Select>
             }
         </Column>
+
+        @if (typeof(TEntity).GetCustomFirstAttributes<BigTable>() != null || true)
+        {
+            <Column ColumnSize=ColumnSize.Is1>
+                <Button Color="Color.Primary" Clicked="@OnSearchClick" Size=Size.ExtraSmall><Icon Name=IconName.Search /></Button>
+            </Column>
+        }
+        @if (showModal)
+        {
+            genericArgs = Program0.getValueKeyPair(typeof(TEntity));
+            <div class="modal fade show" id="myModal" style="display:block" aria-modal="true" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Confirm action</h4>
+                            <button type="button" class="close" @onclick="@ModalCancel">&times;</button>
+                        </div>
+
+                        <div>@CreateDynamicComponent2()</div>;
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn" @onclick="@ModalCancel">Cancel</button>
+                            <button type="button" class="btn btn-danger" @onclick=@ModalOk>Choose</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+
+    
     </Row>
 }
 <!-- <div>@optionGenerator.GetHashCode()</div>

@@ -42,6 +42,8 @@ namespace AdminBaseComponenets.BaseComs
         {
             await load();
         }
+
+        
         public async Task load()
         {
             ButtonState = "loading";

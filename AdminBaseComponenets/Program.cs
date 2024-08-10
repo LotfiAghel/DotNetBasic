@@ -600,6 +600,15 @@ namespace AdminBaseComponenets
             throw new NotImplementedException();
 
         }
+        public static Type[] getValueKeyPair(Type type)
+        {
+            Type[] genericArgs = new Type[] { null, null };
+            genericArgs[0] =type;
+
+            genericArgs[1] = getKeyType(genericArgs[0]);
+
+            return genericArgs;
+        }
         public static Type[] getValueKeyPair(string entityName)
         {
             Type[] genericArgs = new Type[] { null, null };
@@ -607,11 +616,7 @@ namespace AdminBaseComponenets
             Console.WriteLine(resources.Count());
             foreach (var t in resources)
                 Console.WriteLine(t.GetUrlEncodeName());
-            genericArgs[0] =  resources.FirstOrDefault(x => x.GetUrlEncodeName() == entityName);
-
-            genericArgs[1]=getKeyType(genericArgs[0]);
-            
-            return genericArgs;
+            return getValueKeyPair(resources.FirstOrDefault(x => x.GetUrlEncodeName() == entityName));
         }
 
 
@@ -835,7 +840,7 @@ namespace AdminBaseComponenets
                 }
                 {
                     var x = prps.GetFirst<Attribute, DataTypeAttribute>();
-                    if (x != null && x.DataType==DataType.MultilineText)
+                    if (x != null && x.DataType==DataType.MultilineText && false)
                         return new AdminBaseComponenets.BaseComs.StringRichInput();
                 }
                 {

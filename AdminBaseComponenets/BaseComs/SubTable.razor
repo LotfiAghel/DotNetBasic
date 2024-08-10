@@ -10,6 +10,7 @@
 @using Tools;
 
 <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+    <Button Color="Color.Primary" Clicked="@ShowModal">Show Modal</Button>
 @if(value!=null){
     <DataListSyncfusion TItem=TItem TKEY=TKEY value=@value> </DataListSyncfusion>
 }else{
@@ -17,7 +18,7 @@
     if(ButtonState.Length<3)
         ButtonState="click to load";
 }
-<Button Color="Color.Primary" Clicked="@ShowModal">Show Modal</Button>
+
 
 <Modal @ref="modalRef">
     <ModalContent Centered>

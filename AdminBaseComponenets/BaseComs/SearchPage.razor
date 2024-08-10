@@ -1,0 +1,55 @@
+﻿@typeparam TMODEL
+@typeparam TKEY
+@using AdminBaseComponenets
+@using System.ComponentModel;
+@using Tools;
+
+
+
+<h2> serach @(typeof(TMODEL).GetPerisanName())</h2>
+@Program0.CreateDynamicComponent2(this,@Program0.createForm3(typeof( Models.IQuery<TMODEL>)),serachData,onChange)
+<Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+@if(value!=null){
+    <h1>@($"find {value.ToList().Count()} result")</h1>
+    <DataListSyncfusion TItem=@TMODEL TKEY=@TKEY value=@value> </DataListSyncfusion>
+}
+
+
+
+
+@code {
+
+    public IReadOnlyCollection<TMODEL> value { get; set; }
+    public Models.IQuery<TMODEL> serachData { get; set; }
+    public NewEntityService<TMODEL, TKEY> Data { get; set; } = null;
+    public string ButtonState="click for serach";
+    async Task Click()
+    {
+        await load();
+    }
+    public void onChange(object x)
+    {
+        serachData = x as Models.IQuery<TMODEL>;
+    }
+    public async Task load()
+    {
+        ButtonState = "searching";
+        Console.WriteLine("load start");
+        
+        if (Data is null)
+            Data = Program0.getEntityManager<TMODEL, TKEY>() as NewEntityService<TMODEL, TKEY>;
+        Console.WriteLine("load getAll2");
+        try{
+            value = await Data.getAll2(serachData);
+        }catch{
+            ButtonState = "cant search try again " ;
+            value=null;    
+            return ;
+        }
+        Console.WriteLine("load end");
+        Console.WriteLine("load end"+value.ToList().Count());
+        ButtonState = "research " + value.ToList().Count();
+    }
+
+    
+}
