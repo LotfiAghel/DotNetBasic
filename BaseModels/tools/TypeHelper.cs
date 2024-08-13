@@ -15,6 +15,10 @@ namespace Tools
         {
             return  Char.ToLowerInvariant(s[0]) + s.Substring(1);
         }
+        public static string getCamelParmR(this string s)
+        {
+            return Char.ToUpper(s[0]) + s.Substring(1);
+        }
     }
     public static class TypeHelper
     {

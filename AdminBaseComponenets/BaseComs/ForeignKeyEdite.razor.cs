@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using Tools;
+using Models;
 
 namespace AdminBaseComponenets.BaseComs
 {
@@ -65,12 +66,17 @@ namespace AdminBaseComponenets.BaseComs
         }
         public async Task load()
         {
-            var tmp = Program0.getEntityManager<TEntity, TKEY> ();
-            if (!value.Equals( default(TKEY)))
-                await tmp.get(value);
+            TEntity val = default(TEntity);
+            var tmp = Program0.getEntityManager<TEntity, TKEY>();
+            if (!value.Equals(default(TKEY)))
+                val = await tmp.get(value);
 
             if (optionGenerator == null)
+            {
+                if (typeof(TEntity).GetCustomFirstAttributes<BigTable>()!=null)
+                    optionGenerator = new List<ForeignKey2<TEntity, TKEY>>() { new ForeignKey2<TEntity,TKEY>(val) };
                 optionGenerator = tmp;//.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id)); 
+            }
             
             // StateHasChanged();
 
