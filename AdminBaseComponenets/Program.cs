@@ -193,7 +193,11 @@ namespace AdminBaseComponenets
                       {
                           vv = valuePr.PropertyType.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { vv });
                       }
-                      
+                      if (vt == typeof(Guid) && valuePr != null && valuePr.PropertyType.IsGenericInstanceOf(typeof(ForeignKey2<,>)))
+                      {
+                          vv = valuePr.PropertyType.GetConstructor(new Type[] { typeof(Guid) }).Invoke(new object[] { vv });
+                      }
+
                       if (gt.GetProperty("value").PropertyType != vv.GetType())
                       {
                           Console.Error.WriteLine("type!!");

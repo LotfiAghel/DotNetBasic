@@ -157,10 +157,13 @@ namespace AdminBaseComponenets
 
             }
 
-            if (property.PropertyType == typeof(Nullable<int>) && w.GetType().IsGenericType
-                    && w.GetType().GetGenericTypeDefinition() == typeof(AdminBaseComponenets.BaseComs.NullabeType<>)
-                    //&& w.GetType().GetGenericArguments()[0].IsGenericType
-                    && w.GetType().GetGenericArguments()[0].IsAssignableTo( typeof(IForeignKey2<int>)))
+
+            if (property.PropertyType.IsGenericType 
+                 && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) 
+                 && w.GetType().IsGenericType
+                 && w.GetType().GetGenericTypeDefinition() == typeof(AdminBaseComponenets.BaseComs.NullabeType<>)
+                 //&& w.GetType().GetGenericArguments()[0].IsGenericType
+                 && w.GetType().GetGenericArguments()[0].IsAssignableTo(typeof(IForeignKey2<>).MakeGenericType(property.PropertyType.GenericTypeArguments[0])))
             {
                 onChange = (x) =>
                 {
