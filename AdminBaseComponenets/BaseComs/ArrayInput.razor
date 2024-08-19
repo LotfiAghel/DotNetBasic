@@ -30,6 +30,9 @@
                    <Column ColumnSize="ColumnSize.Is4">
                         <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)" >@value.Count</Button>
                   </Column>
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Button Clicked=@setNull>set null</Button>
+                        </Column>
                   </Row>
               </CollapseHeader>
             <CollapseBody>
@@ -94,6 +97,14 @@
         
 
     }
+    async Task setNull()
+    {
+        value = null;
+        OnChange(value);
+
+
+    }
+    
     protected override async Task OnInitializedAsync()
     {
         var tmp = Program0.getCollectionItemAttrs(Attributes);
