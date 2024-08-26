@@ -754,12 +754,12 @@ namespace AdminBaseComponenets
                 return typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(type.GetGenericArguments());
 
             };
-            /*defultRenderer2[typeof(List<>)] = (type, prps) =>
+            defultRenderer2[typeof(List<>)] = (type, prps) =>
             {
                 Console.WriteLine("defultRenderer2[List<>]");
-                return typeof(AdminBaseComponenets.BaseComs.ListSmallView<>).MakeGenericType(type.GetGenericArguments());
+                return typeof(BaseComs.InGrid.ListSmallView<>).MakeGenericType(type.GetGenericArguments());
 
-            };*/
+            };
 
             
 

@@ -1,0 +1,52 @@
+@typeparam TEntity
+
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+@using Models
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+@inherits ValueInput<List<TEntity>>
+
+@{
+    
+     
+    viewComponenet = Program0.createWidget(typeof(TEntity), new List<Attribute>() { });
+
+    
+}
+
+
+<div class="row pt-2 pb-2" >
+    @if (value != null)
+    if(viewComponenet != null)
+    {
+       
+        @foreach(var t in value){
+                <div >@Program0.CreateDynamicComponent2(this, viewComponenet, t),</div>
+        }
+       
+        
+    }else{
+            <div>
+                @foreach (var t in value)
+                {
+                    <div>@t.ToString(),</div>
+                }
+            </div>
+        }
+    else
+    {
+        <div>null</div>
+    }
+
+    
+</div>

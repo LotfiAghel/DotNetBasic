@@ -7,48 +7,49 @@
 @using Newtonsoft.Json.Linq;
 @inject NavigationManager NavManager
 @using Blazorise.DataGrid
+@using System.ComponentModel.DataAnnotations.Schema
 @inherits NullableInput2<IReadOnlyCollection<TItem>>
 @inject IJSRuntime jsRuntime
 
 @{
 
-    if(value!=null)
-        Console.WriteLine("data size "+value.Count);
+    if (value != null)
+        Console.WriteLine("data size " + value.Count);
     else
         Console.WriteLine("data is null");
-    if (value != null && chandeData!=value.GetHashCode() )
+    if (value != null && chandeData != value.GetHashCode())
     {
         chandeData = value.GetHashCode();
-        GetRange(0,11);
+        GetRange(0, 11);
     }
 }
 
 @if (itemName != null || true)
 {
-    
+
     @if (showModal)
     {
         <div class="modal fade show" id="myModal" style="display:block" aria-modal="true" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Confirm action</h4>
-                <button type="button" class="close" @onclick="@ModalCancel">&times;</button>
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Confirm action</h4>
+                        <button type="button" class="close" @onclick="@ModalCancel">&times;</button>
+                    </div>
+
+                    <div>@Program0.CreateDynamicComponent2(this, w, ttvalue)</div>;
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn" @onclick="@ModalCancel">Cancel</button>
+                        <button type="button" class="btn btn-danger" @onclick=@ModalOk>Delete</button>
+                    </div>
+
+                </div>
             </div>
-
-            <div>@Program0.CreateDynamicComponent2(this, w, ttvalue)</div>;
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn" @onclick="@ModalCancel">Cancel</button>
-                <button type="button" class="btn btn-danger" @onclick=@ModalOk>Delete</button>
-            </div>
-
         </div>
-    </div>
-</div>
     }
 }
 <hr />
@@ -71,59 +72,63 @@
 </Modal>
 
 <DataGrid TItem="TItem"
-        Data=@value2
+          Data=@value2
           ReadData=@OnReadData
-        RowDoubleClicked=onClick
-        RowClicked=onClick2
+          RowDoubleClicked=onClick
+          RowClicked=onClick2
           TotalItems="@totalTItems"
-        onclick=@NavigateToNewTab2
-        Responsive
-        ShowPager
-        Borderless
-        Resizable
-          PageSize=15
-          >
+          onclick=@NavigateToNewTab2
+          Responsive
+          ShowPager
+          Borderless
+          Resizable
+           PageSize=15>
      <DataGridColumns>
-            <!-- @bind-SelectedRow=@selectedEmployee<DataGridCommandColumn>
-        <EditCommandTemplate>
-                <Button Color="Color.Primary" Clicked=@NavigateToNewTab2 >Edit</Button>
-        </EditCommandTemplate>
-    </DataGridCommandColumn> -->
-    
-    @foreach (var prop in propertis){
-            if (prop.PropertyType.IsClass && prop.PropertyType != typeof(string) && prop.PropertyType != typeof(String))//TODO shuld check forgeinkey
-                    continue;
-            var md=MDTypeInfo.get(typeof(TItem));
+         <!-- @bind-SelectedRow=@selectedEmployee<DataGridCommandColumn>
+             <EditCommandTemplate>
+                     <Button Color="Color.Primary" Clicked=@NavigateToNewTab2 >Edit</Button>
+             </EditCommandTemplate>
+         </DataGridCommandColumn> -->
+         @foreach (var prop in propertis)
+        {
+
+            var md = MDTypeInfo.get(typeof(TItem));
 
             var atrs = prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList();
             var extaAtr = md.pattrs[prop].attrs;
             atrs.AddRange(extaAtr);
-            var widget = Program0.createWidget(prop.PropertyType, atrs);
-        //var f = Program0.createForm(prop.PropertyType, prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList());
-        var persianLabel = prop.GetPerisanName();
-            @if (widget!=null)
-        {
-            <DataGridColumn TItem=TItem Field=@prop.Name Caption=@persianLabel >
-                        
-                            <DisplayTemplate>
-                                @Program0.CreateDynamicComponent2(this, widget, prop.GetValue(context))
-                            </DisplayTemplate>
-                
-            </DataGridColumn>
-        }else{
-            <DataGridColumn TItem=TItem Field=@prop.Name Caption=@persianLabel >
-                    
-            </DataGridColumn>
-        }   
 
-    }
+
+            if (prop.PropertyType.IsClass && prop.PropertyType != typeof(Guid) && prop.PropertyType != typeof(string) && prop.PropertyType != typeof(String) && atrs.OfType<ForeignKeyAttribute>().Count() > 0)//TODO shuld check forgeinkey
+                continue;
+            var widget = Program0.createWidget(prop.PropertyType, atrs);
+            //var f = Program0.createForm(prop.PropertyType, prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList());
+            var persianLabel = prop.GetPerisanName();
+            @if (widget != null)
+            {
+                <DataGridColumn TItem=TItem Field=@prop.Name Caption=@persianLabel>
+
+                    <DisplayTemplate>
+                        @Program0.CreateDynamicComponent2(this, widget, prop.GetValue(context))
+                    </DisplayTemplate>
+
+                </DataGridColumn>
+            }
+            else
+            {
+                <DataGridColumn TItem=TItem Field=@prop.Name Caption=@persianLabel>
+
+                </DataGridColumn>
+            }
+
+        }
     </DataGridColumns>
     <!-- <DetailRowTemplate>
-        @{
-            var f2 = Program0.createForm(typeof(TItem), new());
-            <div>@Program0.CreateDynamicComponent2(this, f2, context)</div>
-            
-        }
+    @{
+        var f2 = Program0.createForm(typeof(TItem), new());
+                <div>@Program0.CreateDynamicComponent2(this, f2, context)</div>
+
+    }
     </DetailRowTemplate> -->
 </DataGrid>
 
@@ -131,10 +136,11 @@
 
 @code {
 
-    
+
     public async Task NavigateToNewTab2(MouseEventArgs args)
     {
-        if(args.CtrlKey){
+        if (args.CtrlKey)
+        {
             var itemId = selectedTItem.id;
             string url = $"{EntityName}/edit/{itemId}";
 
@@ -154,7 +160,7 @@
     {
         //newItem = new TItem();
         //addingItem = typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
-        
+
         return modalRef.Show();
     }
 
@@ -165,7 +171,7 @@
     }
     private Task SaveModal()
     {
-        var dataManager=Program0.getEntityManager<TItem, TKEY>();
+        var dataManager = Program0.getEntityManager<TItem, TKEY>();
         dataManager.update(selectedTItem);
         return modalRef.Hide();
     }
