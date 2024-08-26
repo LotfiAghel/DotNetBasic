@@ -93,7 +93,12 @@
     @foreach (var prop in propertis){
             if (prop.PropertyType.IsClass && prop.PropertyType != typeof(string) && prop.PropertyType != typeof(String))//TODO shuld check forgeinkey
                     continue;
-            var widget = Program0.createWidget(prop.PropertyType, prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList());
+            var md=MDTypeInfo.get(typeof(TItem));
+
+            var atrs = prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList();
+            var extaAtr = md.pattrs[prop].attrs;
+            atrs.AddRange(extaAtr);
+            var widget = Program0.createWidget(prop.PropertyType, atrs);
         //var f = Program0.createForm(prop.PropertyType, prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList());
         var persianLabel = prop.GetPerisanName();
             @if (widget!=null)
