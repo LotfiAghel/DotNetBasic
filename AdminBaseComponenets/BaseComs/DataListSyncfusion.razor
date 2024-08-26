@@ -91,20 +91,23 @@
     </DataGridCommandColumn> -->
     
     @foreach (var prop in propertis){
-        //var w = Program0.createWidget(prop.PropertyType, prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList());
+            if (prop.PropertyType.IsClass && prop.PropertyType != typeof(string) && prop.PropertyType != typeof(String))//TODO shuld check forgeinkey
+                    continue;
+            var widget = Program0.createWidget(prop.PropertyType, prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList());
         //var f = Program0.createForm(prop.PropertyType, prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList());
         var persianLabel = prop.GetPerisanName();
-        @if (false)
+            @if (widget!=null)
         {
-            <DataGridColumn TItem="TItem" Field=@prop.Name Caption=@persianLabel Editable="true" >
+            <DataGridColumn TItem=TItem Field=@prop.Name Caption=@persianLabel >
                         
                             <DisplayTemplate>
-                                @Program0.CreateDynamicComponent2(this, w,prop.GetValue(context) )
+                                @Program0.CreateDynamicComponent2(this, widget, prop.GetValue(context))
                             </DisplayTemplate>
                 
             </DataGridColumn>
         }else{
-            <DataGridColumn TItem="TItem" Field=@prop.Name Caption=@persianLabel >
+            <DataGridColumn TItem=TItem Field=@prop.Name Caption=@persianLabel >
+                    
             </DataGridColumn>
         }   
 

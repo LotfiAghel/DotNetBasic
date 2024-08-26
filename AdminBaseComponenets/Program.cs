@@ -24,6 +24,7 @@ using Tools;
 using AdminBaseComponenets.BaseComs;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using AdminBaseComponenets.BaseComs.InGrid;
 
 public static class ExtensionMethods
 {
@@ -644,7 +645,7 @@ namespace AdminBaseComponenets
                     );/**/
 
                 }
-                return null;
+                return new StringInGrid();
             };
             defultRenderer[typeof(Guid)] = (prps) =>
             {
@@ -678,10 +679,7 @@ namespace AdminBaseComponenets
 
                 }
 
-                return createWidget(
-                                typeof(string),
-                                new List<Attribute>()
-                        );
+                return null;
             };
             defultRenderer[typeof(Guid)] = (prps) =>
             {
@@ -702,16 +700,13 @@ namespace AdminBaseComponenets
 
                 }
 
-                return createWidget(
-                                typeof(string),
-                                new List<Attribute>()
-                        );
+                return null;
             };
 
             defultRenderer[typeof(Rial)] = (prps) =>
            {
 
-               return new AdminBaseComponenets.BaseComs.RialInGrid();
+               return new RialInGrid();
 
 
            };
@@ -749,14 +744,14 @@ namespace AdminBaseComponenets
                 Console.WriteLine($"defultRenderer2[ForeignKey<>] IntegerFSmallView<{type.GetGenericArguments()[0]}>");
                 var z = type.GetGenericArguments().ToList();
                 z.Add(typeof(int));
-                return typeof(AdminBaseComponenets.BaseComs.IntegerFSmallView<,>).MakeGenericType(z.ToArray());
+                return typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(z.ToArray());
 
             };
             defultRenderer2[typeof(ForeignKey2<,>)] = (type, prps) =>
             {
                 Console.WriteLine("defultRenderer2[ForeignKey<>]");
                 Console.WriteLine($"defultRenderer2[ForeignKey<>] IntegerFSmallView<{type.GetGenericArguments()}>");
-                return typeof(AdminBaseComponenets.BaseComs.IntegerFSmallView<,>).MakeGenericType(type.GetGenericArguments());
+                return typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(type.GetGenericArguments());
 
             };
             /*defultRenderer2[typeof(List<>)] = (type, prps) =>

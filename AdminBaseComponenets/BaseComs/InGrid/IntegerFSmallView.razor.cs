@@ -7,7 +7,7 @@ using AdminClientViewModels;
 using System.Collections.Generic;
 using Models;
 
-namespace AdminBaseComponenets.BaseComs
+namespace AdminBaseComponenets.BaseComs.InGrid
 {
 
 

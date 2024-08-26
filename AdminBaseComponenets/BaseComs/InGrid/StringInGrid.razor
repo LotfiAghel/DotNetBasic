@@ -1,0 +1,50 @@
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+
+@inherits ValueInput<String>
+
+<Tooltip Text=@value>
+    <div class="row pt-2 pb-2">
+        <div class="col-sm-10">
+            @getText()
+        </div>
+    </div>
+</Tooltip>
+
+
+
+
+
+
+
+@code
+{
+    public string getText()
+    {
+        subS = value;
+        if (value != null && value.Length > 20)
+            subS = value.Substring(0, 20);
+
+        return subS;
+    }
+
+
+
+
+    public String subS { get; set; }
+
+
+
+
+
+
+}
+
