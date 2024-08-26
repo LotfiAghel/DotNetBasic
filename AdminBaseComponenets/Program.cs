@@ -308,7 +308,7 @@ namespace AdminBaseComponenets
             if (type.IsClass && type.IsAssignableTo(typeof(Models.IEntity0)))
             { //TODO fix this
                 Console.WriteLine("got to create GenericInSelectInt");
-                Type type1 = typeof(AdminBaseComponenets.BaseComs.GenericInSelectInt<>);
+                Type type1 = typeof(AdminBaseComponenets.BaseComs.InGrid.GenericInSelectInt<>);
 
 
                 var gt = type1.MakeGenericType(type);
