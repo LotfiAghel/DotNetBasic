@@ -55,13 +55,13 @@
 <hr />
 
 
-<Modal @ref=@modalRef>
+<Modal @ref=@modalRef Style="overflow:visible">
     <ModalContent VerticalAlignment=@VerticalAlignment.Top Size=ModalSize.ExtraLarge>
         <ModalHeader>
             <ModalTitle>@(typeof(TItem).GetPerisanName())</ModalTitle>
             <CloseButton />
         </ModalHeader>
-        <ModalBody>
+        <ModalBody Style="display: contents;">
             <GenericForm TItem=@TItem value=@selectedTItem></GenericForm>
         </ModalBody>
         <ModalFooter>
@@ -109,7 +109,7 @@
                 <DataGridColumn TItem=TItem Field=@prop.Name Caption=@persianLabel>
 
                     <DisplayTemplate>
-                        @Program0.CreateDynamicComponent2(this, widget, prop.GetValue(context))
+                        @Program0.CreateDynamicComponent2(this, widget, prop.GetValue(context),ReadOnly:true)
                     </DisplayTemplate>
 
                 </DataGridColumn>

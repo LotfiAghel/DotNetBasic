@@ -21,9 +21,7 @@ namespace AdminBaseComponenets.Pages
 
 
 
-        [Parameter]
-        public object value { get; set; }
-
+      
         public static async Task<object> getValue<T, TKEY>(string Id)
                           where T : class, Models.IIdMapper<TKEY>
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
@@ -108,7 +106,7 @@ namespace AdminBaseComponenets.Pages
       
 
         private bool valueIsNew = false;
-        public bool ReadOnly = false;
+        
         private ComponentBase formView = null;
 
         Action<object> onChangeRefrence0 = null;
@@ -117,19 +115,19 @@ namespace AdminBaseComponenets.Pages
 
             base.OnInitialized();
             genericArgs = Program0.getValueKeyPair(entityName);
-            if (value == null || !value.GetType().IsInstanceOfType(genericArgs[0]))
+            if (value0 == null || !value0.GetType().IsInstanceOfType(genericArgs[0]))
             {
                 Console.WriteLine("go to load value of form");
                 if (Id == "new")
                 {
-                    value = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
+                    value0 = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
                     valueIsNew = true;
                     if (ButtonState.Length < 3)
                         ButtonState = "save0";
                 }
                 else
                 {
-                    value = (typeof(FormContainer).GetMethod(nameof(getValueFast0), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
+                    value0 = (typeof(FormContainer).GetMethod(nameof(getValueFast0), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
                         .MakeGenericMethod(genericArgs)
                       .Invoke(this, new object[] { Id }));
                     //Console.WriteLine($"get value {value.GetType().Name}");
@@ -151,7 +149,7 @@ namespace AdminBaseComponenets.Pages
                 onChangeRefrence0 = (x) =>
                 {
 
-                    value = x;
+                    value0 = x;
 
                 };
 
@@ -168,30 +166,30 @@ namespace AdminBaseComponenets.Pages
 
             //await Program0.CheckLogin();
 
-            if (value == null || !value.GetType().IsInstanceOfType(genericArgs[0]))
+            if (value0 == null || !value0.GetType().IsInstanceOfType(genericArgs[0]))
             {
                 Console.WriteLine("go to load value of form");
                 Console.WriteLine($"{genericArgs[0].Name}");
                 Console.WriteLine($"{genericArgs[1].Name}");
                 if (Id == "new")
                 {
-                    value = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
+                    value0 = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
                     valueIsNew = true;
                     if (ButtonState.Length < 3)
                         ButtonState = "save0";
                 }
                 else
                 {
-                    value = await (Task<object>)(typeof(FormContainer).GetMethod(nameof(getValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
+                    value0 = await (Task<object>)(typeof(FormContainer).GetMethod(nameof(getValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
                         .MakeGenericMethod(genericArgs)
                       .Invoke(this, new object[] { Id }));
-                    Console.WriteLine($"get value {value.GetType().Name}");
+                    Console.WriteLine($"get value {value0.GetType().Name}");
                     StateHasChanged();
                 }
 
             }
-            Console.WriteLine("value " + value.GetType().Name);
-            if (value is Models.Entity en)
+            Console.WriteLine("value " + value0.GetType().Name);
+            if (value0 is Models.Entity en)
             {
 
                 if (en.onChanges == null)
@@ -219,7 +217,7 @@ namespace AdminBaseComponenets.Pages
                 valueIsNew = false;
 
                 var pr = genericArgs[0].GetProperty("id");
-                var id = pr.GetValue(value);
+                var id = pr.GetValue(value0);
                 Console.WriteLine("FormC navigate ");
                 NavigationManager.NavigateTo($"/{entityName}/edit/{id}", false);
 
@@ -261,8 +259,8 @@ namespace AdminBaseComponenets.Pages
 
             genericArgs[0] = Program0.resources.FirstOrDefault(x => x.GetUrlEncodeName() == entityName);
 
-            value = await (Task<object>)(typeof(FormContainer).GetMethod(nameof(postValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.MakeGenericMethod(genericArgs[0])
-                .InvokeAsync(this, new object[] { value })); // await EditBaseContainer.postValue()
+            value0 = await (Task<object>)(typeof(FormContainer).GetMethod(nameof(postValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.MakeGenericMethod(genericArgs[0])
+                .InvokeAsync(this, new object[] { value0 })); // await EditBaseContainer.postValue()
 
             StateHasChanged();
         }
@@ -271,8 +269,8 @@ namespace AdminBaseComponenets.Pages
 
             genericArgs[0] = Program0.resources.FirstOrDefault(x => x.GetUrlEncodeName() == entityName);
 
-            value = await (Task<object>)(typeof(FormContainer).GetMethod(nameof(updateValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.MakeGenericMethod(genericArgs[0])
-                .InvokeAsync(this, new object[] { value }));// await EditBaseContainer.updateValue()
+            value0 = await (Task<object>)(typeof(FormContainer).GetMethod(nameof(updateValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.MakeGenericMethod(genericArgs[0])
+                .InvokeAsync(this, new object[] { value0 }));// await EditBaseContainer.updateValue()
 
             StateHasChanged();
         }

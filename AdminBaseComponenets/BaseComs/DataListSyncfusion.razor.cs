@@ -37,6 +37,11 @@ namespace AdminBaseComponenets.BaseComs
         [Parameter]
         public TKEY itemValue { get; set; }
 
+
+
+        [Parameter]
+        public Action< TKEY> onClickCustom { get; set; } = null;
+
         [Parameter]
         public RenderFragment<TItem> ChildContent { get; set; }
 
@@ -130,6 +135,11 @@ namespace AdminBaseComponenets.BaseComs
 
 
             var itemId = (e.Item as IIdMapper<TKEY>).id;
+            if (onClickCustom != null)
+            {
+                onClickCustom(itemId);
+                return;
+            }
             if(Url is null)
                 NavManager.NavigateTo($"{EntityName}/edit/{itemId}");
             else

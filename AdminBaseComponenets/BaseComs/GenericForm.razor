@@ -29,7 +29,7 @@
                 foreach (var property in propertis)
                 {
 
-                    bool readOnly = false;
+                    bool readOnly = this.ReadOnly;
                     bool defultIgnore = false;
                     {
                         var y = property.GetCustomFirstAttributes<Models.IgnoreDefultForm>();

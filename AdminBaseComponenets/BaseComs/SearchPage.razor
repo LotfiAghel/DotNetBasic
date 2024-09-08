@@ -11,7 +11,7 @@
 <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
 @if(value!=null){
     <h1>@($"find {value.ToList().Count()} result")</h1>
-    <DataListSyncfusion TItem=@TMODEL TKEY=@TKEY value=@value> </DataListSyncfusion>
+    <DataListSyncfusion TItem=@TMODEL TKEY=@TKEY value=@value onClickCustom=@onClickCustom> </DataListSyncfusion>
 }
 
 

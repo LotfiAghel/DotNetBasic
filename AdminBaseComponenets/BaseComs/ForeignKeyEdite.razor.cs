@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Tools;
 using Models;
+using Blazorise;
 
 namespace AdminBaseComponenets.BaseComs
 {
@@ -26,6 +27,7 @@ namespace AdminBaseComponenets.BaseComs
 
         Type gridMetaClass = null;
 
+        private Modal modalRef;
 
         bool showModal = false;
 
@@ -45,6 +47,7 @@ namespace AdminBaseComponenets.BaseComs
 
         protected async Task Click2(TKEY vs)
         {
+            showModal = false;
             Console.WriteLine($"onChange integerFUnput  {vs} ");
             value=new ForeignKey2<TEntity, TKEY>(vs);
             Console.WriteLine($"onChange integerFUnput  {value.getFValue()} ");
@@ -56,7 +59,7 @@ namespace AdminBaseComponenets.BaseComs
                 return;
             //viewComponenet= new AdminBaseComponenets.BaseComs.IntegerFSmallView<Models.Coach>() { };
             //viewComponenet = Program0.createWidget(vv.GetType(),  new List<Attribute>() { new ForeignKeyAttr(typeof(TEntity)) });
-            //StateHasChanged();
+            StateHasChanged();
 
         }
         protected async Task Click3()
@@ -73,8 +76,13 @@ namespace AdminBaseComponenets.BaseComs
 
             if (optionGenerator == null)
             {
-                if (typeof(TEntity).GetCustomFirstAttributes<BigTable>()!=null)
-                    optionGenerator = new List<ForeignKey2<TEntity, TKEY>>() { new ForeignKey2<TEntity,TKEY>(val) };
+                if (typeof(TEntity).GetCustomFirstAttributes<BigTable>() != null)
+                {
+                    var l = new List<ForeignKey2<TEntity, TKEY>>();
+                    if(val != null)
+                        l.Add(new ForeignKey2<TEntity, TKEY>(value));
+                    optionGenerator = l;
+                }
                 optionGenerator = tmp;//.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id)); 
             }
             

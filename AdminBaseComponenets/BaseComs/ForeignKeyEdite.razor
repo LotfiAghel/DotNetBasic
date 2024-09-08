@@ -23,13 +23,25 @@
     RenderFragment CreateDynamicComponent2() => builder =>
        {
 
-       Console.WriteLine("CreateDynamicComponent2 " + genericArgs[0]);
+           Console.WriteLine("CreateDynamicComponent2 " + genericArgs[0]);
 
-       gridMetaClass = typeof(SearchPage<,>).MakeGenericType(genericArgs);
+           gridMetaClass = typeof(SearchPage<,>).MakeGenericType(genericArgs);
 
-       builder.OpenComponent(0, gridMetaClass);
 
-       builder.CloseComponent();
+
+           Action<TKEY> onClickCustom = async (id) =>
+           {
+               showModal = false;
+               await Click2(id);
+               
+           };
+
+
+
+           
+           builder.OpenComponent(0, gridMetaClass);
+           builder.AddAttribute(1, nameof(SearchPage<TEntity, TKEY>.onClickCustom), onClickCustom);
+           builder.CloseComponent();
        };
 }
 
@@ -69,13 +81,13 @@
         @if (typeof(TEntity).GetCustomFirstAttributes<BigTable>() != null || true)
         {
             <Column ColumnSize=ColumnSize.Is1>
-                <Button Color="Color.Primary" Clicked="@OnSearchClick" Size=Size.ExtraSmall><Icon Name=IconName.Search /></Button>
+                <Button Color="Color.Primary" Clicked=@OnSearchClick Size=Size.ExtraSmall><Icon Name=IconName.Search /></Button>
             </Column>
         }
         @if (showModal)
         {
             genericArgs = Program0.getValueKeyPair(typeof(TEntity));
-            <div class="modal fade show" id="myModal" style="display:block" aria-modal="true" role="dialog">
+            <div class="modal fade show" id="myModal" style="display:block;overflow:visible" aria-modal="true" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
 
@@ -98,7 +110,7 @@
             </div>
         }
 
-    
+
     </Row>
 }
 <!-- <div>@optionGenerator.GetHashCode()</div>

@@ -11,7 +11,8 @@ namespace AdminBaseComponenets.BaseComs
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
-       
+        [Parameter]
+        public Action<TKEY> onClickCustom { get; set; } = null;
 
     }
 }

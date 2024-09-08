@@ -20,8 +20,8 @@
 }
 
 
-<Modal @ref="modalRef">
-    <ModalContent Centered>
+<Modal @ref="modalRef" Style="overflow:visible">
+    <ModalContent Centered Size=ModalSize.ExtraLarge>
         <ModalHeader>
             <ModalTitle>Edit</ModalTitle>
             <CloseButton />
@@ -57,6 +57,8 @@
     }
     private Task SaveModal()
     {
+        if (Data is null)
+            Data = Program0.getEntityManager<TItem, TKEY>();
         //var dataManager=Program0.getEntityManager<TMASTER, TMKEY>();
         Data.post(addingItem);
         return modalRef.Hide();

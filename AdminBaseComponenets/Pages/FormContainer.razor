@@ -9,16 +9,17 @@
 @{
     Console.WriteLine("fffffffffff");
     genericArgs = Program0.getValueKeyPair(entityName);
-    if (value != null && !value.GetType().IsAssignableTo(genericArgs[0]))
+    ReadOnly = !Program0.checkPermission<Models.UpdateAccess>(genericArgs[0]);
+    if (value0 != null && !value0.GetType().IsAssignableTo(genericArgs[0]))
     {
-        value = (typeof(FormContainer).GetMethod(nameof(getValueFast0), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
+        value0 = (typeof(FormContainer).GetMethod(nameof(getValueFast0), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
                         .MakeGenericMethod(genericArgs)
                       .Invoke(this, new object[] { Id }));
 
     }
     if (Id == "new")
     {
-        value = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
+        value0 = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
         valueIsNew = true;
         ButtonState = "save new";
     }
@@ -53,7 +54,7 @@
         }
 
     }
-    Console.WriteLine($"value==null = {value == null}");
+    Console.WriteLine($"value==null = {value0 == null}");
 
 
 
@@ -66,7 +67,7 @@
 {
     if (formView != null)
     {
-        <div>@Program0.CreateDynamicComponent2(this,formView,value)</div>
+        <div>@Program0.CreateDynamicComponent2(this, formView, value0, ReadOnly: ReadOnly)</div>
     }
     if (Program0.checkPermission<Models.InsertAccess>(genericArgs[0]))
     {
@@ -111,17 +112,17 @@ else
             <TabPanel Name="value">
                 @if (formView != null)
                 {
-                    <div>@Program0.CreateDynamicComponent2(this,formView,value,onChangeRefrence0,null,ReadOnly)</div>
+                    <div>@Program0.CreateDynamicComponent2(this,formView,value0,onChangeRefrence0,null,ReadOnly)</div>
                 }
                 @if (Program0.checkPermission<Models.UpdateAccess>(genericArgs[0]))
                 {
                     <Button Outlined="true" Clicked="@update">@ButtonState</Button>
                 }
-                <div> @Program0.CreateDynamicComponentActionbar(genericArgs[0],actionValue,value,genericArgs)</div>
+                <div> @Program0.CreateDynamicComponentActionbar(genericArgs[0],actionValue,value0,genericArgs)</div>
             </TabPanel>
 
 
-            @if (value != null)
+            @if (value0 != null)
             {
                 foreach (var prop in genericArgs[0].GetProperties())
                 {
@@ -130,8 +131,8 @@ else
                         continue;
                     if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
                     {
-                        <TabPanel @key=@($"gfc/{(value as Models.IEntity0).getId().ToString()}/{prop.Name}") Name=@prop.GetPerisanName()>
-                            @CreateDynamicComponentGrid(prop.PropertyType.GetGenericArguments()[0],(value as Models.IEntity0).getId(),prop.Name)
+                        <TabPanel @key=@($"gfc/{(value0 as Models.IEntity0).getId().ToString()}/{prop.Name}") Name=@prop.GetPerisanName()>
+                            @CreateDynamicComponentGrid(prop.PropertyType.GetGenericArguments()[0],(value0 as Models.IEntity0).getId(),prop.Name)
                         </TabPanel>
                     }
 
@@ -141,8 +142,8 @@ else
                 {
                     if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IQueryable<>))
                     {
-                        <TabPanel Label=@prop.GetPerisanName() @key=@($"gfc/{(value as Models.IEntity0).getId()}/{prop.Name}") Name=@(prop.Name)>
-                            @CreateDynamicComponentGrid(prop.ReturnType.GetGenericArguments()[0],(value as Models.IEntity0).getId(),prop.Name)
+                        <TabPanel Label=@prop.GetPerisanName() @key=@($"gfc/{(value0 as Models.IEntity0).getId()}/{prop.Name}") Name=@(prop.Name)>
+                            @CreateDynamicComponentGrid(prop.ReturnType.GetGenericArguments()[0],(value0 as Models.IEntity0).getId(),prop.Name)
                         </TabPanel>
                     }
                 }
