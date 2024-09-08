@@ -647,6 +647,12 @@ namespace AdminBaseComponenets
                 }
                 return new StringInGrid();
             };
+             defultRenderer[typeof(Type)] = (prps) =>
+            {
+               
+                
+                return new TypeInGrid();
+            };
             defultRenderer[typeof(Guid)] = (prps) =>
             {
                 var a = prps.OfType<ForeignKeyAttr>().ToList();

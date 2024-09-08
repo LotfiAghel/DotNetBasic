@@ -3,18 +3,35 @@
 
 
 @using Models
-;
+
 @using System.ComponentModel;
 @using Tools;
 
-<div>new </div>
+
+@using AdminClientViewModels;
+
+@inherits EditBase2<FuncV<TINP, TOUT>>
+
+
+
+<EditForm Model="@value">
+    @if (value != null)
+    {
+        autoComp(()=> value.inp);
+        <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+        autoComp(()=> value.output);
+
+    }
+
+
+
+</EditForm>
+
+@{/*
 @Program0.CreateDynamicComponent2(this,Program0.createForm4(typeof(TINP)),inp,(x) =>
                     {
                         onChange(x);
                     })
+*/}
 
-<Button Outlined="true" Clicked="@Click">@ButtonState</Button>
-@if(output!=null){
-    <PointerInput2 TItem="TOUT" value=@output  ReadOnly=true />
-}
 

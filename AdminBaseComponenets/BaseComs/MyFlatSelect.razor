@@ -1,0 +1,54 @@
+﻿@typeparam TValue
+
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+@using Newtonsoft.Json.Linq;
+
+@inherits OptionsValueInput<TValue>
+@{
+    load();
+}
+@if (itemComponenet != null && options!=null){
+
+    <div class="e-multi-select-wrapper e-down-icon" tabindex="-1" _bl_18="">
+        <span class="e-chips-collection"  style="margin:20px">
+            @if(true){
+                var style=$"list-style-type:none; height:30px; color: {(value==null?"blue":"black")}";
+                 <span class="e-chips " data-value=null  style=@style key="nulladf" tabindex="1"
+                                 @onclick=@(()=> onclick(default(TValue)))>
+                                <span class="e-chipcontsent">
+                                    null
+                                </span>
+                               
+                            </span>
+                foreach (var t in options){
+
+                            var style2=$"list-style-type:none; height:30px; color: {(value==t?"blue":"black")}";
+                            <span class="e-chips " data-value=@t  style=@style2 @key=@t tabindex="1"
+                                 @onclick=@(()=> onclick(t))>
+                                <span class="e-chipcontsent">
+                                    @Program0.CreateDynamicComponent2(this, itemComponenet, t)
+                                </span>
+                               
+                            </span>
+                        
+                }
+            }
+        </span>
+
+    </div>
+
+
+}
+
+
+
+
+

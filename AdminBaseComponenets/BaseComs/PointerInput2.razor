@@ -14,7 +14,7 @@
 @using Newtonsoft.Json.Linq;
 
 
-@inherits PointerInputBase2<TItem>
+@inherits ValueInput<TItem>
 <!--
 
 <p style="display: inline;color:blue" @onclick=@Click0>close</p>
@@ -44,30 +44,26 @@
 }
 
 -->
-        <Accordion>
+        <Accordion >
         <Collapse  Visible=@collapse1Visible>
              <CollapseHeader>
             <Heading Size="HeadingSize.Is4" >
-                <Row Size="Size.ExtraSmall">
-                <Column ColumnSize="ColumnSize.Is4">
-                        <AccordionToggle >toggle</AccordionToggle>
-                </Column>
-                <Column ColumnSize=ColumnSize.Is8 >
-                   @if(classess.Count() >0 ){
-                        if(!ReadOnly){
-                                        <Select TValue="string" SelectedValue=@typeName SelectedValueChanged=@Click2 Size="Size.ExtraSmall">
-                                            <SelectItem TValue="string" value="null">null</SelectItem>
-                                            @foreach (var t in classess)
-                                            {
-                                                <SelectItem TValue="string" value=@t.Name>@t.GetPerisanName()</SelectItem>
-                                            }
-                                        </Select>
-                        }else if(value!=null){
-                            <div>@(value.GetType().Name)</div>;
+                <Row Size="Size.Small">
+                    <Column ColumnSize="ColumnSize.Is2">
+                            <AccordionToggle >toggle</AccordionToggle>
+                    </Column>
+                    <Column ColumnSize=ColumnSize.Is10 >
+                    @if(classess!=null && classess.Count() >0 ){
+                            if(!ReadOnly){
+                                
+                                <MyFlatSelect TValue=Type options=classess value=@(value?.GetType() ?? null) SelectedValueChanged=@((v)=>Click2(v)) >
+                                </MyFlatSelect>
+                            }else if(value!=null){
+                                <div>@(value.GetType().Name)</div>;
+                            }
                         }
-                    }
-                </Column>
-            </Row>
+                    </Column>
+                </Row>
             </Heading>
             </CollapseHeader>
             <CollapseBody>
@@ -84,74 +80,40 @@
 {
     public override bool inRowField()=>false;
 
-    public bool openOject = true;
     ElementReference MyElementReference;
     ComponentBase widget = null;
     bool collapse1Visible = false;
-    async Task Click0()
-    {
-        openOject = !openOject;
-    }
-    async Task Click2(string typeName)
+    
+    async Task Click2(Type type)
     {
 
-        collapse1Visible = true;
-        this.typeName = typeName;
-        Console.WriteLine("Click2 " + typeName);
-        if(String.IsNullOrEmpty(typeName))
-            return;
+        
+        classType=type;
         var bv = value;
-        var vv = await Click();
-        Console.WriteLine("Click2 <>");
-        Console.WriteLine(bv!=null?bv.GetHashCode():"null");
-        Console.WriteLine(vv!=null?vv.GetHashCode():"null");
 
-        if (bv != null&& value!=null && bv.GetHashCode() == vv.GetHashCode())
-            return;
-        if(bv==null && value==null)
-            return;
-            
+        if(classType==null){
+            value=null;
+        }else{
+            if (value==null || classType != value.GetType())
+            {
+                value = classType.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;//tmp=new ClassType()
+            }else{
+                return ;//nothing change
+            }
+        }
+               
+        collapse1Visible = true;    
         if (OnChange!=null)
             OnChange(value);
 
-        if (vv != null)
-            widget = Program0.createForm(vv.GetType(), new List<Attribute>() { });
+        if (value != null)
+            widget = Program0.createForm(value.GetType(), new List<Attribute>() { });
         else
             widget = null;
-        Console.WriteLine("Click2 <3>");
-
-
-        Console.WriteLine("Click2 <4>");
+        
     }
-    protected override async Task OnInitializedAsync()
-    {
-
-        if (typeName == null && value != null)
-        {
-            typeName = value.GetType().Name;
-            widget = Program0.createForm(value.GetType(), new List<Attribute>() { });
-        }
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-
-        if (value != null && typeName != value.GetType().Name)
-        {
-            typeName = value.GetType().Name;
-
-        }
-    }
-
-    protected override void OnParametersSet()
-    {
-
-        if (value != null && typeName != value.GetType().Name)
-        {
-            typeName = value.GetType().Name;
-
-        }
-    }
+    
+   
 
 
 

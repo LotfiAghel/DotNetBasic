@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Components;
 
 using System.Net.Http;
 
-
+using AdminClientViewModels;
 
 
 
@@ -21,17 +21,13 @@ namespace AdminBaseComponenets.BaseComs
 {
 
     
-    public partial class ApiPage<TINP,TOUT> : ComponentBase
+    public partial class ApiPage<TINP,TOUT> : EditBase2<FuncV<TINP, TOUT>>
     {
         [Parameter]
-        public string value{get;set;}
+        public string url{get;set;}
 
 
-        public TINP inp { get; set; }
-
-
-        public TOUT output{get;set;}
-
+       
 
         
 
@@ -40,7 +36,7 @@ namespace AdminBaseComponenets.BaseComs
 
         async Task onChange(object x)
         {
-            inp=(TINP)x;
+            value.inp=(TINP)x;
         }
 
 
@@ -54,8 +50,8 @@ namespace AdminBaseComponenets.BaseComs
 
             //res = await ClTool2.WebClient.webClient.fetch<AdminMsg.LoginRequest, AdminMsg.LoginResponse>("adminUser/login",
             try{
-                output = await ClTool.WebClient.webClient.fetch<TINP, TOUT>(value,
-                    HttpMethod.Post, inp);
+                value.output = await ClTool.WebClient.webClient.fetch<TINP, TOUT>(url,
+                    HttpMethod.Post, value.inp);
             }catch{
                 ButtonState = "try again";                    
                 return ;
