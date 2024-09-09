@@ -540,14 +540,10 @@ namespace AdminBaseComponenets
         
         public static bool checkPermission<T2>(Type T) where T2 : ACLAtr
         {
-            return true;
-            if (typeof(T2) == typeof(ViewAccess))
-                return true;
-            if (typeof(T2) == typeof(SelectAccess))
-                return true;
+            //return true;
             try
             {
-                var adminWriteBan = T.GetCustomAttributes(typeof(T2), true).ToList().GetFirst<object, T2>();
+                var adminWriteBan = T.GetCustomAttributes(typeof(T2), true).OfType<T2>().FirstOrDefault();
                 if (adminWriteBan == null || adminWriteBan.kinds.Intersect(user.roles).Count() == 0)
                     return false;
             }
