@@ -216,7 +216,7 @@ namespace AdminBaseComponenets
                   
                   if (true)
                   {
-                      PropertyInfo pr = gt.GetProperty("ReadOnly");
+                      PropertyInfo pr = gt.GetProperty(nameof(ValueInput0.ReadOnly));
                       if (pr != null)
                           builder.AddAttribute(1, nameof(ValueInput0.ReadOnly), ReadOnly);
                   }
