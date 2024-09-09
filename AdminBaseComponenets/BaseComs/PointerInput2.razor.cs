@@ -36,7 +36,7 @@ namespace AdminBaseComponenets.BaseComs
       
         public PointerInput2()
         {
-            classess=typeof(TItem).GetSubClasses();
+            classess=typeof(TItem).GetSubClasses(evenAbstracts:false);
         }
         protected override async Task OnInitializedAsync()
     {
