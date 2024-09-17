@@ -847,23 +847,23 @@ namespace AdminBaseComponenets
                 {
                     var x = prps.GetFirst<Attribute, DataTypeAttribute>();
                     if (x != null && x.DataType == DataType.ImageUrl)
-                        return new AdminBaseComponenets.BaseComs.FileUpload();
+                        return new AdminBaseComponenets.BaseComs.FileUploadBig();
                 }
                 {
                     var x = prps.GetFirst<Attribute, DataTypeAttribute>();
                     if (x != null && x.DataType == DataType.Upload)
-                        return new AdminBaseComponenets.BaseComs.FileUpload();
+                        return new AdminBaseComponenets.BaseComs.FileUploadBig();
                 }
                 {
                     var x = prps.GetFirst<Attribute, Models.SmallPicShow>();
                     if (x != null)
-                        return new AdminBaseComponenets.BaseComs.FileUpload();
+                        return new AdminBaseComponenets.BaseComs.FileUploadBig();
                 }
                 if (true)
                 {
                     var x = prps.GetFirst<Attribute, Models.SmallVideoShow>();
                     if (x != null)
-                        return new AdminBaseComponenets.BaseComs.FileUpload();
+                        return new AdminBaseComponenets.BaseComs.FileUploadBig();
                 }
                 return new AdminBaseComponenets.BaseComs.StringInput();
             };
