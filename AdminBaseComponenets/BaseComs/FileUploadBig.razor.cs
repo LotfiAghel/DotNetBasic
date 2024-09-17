@@ -8,7 +8,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Components;
-
+using System.Net.NetworkInformation;
+using AdminBaseComponenets;
+using ClTool;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Net.Http;
+using System.IO;
+using System.Threading;
 
 namespace AdminBaseComponenets.BaseComs
 {
