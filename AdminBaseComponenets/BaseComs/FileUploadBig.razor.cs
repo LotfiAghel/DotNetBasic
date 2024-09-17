@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Components;
 namespace AdminBaseComponenets.BaseComs
 {
     
-    public partial class FileUploadBig<string> : ValueInput<string> 
+    public partial class FileUploadBig : ValueInput<string> 
     {
 
 
