@@ -118,7 +118,15 @@ namespace Models
 
         }
     }
-    
+    public class ObjectContainer<T>
+    {
+        public T data { get; set; }
+        public ObjectContainer() { }
+        public ObjectContainer(T data)
+        {
+            this.data = data;
+        }
+    }
 
     [ShowClassHirarci]
     public class IdMapper<T> : CUAT, IIdMapper<T> where T : IEquatable<T>, IComparable<T>, IComparable
