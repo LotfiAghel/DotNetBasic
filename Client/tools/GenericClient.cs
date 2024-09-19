@@ -556,14 +556,14 @@ namespace ClTool
 
         public async Task<T> put(object id, T t)
         {
-            return await webClient.fetch<T, T>(additinalUrl + typeof(T).GetUrlEncodeName() + "/" + id, HttpMethod.Put, t);
+            return await webClient.fetchForDriveds<T, T>(additinalUrl + typeof(T).GetUrlEncodeName() + "/" + id, HttpMethod.Put, t);
 
         }
 
 
         public async Task<T> post(T t)
         {
-            return await webClient.fetch<T, T>(additinalUrl + typeof(T).GetUrlEncodeName(), HttpMethod.Post, t);
+            return await webClient.fetchForDriveds<T, T>(additinalUrl + typeof(T).GetUrlEncodeName(), HttpMethod.Post, t);
         }
 
     }
