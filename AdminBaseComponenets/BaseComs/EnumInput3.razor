@@ -19,20 +19,32 @@
     load();
     Console.WriteLine($"load come from load ");
 }
-            @if ( optionGenerator != null && optionGenerator.Count()>0 && !ReadOnly){
-                    <Select TValue="int" SelectedValue=@value0
-                    SelectedValueChanged=@Click2>
-                        @foreach(var i in optionGenerator){
-                            var ii=i;
-                            int x=  (int)Convert.ChangeType(i, typeof(ENUM));
-                            if(itemComponenet!=null){
-                                <SelectItem  TValue="int" Value=@x>@Program0.CreateDynamicComponent2(this, itemComponenet, i)</SelectItem>
-                            }else{
-                                <SelectItem  TValue="int" Value=@x>null</SelectItem >
-                            }
-                        }
-                    </Select>
-                
+@if (optionGenerator != null && optionGenerator.Count() > 0)
+{
+    if (!ReadOnly)
+    {
+        <Select TValue="int" SelectedValue=@value0
+                SelectedValueChanged=@Click2>
+            @foreach (var i in optionGenerator)
+            {
+                var ii = i;
+                int x = (int)Convert.ChangeType(i, typeof(ENUM));
+                if (itemComponenet != null)
+                {
+                    <SelectItem TValue="int" Value=@x>@Program0.CreateDynamicComponent2(this, itemComponenet, i)</SelectItem>
+                }
+                else
+                {
+                    <SelectItem TValue="int" Value=@x>null</SelectItem>
+                }
             }
+        </Select>
+    }
+    else
+    {
+        <div>@Program0.CreateDynamicComponent2(this, itemComponenet, value)</div>
+    }
+
+}
 
 
