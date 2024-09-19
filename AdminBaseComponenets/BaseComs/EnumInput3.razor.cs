@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components;
 namespace AdminBaseComponenets.BaseComs
 {
 
-    public partial class EnumInput3<ENUM> : OptionsValueInput<ENUM>
+    public partial class EnumInput3<ENUM> : OptionsValueInput<ENUM> where ENUM : System.Enum
     {
 
 
@@ -73,7 +73,10 @@ namespace AdminBaseComponenets.BaseComs
                 foreach (ENUM value in enumValues)
                 {
                     ee.Add(value);
-                    
+                    if (value.Equals(this.value))
+                    {
+                        value0 = ee.Count-1;
+                    }
 
                     
 

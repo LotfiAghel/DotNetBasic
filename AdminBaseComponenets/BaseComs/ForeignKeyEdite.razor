@@ -46,8 +46,7 @@
 }
 
 
-@if (!ReadOnly)
-{
+
     <Row>
 
         <Column ColumnSize=ColumnSize.Is1>
@@ -56,13 +55,16 @@
                 <Button Color="Color.Primary" Clicked="@OnButtonClicked" Size="Size.ExtraSmall"><Icon Name="IconName.Link" /></Button>
             -->
         </Column>
-        <Column ColumnSize=ColumnSize.Is10>
+
+        <Column ColumnSize
+        =ColumnSize.Is10
+        >
             @if (optionGenerator != null)
             {
 
                 <Select TValue=TKEY SelectedValue=@value.getFValue()
-                        SelectedValueChanged=@Click2
-                        ReadOnly=@ReadOnly>
+                SelectedValueChanged=@Click2
+                ReadOnly=@ReadOnly>
                     @if (optionGenerator != null)
                         foreach (var t in optionGenerator)
                         {
@@ -77,10 +79,13 @@
                 </Select>
             }
         </Column>
-
+    @if (!ReadOnly)
+    {
         @if (typeof(TEntity).GetCustomFirstAttributes<BigTable>() != null || true)
         {
-            <Column ColumnSize=ColumnSize.Is1>
+            <Column ColumnSize
+            =ColumnSize.Is1
+            >
                 <Button Color="Color.Primary" Clicked=@OnSearchClick Size=Size.ExtraSmall><Icon Name=IconName.Search /></Button>
             </Column>
         }
@@ -110,8 +115,8 @@
             </div>
         }
 
+    }
+</Row>
 
-    </Row>
-}
 <!-- <div>@optionGenerator.GetHashCode()</div>
 <div>@optionGenerator.Count()</div>-->

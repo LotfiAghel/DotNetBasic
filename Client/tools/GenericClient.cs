@@ -454,12 +454,12 @@ namespace ClTool
         }
         public async Task<TOUT> fetch<TIN, TOUT>(string url, HttpMethod method, TIN payload)
         {
-            var x = await fetch0(url, payload != null ? JToken.FromObject(new ObjectContainer<TIN>{ data = payload }, settings1).ToString() : null, method);
+            var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
             return x.ToObject<TOUT>(settings1);
         }
-        public async Task<TOUT> fetchWithHeader<TIN, TOUT>(string url, HttpMethod method, TIN payload)
+        public async Task<TOUT> fetchForDriveds<TIN, TOUT>(string url, HttpMethod method, TIN payload)
         {
-            var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
+            var x = await fetch0(url, payload != null ? JToken.FromObject(new ObjectContainer<TIN> { data = payload }, settings1).ToString() : null, method);
             return x.ToObject<TOUT>(settings1);
         }
         public async Task<object> fetch(string url, HttpMethod method, Type TOUT, object payload)
