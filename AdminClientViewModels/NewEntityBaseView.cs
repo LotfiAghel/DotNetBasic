@@ -69,7 +69,7 @@ namespace AdminClientViewModels
                 return x;
 
             }
-            var d = await ocg.getAll();
+            var d = await ocg.getAll(forceReloadFromServer);
             foreach (var r in d)
                 insertOrUpdate(r);
          

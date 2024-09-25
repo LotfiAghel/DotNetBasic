@@ -59,13 +59,14 @@ namespace AdminClientViewModels
             
 
             //dd.Clear();
-            if (data == null)
+            if (data == null || froceFromServer)
             {
-                var z=ocg.getAll();
+                var z=ocg.getAll(froceFromServer);
                 //dd.Add(z);
                 prv = z;
                 data = await z;
             }
+            
             return data;
         }
         public async Task<T> get(TKEY id)
