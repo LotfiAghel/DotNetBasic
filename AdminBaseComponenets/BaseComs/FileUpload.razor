@@ -152,7 +152,7 @@
             var s = await fs.ReadAsync(b, 0, b.Length);
             if (s < 1)
                 break;
-            await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, b);
+            await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, b,s);
             totalBytesRead += s;
             ProgressPercentage = (int)(totalBytesRead * 100 / fileSize);
             StateHasChanged();

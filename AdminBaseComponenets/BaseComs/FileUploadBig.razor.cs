@@ -100,7 +100,7 @@ namespace AdminBaseComponenets.BaseComs
                     totalBytesRead += bytesRead;
                     ProgressPercentage = (int)(100 * totalBytesRead / fileSize);
                     //await fs.WriteAsync(buffer, 0, bytesRead);
-                    await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, buffer);
+                    await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, buffer, bytesRead);
                 }
             }
             finally

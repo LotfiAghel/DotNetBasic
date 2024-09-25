@@ -14,7 +14,7 @@
     <span>
         @value
     </span>
-    <img src=@($"{ClTool.WebClient.webClient.baseUrl}/Upload/{value}") class="img" />
+    <img src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}") class="img" />
     <Button Color=@Color.Danger Clicked=@(()=> setNull())>null</Button>
 }
 else

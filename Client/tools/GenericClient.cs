@@ -357,11 +357,11 @@ namespace ClTool
 
         }
 
-        public virtual async Task<UploadResult> uploadFileSection(string url, string sId, int chunkNumber, byte[] fileContent)
+        public virtual async Task<UploadResult> uploadFileSection(string url, string sId, int chunkNumber, byte[] fileContent,int l)
         {
             using var content = new MultipartFormDataContent();
             content.Add(
-                       content: new ByteArrayContent(fileContent),
+                       content: new ByteArrayContent(fileContent,0,l),
                        name: "\"inputFile\"",
                        fileName: "file.Name");
 
