@@ -135,6 +135,53 @@ namespace ClTool2
 
 
         }
+        
+           public virtual async Task<UploadResult> uploadFileSection(string url, string sId, int chunkNumber, byte[] fileContent,int l)
+        {
+            using var content = new MultipartFormDataContent();
+            content.Add(
+                       content: new ByteArrayContent(fileContent,0,l),
+                       name: "\"inputFile\"",
+                       fileName: "file.Name");
+
+            var cookieContainer = new CookieContainer();
+            cookieContainer.Add(cookie);
+            HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
+            //handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            Console.WriteLine("fetch url " + url);
+            using (var client = new HttpClient(handler))
+            {
+
+
+                client.BaseAddress = new Uri(baseUrl);
+
+
+
+
+
+                var request = new HttpRequestMessage(HttpMethod.Put, baseUrl + url + "/" + sId + "/" + chunkNumber)
+                {
+                    Content = content,
+
+                };
+                request.Headers.Add("Access-Control-Allow-Credentials", "include");
+                request.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
+
+
+
+                var result = await client.SendAsync(request);
+
+                string resultContent = await result.Content.ReadAsStringAsync();
+                return JToken.Parse(resultContent).ToObject<UploadResult>();
+
+            }
+
+
+        }
+
+
+        
         public override async Task<ClTool.UploadResult> sendFile(string url, MultipartFormDataContent content)
         {
             HttpClientHandler handler = new HttpClientHandler();
