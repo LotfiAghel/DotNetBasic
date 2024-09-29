@@ -144,9 +144,7 @@ namespace ClTool2
                        name: "\"inputFile\"",
                        fileName: "file.Name");
 
-            var cookieContainer = new CookieContainer();
-            cookieContainer.Add(cookie);
-            HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
+            HttpClientHandler handler = new HttpClientHandler() { };
             //handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
             Console.WriteLine("fetch url " + url);
