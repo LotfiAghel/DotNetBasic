@@ -136,7 +136,7 @@ namespace ClTool2
 
         }
         
-           public virtual async Task<UploadResult> uploadFileSection(string url, string sId, int chunkNumber, byte[] fileContent,int l)
+           public override async Task<UploadResult> uploadFileSection(string url, string sId, int chunkNumber, byte[] fileContent,int l)
         {
             using var content = new MultipartFormDataContent();
             content.Add(
