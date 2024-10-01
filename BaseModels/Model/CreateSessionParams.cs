@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System;
+using Microsoft.AspNetCore.Http;
 
 namespace Models
 {
@@ -26,5 +27,16 @@ namespace Models
         /// </summary>
         [Required]
         public string FileName { get; set; }
+
+
+        public string ?dir { get; set; }
+        public bool dontChangeFileNameWithGUID { get; set; } = false;
     }
+
+    public class UploadFileChunk
+    {
+        public string FileName { get; set; }
+        public IFormFile File { get; set; }
+    }
+
 }
