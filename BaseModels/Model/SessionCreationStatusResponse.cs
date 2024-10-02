@@ -1,4 +1,5 @@
 using ChunkedUploadWebApi.Data;
+using ClientMsgs;
 using System;
 
 namespace Models
@@ -7,7 +8,7 @@ namespace Models
     /// Status of a session creation
     /// </summary>
     [Serializable]
-    public class SessionCreationStatusResponse
+    public class SessionCreationStatusResponse:BooleanResponse
     {
         public SessionCreationStatusResponse() { }
         public static SessionCreationStatusResponse fromSession(Session session)
@@ -35,5 +36,7 @@ namespace Models
         /// User id
         /// </summary>
         public long UserId { get; set; }
+
+        public bool saveBefor { get; set; }
     }
 }
