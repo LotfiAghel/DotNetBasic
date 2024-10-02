@@ -9,8 +9,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Models
 {
 
+    public class FileString : Attribute
+    {
 
-    public class SmallPicShow : Attribute
+    }
+    public class SmallPicShow : FileString
     {
 
     }
@@ -187,6 +190,21 @@ public class CollectionAttr : Attribute
     public CollectionAttr(Type type, params object[] args)
     {
         this.type = type;
+        data = args;
+    }
+}
+
+
+public class CollectionAttr2<T> : Attribute where T : Attribute
+{
+    
+    public object[] data;
+    public CollectionAttr2()
+    {
+        
+    }
+    public CollectionAttr2(params object[] args)
+    {
         data = args;
     }
 }
