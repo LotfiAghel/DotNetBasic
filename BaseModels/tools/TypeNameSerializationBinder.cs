@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Globalization;
 using Tools;
+using System.Collections.Concurrent;
 
 namespace System
 {
@@ -148,8 +149,8 @@ namespace Tools
             }
         }
 
-        readonly Dictionary<Type, string> typeToName = new Dictionary<Type, string>();
-        readonly Dictionary<string, Type> nameToType = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+        readonly ConcurrentDictionary<Type, string> typeToName = new ConcurrentDictionary<Type, string>();
+        readonly ConcurrentDictionary<string, Type> nameToType = new ConcurrentDictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
 
         public void Map(Type type, string name)
         {
