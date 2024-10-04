@@ -103,6 +103,23 @@ namespace Models
         public ChangeEventList onChanges { get; set; }
 
     }
+    [ShowClassHirarci]
+    public abstract class AIdMapper<T> : IIdMapper<T> where T : IEquatable<T>, IComparable<T>, IComparable
+    {
+        [Key]
+        [PersianLabel("شناسه")]
+        [Models.IgnoreDefultForm]
+        public T id { get; set; }
+
+        [JsonIgnore]
+        [NotMapped]
+        public ChangeEventList onChanges { get; set; }
+
+        public object getId()
+        {
+            return id;
+        }
+    }
     public static class IDEXT
     {
         public static Type getKeyType(this Type entity)

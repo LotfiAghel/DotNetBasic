@@ -1,0 +1,14 @@
+@typeparam TItem
+@typeparam TKEY
+
+@using Microsoft.JSInterop;
+@using Models
+@using System.Collections.Generic
+@using Newtonsoft.Json.Linq;
+@inject NavigationManager NavManager
+@using Blazorise.DataGrid
+@using System.ComponentModel.DataAnnotations.Schema
+@inherits NullableInput2<IReadOnlyCollection<TItem>>
+
+<InputFile @key=@(inputFileId) class="form-control" id="inputFile" OnChange="OnInputFileChange" aria-describedby="uploadButton" required />
+<DataListSyncfusion TItem=@TItem TKEY=@TKEY value=@value></DataListSyncfusion>
