@@ -1311,5 +1311,10 @@ namespace AdminBaseComponenets
             
             
         }
+
+        internal static void showPopUp(Exception e)
+        {
+            //throw new NotImplementedException();
+        }
     }
 }

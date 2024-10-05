@@ -55,8 +55,11 @@ namespace AdminBaseComponenets.BaseComs
                 using (var reader = new StreamReader(reader0))
                 using (var csv = new CsvReader(reader, config))
                 {
-                    List<T> records = csv.GetRecords<T>().ToList();
-                    return records;
+                   
+                        List<T> records = csv.GetRecords<T>().ToList();
+                        return records;
+                   
+
                 }
                    
             }
@@ -80,10 +83,17 @@ namespace AdminBaseComponenets.BaseComs
 
             await selectedFile.OpenReadStream().CopyToAsync(ms);
             ms.Position = 0;
-            var x = read<TItem>(ms);
-            value = x;
-            if(OnChange!=null)
-                OnChange(value);
+            try
+            {
+                var x = read<TItem>(ms);
+                value = x;
+                if (OnChange != null)
+                    OnChange(value);
+            }
+            catch(Exception ex)
+            {
+                Program0.showPopUp(ex);
+            }
         }
     }
 }
