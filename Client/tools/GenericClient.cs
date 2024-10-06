@@ -356,18 +356,24 @@ namespace ClTool
 
 
         }
-
+        public virtual HttpClientHandler addCookie()
+        {
+            var cookieContainer = new CookieContainer();
+            cookieContainer.Add(cookie);
+            HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
+            return handler;
+        }
         public virtual async Task<UploadResult> uploadFileSection(string url, string sId, int chunkNumber, byte[] fileContent,int l)
         {
             using var content = new MultipartFormDataContent();
             content.Add(
                        content: new ByteArrayContent(fileContent,0,l),
-                       name: "\"inputFile\"",
+                       name: "\"File\"",
                        fileName: "file.Name");
+            content.Add(new StringContent(sId), "FileName");
 
-            var cookieContainer = new CookieContainer();
-            cookieContainer.Add(cookie);
-            HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
+            
+            HttpClientHandler handler = addCookie();
             //handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
             Console.WriteLine("fetch url " + url);
@@ -381,7 +387,7 @@ namespace ClTool
 
 
 
-                var request = new HttpRequestMessage(HttpMethod.Put, baseUrl + url + "/" + sId + "/" + chunkNumber)
+                var request = new HttpRequestMessage(HttpMethod.Put, baseUrl + url )
                 {
                     Content = content,
 

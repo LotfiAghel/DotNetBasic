@@ -1090,6 +1090,13 @@ namespace AdminBaseComponenets
                         return typeof(AdminBaseComponenets.BaseComs.EnumMultiSelectInput<>).MakeGenericType(type.GetGenericArguments()[0]);
                 }
                 {
+                    var x = prps.GetFirst<Attribute, CsvInput>();
+                    if (x != null)
+                    {
+                        return typeof(AdminBaseComponenets.BaseComs.DataListWithCsv<,>).MakeGenericType(type.GetGenericArguments()[0],Program0.getKeyType(type.GetGenericArguments()[0]));
+                    }
+                }
+                {
                     var x = prps.GetFirst<Attribute, GridShow>();
                     if (x != null)
                     {
@@ -1110,6 +1117,13 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, MultiSelect>();
                     if (x != null)
                         return typeof(AdminBaseComponenets.BaseComs.EnumMultiSelectInput<>).MakeGenericType(type.GetGenericArguments()[0]);
+                }
+                {
+                    var x = prps.GetFirst<Attribute, CsvInput>();
+                    if (x != null)
+                    {
+                        return typeof(AdminBaseComponenets.BaseComs.DataListWithCsv<,>).MakeGenericType(type.GetGenericArguments()[0], Program0.getKeyType(type.GetGenericArguments()[0]));
+                    }
                 }
                 {
                     var x = prps.GetFirst<Attribute, GridShow>();
@@ -1138,6 +1152,13 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, MultiSelect>();
                     if (x != null)
                         return typeof(AdminBaseComponenets.BaseComs.EnumMultiSelectInput<>).MakeGenericType(type.GetGenericArguments()[0]);
+                }
+                {
+                    var x = prps.GetFirst<Attribute, CsvInput>();
+                    if (x != null)
+                    {
+                        return typeof(AdminBaseComponenets.BaseComs.DataListWithCsv<,>).MakeGenericType(type.GetGenericArguments()[0], Program0.getKeyType(type.GetGenericArguments()[0]));
+                    }
                 }
                 {
                     var x = prps.GetFirst<Attribute, GridShow>();
@@ -1277,6 +1298,23 @@ namespace AdminBaseComponenets
 
             await builder.Build().RunAsync();
 
+        }
+
+        public static void RegisterForm<T,T2>()where T2: ValueInput<T>,new()
+        {
+            Program0.formRenderer[typeof(T)] = (prps) =>
+            {
+
+
+                return new T2();
+            };
+            
+            
+        }
+
+        internal static void showPopUp(Exception e)
+        {
+            //throw new NotImplementedException();
         }
     }
 }

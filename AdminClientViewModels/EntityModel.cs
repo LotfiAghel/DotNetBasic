@@ -14,6 +14,11 @@ namespace AdminClientViewModels
         public TINP inp{get;set;}=default(TINP);
         public TOUT output{get;set;}=default(TOUT);
     }
+    public class APIDefine<TINP, TOUT>
+    {
+        public FuncV<TINP, TOUT> inpOut { get; set; }
+        public string url { get; set; }
+    }
     public abstract class ATreeNode
     {
         public string Name { get; set; }

@@ -54,6 +54,9 @@
   
   
     <PackageReference Include="Blazorise.Snackbar" Version="1.5.3" />
+
+
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
   
   
   

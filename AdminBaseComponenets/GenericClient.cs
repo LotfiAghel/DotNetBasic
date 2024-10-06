@@ -140,9 +140,10 @@ namespace ClTool2
         {
             using var content = new MultipartFormDataContent();
             content.Add(
-                       content: new ByteArrayContent(fileContent,0,l),
-                       name: "\"inputFile\"",
+                       content: new ByteArrayContent(fileContent, 0, l),
+                       name: "\"File\"",
                        fileName: "file.Name");
+            content.Add(new StringContent(sId), "FileName");
 
             HttpClientHandler handler = new HttpClientHandler() { };
             //handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
@@ -158,7 +159,7 @@ namespace ClTool2
 
 
 
-                var request = new HttpRequestMessage(HttpMethod.Put, baseUrl + url + "/" + sId + "/" + chunkNumber)
+                var request = new HttpRequestMessage(HttpMethod.Put, baseUrl + url )
                 {
                     Content = content,
 

@@ -28,7 +28,8 @@ namespace Models
     public class IgnoreDefultGird : Attribute
     {
         public bool isIgnore = true;
-        public IgnoreDefultGird(bool isIgnore=true) {
+        public IgnoreDefultGird(bool isIgnore = true)
+        {
             this.isIgnore = isIgnore;
         }
     }
@@ -36,7 +37,8 @@ namespace Models
     public class IgnoreDefultForm : Attribute
     {
         public bool ignoreDefultForm { get; set; }
-        public IgnoreDefultForm(bool ignoreDefultForm=true) {
+        public IgnoreDefultForm(bool ignoreDefultForm = true)
+        {
             this.ignoreDefultForm = ignoreDefultForm;
         }
     }
@@ -66,7 +68,7 @@ namespace Models
         }
     }
 
-    
+
     public class PersianBigDoc : Attribute
     {
         public string txt;
@@ -78,7 +80,7 @@ namespace Models
 
 
 
-    
+
 
 
 }
@@ -86,7 +88,7 @@ namespace Models
 public class MDPropInfo
 {
     public PropertyInfo propertyInfo;
-    public List<Attribute> attrs=new();
+    public List<Attribute> attrs = new();
     public MDPropInfo(PropertyInfo pr)
     {
         this.propertyInfo = pr;
@@ -96,8 +98,8 @@ public class MDTypeInfo
 {
     public static Dictionary<Type, MDTypeInfo> mp = new();
     public Type type;
-    public List<Attribute> attrs=new();
-    public Dictionary<PropertyInfo, MDPropInfo> pattrs=new();
+    public List<Attribute> attrs = new();
+    public Dictionary<PropertyInfo, MDPropInfo> pattrs = new();
     public MDTypeInfo(Type t)
     {
         type = t;
@@ -109,7 +111,7 @@ public class MDTypeInfo
         MDTypeInfo z;
         lock (t)
         {
-            
+
             if (!mp.TryGetValue(t, out z))
             {
                 mp[t] = z = new MDTypeInfo(t);
@@ -135,18 +137,18 @@ public class ForeignKeyAttr : Attribute
         {
             Console.WriteLine("ff");
         }
-        this.tkey=p.PropertyType;
+        this.tkey = p.PropertyType;
     }
     public Type[] getTypes()
     {
-        return new Type[]{ type,tkey};
+        return new Type[] { type, tkey };
     }
     public static void cacl(MDTypeInfo md)
     {
-        
+
         {
-            
-            
+
+
             List<System.Reflection.PropertyInfo> propertis = md.type.GetProperties(
                              BindingFlags.Public |
                              BindingFlags.NonPublic |
@@ -154,7 +156,7 @@ public class ForeignKeyAttr : Attribute
             foreach (var pr in propertis)
             {
                 var s = pr.GetCustomAttribute<ForeignKeyAttribute>();
-                
+
                 if (s != null)
                 {
                     var rv = propertis.Find(x => x.Name == s.Name);
@@ -193,27 +195,29 @@ public class CollectionAttr : Attribute
         data = args;
     }
 }
-
-
-public class CollectionAttr2<T> : Attribute where T : Attribute
-{
-    
-    public object[] data;
-    public CollectionAttr2()
-    {
-        
-    }
-    public CollectionAttr2(params object[] args)
-    {
-        data = args;
-    }
-}
 public class MultiSelect:Attribute{
     
 }
 
 
-public class GridShow:Attribute{
-    
+public class GridShow : Attribute
+{
+
 }
+public class CsvInput : Attribute
+{
+
+}
+public class CSVMapAttribute0 : Attribute
+{
+    public Type T { get; set; }
+    public CSVMapAttribute0(Type t)
+    {
+        this.T = t;
+    }
+
+}
+
+
+
 
