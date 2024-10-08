@@ -80,8 +80,8 @@ namespace AdminBaseComponenets.BaseComs
 
             MemoryStream ms = new MemoryStream();
 
-
-            await selectedFile.OpenReadStream().CopyToAsync(ms);
+            long maxFileSize = 1024L * 1024L * 1024L * 2L;
+            await selectedFile.OpenReadStream(maxFileSize).CopyToAsync(ms);
             ms.Position = 0;
             try
             {
