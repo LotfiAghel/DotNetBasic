@@ -12,6 +12,8 @@ namespace AdminMsg
         public string userName { get; set; }
         public string pass { get; set; }
     }
+    
+    
     public class LoginResponse<T> : ClientMsgs.BooleanResponse where T: Models.IAdminUser
     {
         public T user { get; set; }

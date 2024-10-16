@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 using Tools;
 using Models;
 using System.Collections;
-using NSubstitute;
+//using NSubstitute;
 using ChunkedUploadWebApi.Model;
 using System.Web;
 //using Microsoft.Net.Http.Headers;
@@ -460,7 +460,7 @@ namespace ClTool
         }
         public async Task<TOUT> fetch<TIN, TOUT>(string url, HttpMethod method, TIN payload)
         {
-            var x = await fetch0(url, payload != null ? JToken.FromObject(payload, settings1).ToString() : null, method);
+            var x = await fetch0(url, payload , method);
             return x.ToObject<TOUT>(settings1);
         }
         public async Task<TOUT> fetchForDriveds<TIN, TOUT>(string url, HttpMethod method, TIN payload)

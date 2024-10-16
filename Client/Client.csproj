@@ -10,7 +10,7 @@
   
 
 
-    <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Net.Http.Headers" Version="8.0.3" />
 
   
 
@@ -19,8 +19,6 @@
 
   
 
-
-    <PackageReference Include="NSubstitute" Version="5.1.0" />
   
 
 
