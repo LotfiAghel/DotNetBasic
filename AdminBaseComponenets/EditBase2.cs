@@ -66,7 +66,15 @@ namespace AdminBaseComponenets
                 if (OnChange != null)
                     OnChange(value);
             };
-            var prVal = property.GetValue(value);
+            object prVal = null;
+            try
+            {
+                prVal = property.GetValue(value);
+            }
+            catch
+            {
+
+            }
             if (w.GetType().IsGenericInstanceOf(typeof(AdminBaseComponenets.BaseComs.ForeignKeyEdite<,>))
 
                 && !property.PropertyType.IsGenericInstanceOf(typeof(ForeignKey2<,>))

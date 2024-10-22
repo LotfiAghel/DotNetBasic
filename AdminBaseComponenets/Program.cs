@@ -243,6 +243,23 @@ namespace AdminBaseComponenets
                     return new List<Attribute>() { itemAtr };
                     //a[0].data //new itemAtr(a[0].data)
                 }
+                if (r.type.IsAssignableTo( typeof(FileAttr)))
+                {
+                    var itemAtrT = r.type;
+                    
+                    if(r.data == null)
+                    {
+                        return new List<Attribute>() { itemAtrT.GetConstructor(new Type[] { }).Invoke(new object[] { }) as Attribute };
+                    }
+                    var parmst = new Type[r.data.Length];
+                    for (int i = 0; i < r.data.Length; i++)
+                    {
+                        parmst[i] = r.data[i].GetType();
+                    }
+                    var gtc = itemAtrT.GetConstructor(parmst);
+                    itemAtr = gtc.Invoke(r.data) as Attribute;
+                    return new List<Attribute>() { itemAtr };
+                }
 
 
             }
@@ -352,8 +369,8 @@ namespace AdminBaseComponenets
         public static ComponentBase createForm4(Type type,List<Attribute> attrs = null)
         {
 
-            if(attrs!=null)
-                attrs=new List<Attribute>();
+            //if(attrs!=null)
+            //    attrs=new List<Attribute>();
             Console.WriteLine("createForm4 " + type.GetName());
             if (formRenderer.ContainsKey(type))
             {
@@ -782,6 +799,7 @@ namespace AdminBaseComponenets
                 return null;
 
             };
+            
 
 
 
@@ -997,7 +1015,18 @@ namespace AdminBaseComponenets
             };
 
 
+            /*formRenderer[typeof(List<string>)] = (prps) =>
+            {
 
+                var a = getCollectionItemAttrs(prps);
+                if (a != null && a.Count>0 && a.Any(x=> x is FileAttr))
+                {
+
+                }
+                return new AdminBaseComponenets.BaseComs.ArrayInput<string>();
+
+
+            };*/
 
 
 

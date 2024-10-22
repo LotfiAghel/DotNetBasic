@@ -27,7 +27,13 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <GenericForm TItem=@TItem value=@addingItem></GenericForm>
+             @if (!typeof(TItem).IsAbstract) { 
+                <GenericForm TItem=@TItem value=@addingItem></GenericForm>
+            }
+            else
+            {
+                <PointerInput2 TItem=@TItem OnChange=OnChange2></PointerInput2>
+            }
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
@@ -38,15 +44,34 @@
 @code {
     // reference to the modal component
     private Modal modalRef;
-
-    private Task ShowModal()
+    private void OnChange2(object x)
     {
-        //newItem = new TItem();
-        addingItem = typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
-        var fmp= typeof(TMASTER).GetProperty(collectionName).GetCustomFirstAttributes<InversePropertyAttribute>().Property;
+        addingItem = x as TItem;// new genericArgs[0]();
+        var fmp = typeof(TMASTER).GetProperty(collectionName).GetCustomFirstAttributes<InversePropertyAttribute>().Property;
         var fidp = typeof(TItem).GetProperty(fmp).GetCustomFirstAttributes<ForeignKeyAttribute>().Name;
         var fidpp = typeof(TItem).GetProperty(fidp);
         fidpp.SetValue(addingItem, masterEnityId);
+    }
+    private Task ShowModal()
+    {
+        var titem = typeof(TItem);
+        if (!titem.IsAbstract)
+        {
+            addingItem = titem.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
+            var fmp = typeof(TMASTER).GetProperty(collectionName).GetCustomFirstAttributes<InversePropertyAttribute>().Property;
+            var fidp = typeof(TItem).GetProperty(fmp).GetCustomFirstAttributes<ForeignKeyAttribute>().Name;
+            var fidpp = typeof(TItem).GetProperty(fidp);
+            fidpp.SetValue(addingItem, masterEnityId);
+        }
+        else
+        {
+            addingItem = null;
+            var fmp = typeof(TMASTER).GetProperty(collectionName).GetCustomFirstAttributes<InversePropertyAttribute>().Property;
+            var fidp = typeof(TItem).GetProperty(fmp).GetCustomFirstAttributes<ForeignKeyAttribute>().Name;
+            var fidpp = typeof(TItem).GetProperty(fidp);
+            //fidpp.SetValue(addingItem, masterEnityId);
+        }
+
         return modalRef.Show();
     }
 

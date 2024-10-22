@@ -13,7 +13,10 @@
 
 @inherits ArrayInputBase<TItem>
 
-
+@{
+     var tmp = Program0.getCollectionItemAttrs(Attributes);
+        itemWidget = Program0.createForm4(typeof(TItem), tmp);
+}
    
 
 
@@ -48,9 +51,9 @@
                             <div class="col-sm-12">
                                 
                                 @{
-                                    if (w != null)
+                                    if (itemWidget != null)
                                     {
-                                        <div>@Program0.CreateDynamicComponent2(this, w, value[k], onChangeRefrence,null,ReadOnly)</div>;
+                                        <div>@Program0.CreateDynamicComponent2(this, itemWidget, value[k], onChangeRefrence,null,ReadOnly)</div>;
                                     }
                                 }
                 </div>
@@ -83,7 +86,7 @@
 @code
 {
     public override bool inRowField()=>false;
-    ComponentBase w = null;
+    ComponentBase itemWidget = null;
     bool collapse1Visible = false;
     async Task createArray()
     {
@@ -109,7 +112,7 @@
     protected override async Task OnInitializedAsync()
     {
         var tmp = Program0.getCollectionItemAttrs(Attributes);
-        w = Program0.createForm4(typeof(TItem), tmp);
+        itemWidget = Program0.createForm4(typeof(TItem), tmp);
     }
 }
 
