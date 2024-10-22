@@ -243,7 +243,7 @@ namespace AdminBaseComponenets
                     return new List<Attribute>() { itemAtr };
                     //a[0].data //new itemAtr(a[0].data)
                 }
-                if (r.type.IsAssignableTo( typeof(FileAttr)))
+                if (r.type.IsAssignableTo( typeof(FileString)))
                 {
                     var itemAtrT = r.type;
                     

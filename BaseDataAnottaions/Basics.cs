@@ -8,12 +8,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
-    public class FileAttr : Attribute
+   
+
+    public class FileString : Attribute
     {
 
     }
-
-    public class SmallPicShow : FileAttr
+    public class SmallPicShow : FileString
     {
 
     }
@@ -21,7 +22,8 @@ namespace Models
     {
 
     }
-    public class SmallVideoShow : FileAttr
+   
+    public class SmallVideoShow : FileString
     {
 
     }
@@ -198,9 +200,8 @@ public class CollectionAttr : Attribute
             data = new object[0];
     }
 }
-public class MultiSelect : Attribute
-{
-
+public class MultiSelect:Attribute{
+    
 }
 
 

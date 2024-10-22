@@ -6,11 +6,16 @@ namespace Models
 {
 
 
-    public class SmallPicShow : Attribute
+    public class FileString : Attribute
     {
 
     }
-    public class SmallVideoShow : Attribute
+
+    public class SmallPicShow : FileString
+    {
+
+    }
+    public class SmallVideoShow : FileString
     {
 
     }
