@@ -7,6 +7,12 @@ using System;
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Reflection;
+using ChunkedUploadWebApi.Exception;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace AdminClientViewModels
 {
@@ -19,7 +25,7 @@ namespace AdminClientViewModels
         
         
         public List<T> data = new List<T>();
-        Dictionary<TKEY, T> id2En = new ();
+        Dictionary<TKEY, Task<T>> id2En = new ();
         GenericClientInt<T, TKEY> _ocg = null;
         GenericClientInt<T, TKEY> ocg{get{
             if(_ocg==null)
@@ -29,28 +35,49 @@ namespace AdminClientViewModels
 
         public int Count => data.Count;
 
+        public async  Task<T> insertOrUpdate2( TKEY id,Task<T> inp)
+        {
+            Task<T> o;
+            if (!id2En.TryGetValue(id, out o))
+            {
+                id2En[id] = inp;
+            }
+           
+
+            await inp;
+            try{
+                o.Result.onChanges?.invokeAll();
+            }catch{
+
+            }
+
+            return insertOrUpdate(inp.Result);
+
+
+        }
         public T insertOrUpdate( T inp)
         {
-            T o;
+            Task<T> o;
             if (!id2En.TryGetValue(inp.id, out o))
             {
                 data.Add(inp);
-                id2En[inp.id] = inp;
+                id2En[inp.id] = Task.FromResult<T>(inp);
                 return inp;
             }
             foreach (var pr in typeof(T).GetProperties())
             {
                 var setMethod = pr.GetSetMethod();
                 if(setMethod!=null)
-                    pr.SetValue(o, pr.GetValue(inp));
+                    pr.SetValue(o.Result, pr.GetValue(inp));
 
             }
             try{
-                o.onChanges?.invokeAll();
+                inp.onChanges?.invokeAll();
             }catch{
 
             }
-            return o;
+            
+            return inp;
 
         }
         public async Task<IReadOnlyCollection<T>> getAll(bool forceReloadFromServer=false)
@@ -157,35 +184,35 @@ namespace AdminClientViewModels
             return res;
         }
         public T getFast(string id){
-            T res=null;
+            Task<T> res;
             System.Console.WriteLine("getFast :" + id.ToString());
             var tid=IEntityService00.ConvertS<TKEY>(id);
             
-            id2En.TryGetValue(tid, out res);
-            
-            return res;
+            if(id2En.TryGetValue(tid, out res))
+                return res.Result;
+            return null;
         }
         
         public async Task<T> get(TKEY id)
         {
 
-            T res=null;
+            Task<T> res;
             System.Console.WriteLine("get0s :" + id.ToString());
             bool bigTable=typeof(T).GetCustomAttributes(typeof(Attribute),true).ToList().GetFirst<object, Models.BigTable>()!=null;
             
             
 
             if (id2En.TryGetValue(id,out res))
-                return res;
+                return await res;
             try
             {
                 System.Console.WriteLine("not have :" + id.ToString());
                 if(bigTable){
-                   res = await ocg.get(id);
-                   return insertOrUpdate(res);
+                   res = ocg.get(id);
+                   return await insertOrUpdate2(id,res);
                 }else{
                     await getAll();
-                    res = await ocg.get(id);
+                    res = ocg.get(id);
                 }
             }catch{
 
@@ -193,7 +220,7 @@ namespace AdminClientViewModels
             if (res == null)
                 return null;           
 
-            return insertOrUpdate(res);
+            return await insertOrUpdate2(id,res);
             
 
             
@@ -201,9 +228,10 @@ namespace AdminClientViewModels
         
         public T get0(TKEY id)
         {
-            T res= default(T);
+            Task<T> res= null;
             id2En.TryGetValue(id, out res);
-            return res;
+            
+            return res.Result;
         }
         public async Task<T> getWithObject(object id)
         {
@@ -224,11 +252,12 @@ namespace AdminClientViewModels
         }
         public T getFromLoaded(TKEY id)
         {
-            T res = null;
+            Task<T> res = default(Task<T>);
             id2En.TryGetValue(id, out res);
-                
-            
-            return res;
+
+            if (res == null)
+                return null;
+            return res.Result;
 
             
         }
