@@ -860,7 +860,8 @@ namespace AdminBaseComponenets
                 {
                     var x = prps.GetFirst<Attribute, DataTypeAttribute>();
                     if (x != null && x.DataType==DataType.MultilineText)
-                        return new AdminBaseComponenets.BaseComs.StringRichInput();
+                        return new AdminBaseComponenets.BaseComs.StringMultiLineInput();
+                        //return new AdminBaseComponenets.BaseComs.StringRichInput();
                 }
                 {
                     var x = prps.GetFirst<Attribute, DataTypeAttribute>();
