@@ -26,6 +26,7 @@
         <ModalHeader>
             <ModalTitle>Edit</ModalTitle>
             <CloseButton />
+            <Button Color="Color.Primary" Clicked="@SaveModal">Save Changes</Button>
         </ModalHeader>
         <ModalBody>
              @if (!typeof(TItem).IsAbstract) { 
@@ -93,6 +94,7 @@
         {
             await Data.post(addingItem);
             NotificationService.Success("success", "save ok");
+            addingItem = null;
         }
         catch(Exception e)
         {
