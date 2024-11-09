@@ -9,6 +9,41 @@ namespace AdminBaseComponenets
 {
     public class EditBase2<T> : ValueInput<T> 
     {
+
+        public RenderFragment autoCompWithLabel<T2>(Expression<Func<T2>> action, bool propertyReadOnly = false)
+        {
+            var z=autoComp(action, propertyReadOnly);
+            return z;
+        }
+
+        public RenderFragment autoComp<T2>(Expression<Func<T,T2>> action, bool propertyReadOnly = false)
+        {
+            try
+            {
+                var expression = (MemberExpression)action.Body;
+                var property = expression.Member as PropertyInfo;
+                return createProp(property, propertyReadOnly);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+
+            try
+            {
+                var expression = (MemberExpression)action.Body;
+                var property = expression.Member as MethodInfo;
+                return createMethod(property);
+            }
+            catch (Exception e)
+            {
+
+            }
+            return null;
+
+        }
+
         public RenderFragment autoComp<T2>(Expression<Func<T2>> action, bool propertyReadOnly = false)
         {
 
@@ -17,7 +52,9 @@ namespace AdminBaseComponenets
             {
                 var expression = (MemberExpression)action.Body;
                 var property = expression.Member as PropertyInfo;
-                return createProp(property, propertyReadOnly);
+                property.GetMetadataToken();
+                return createProp(typeof(T).GetProperty(property.Name), propertyReadOnly);
+                //return createProp(property, propertyReadOnly); have strange bug in derived class proprty info not equl with reflection propertinfos
             }
             catch (Exception e)
             {
