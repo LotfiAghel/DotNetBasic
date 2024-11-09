@@ -40,6 +40,7 @@ namespace AdminBaseComponenets.BaseComs
 
         async Task Click()
         {
+            
             await load();
         }
 
@@ -61,6 +62,7 @@ namespace AdminBaseComponenets.BaseComs
 
             ButtonState = "reload ";
             StateHasChanged();
+            
         }
 
         async Task newItem()

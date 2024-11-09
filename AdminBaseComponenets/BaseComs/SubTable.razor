@@ -8,9 +8,10 @@
 @using AdminBaseComponenets
 @using System.ComponentModel;
 @using Tools;
-
+@using Blazorise.Components
+@using Blazorise.Snackbar
 <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
-    <Button Color="Color.Primary" Clicked="@ShowModal">Show Modal</Button>
+    <Button Color="Color.Primary" Clicked="@ShowModal">create new</Button>
 @if(value!=null){
     <DataListSyncfusion TItem=TItem TKEY=TKEY value=@value> </DataListSyncfusion>
 }else{
@@ -42,6 +43,7 @@
     </ModalContent>
 </Modal>
 @code {
+    [Inject] INotificationService NotificationService { get; set; }
     // reference to the modal component
     private Modal modalRef;
     private void OnChange2(object x)
@@ -82,12 +84,22 @@
         
         return modalRef.Hide();
     }
-    private Task SaveModal()
+    private async Task SaveModal()
     {
         if (Data is null)
             Data = Program0.getEntityManager<TItem, TKEY>();
         //var dataManager=Program0.getEntityManager<TMASTER, TMKEY>();
-        Data.post(addingItem);
-        return modalRef.Hide();
+        try
+        {
+            await Data.post(addingItem);
+            NotificationService.Success("success", "save ok");
+        }
+        catch(Exception e)
+        {
+             NotificationService.Warning(e.Message, "save error");
+        }
+        Click();
+        modalRef.Hide();
+        return;
     }
 }
