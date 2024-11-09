@@ -2,6 +2,7 @@ using System.Reflection;
 using AdminBaseComponenets;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using System.Linq;
 using AdminBaseComponenets.BaseComs;
@@ -136,13 +137,12 @@ namespace AdminBaseComponenets.Pages
 
             }
         }
-        protected override async Task OnInitializedAsync()
+
+        public void Initial()
         {
-
-            await base.OnInitializedAsync();
+            
             genericArgs = Program0.getValueKeyPair(entityName);
-
-
+                
             if (genericArgs[0].IsAbstract)
             {
                 formView = (ComponentBase)(typeof(AdminBaseComponenets.BaseComs.PointerInput2<>).MakeGenericType(new Type[] { genericArgs[0] }).GetConstructor(new Type[] { }).Invoke(new object[] { }));//new PointerInput2<genericArgs[0]>()
@@ -153,8 +153,17 @@ namespace AdminBaseComponenets.Pages
 
                 };
 
-                return;
-            }
+            }else
+                formView = Program0.createForm(genericArgs[0], new List<Attribute>() { });        
+        }
+        protected override async Task OnInitializedAsync()
+        {
+
+            await base.OnInitializedAsync();
+            genericArgs = Program0.getValueKeyPair(entityName);
+
+            Initial();
+            
             ReadOnly = !Program0.checkPermission<Models.UpdateAccess>(genericArgs[0]);
 
             

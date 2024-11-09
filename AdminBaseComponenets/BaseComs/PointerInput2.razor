@@ -97,7 +97,7 @@
         }else{
             if (value==null || classType != value.GetType())
             {
-                value = classType.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;//tmp=new ClassType()
+                value = JToken.FromObject(value).ToObject(classType) as TItem;// classType.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;//tmp=new ClassType()
             }else{
                 return ;//nothing change
             }
