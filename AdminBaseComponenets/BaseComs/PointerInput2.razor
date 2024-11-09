@@ -50,7 +50,8 @@
             <Heading Size="HeadingSize.Is6" >
                 <Row Size="Size.Small">
                     <Column ColumnSize="ColumnSize.Is2">
-                            <AccordionToggle >toggle</AccordionToggle>
+                        <AccordionToggle >@(collapse1Visible? "close":"open")</AccordionToggle>
+                        
                     </Column>
                     <Column ColumnSize=ColumnSize.Is10 >
                     @if(classess!=null && classess.Count() >0 ){
