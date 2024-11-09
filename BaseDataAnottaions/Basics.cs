@@ -101,12 +101,12 @@ public class MDTypeInfo
     public static Dictionary<Type, MDTypeInfo> mp = new();
     public Type type;
     public List<Attribute> attrs = new();
-    public Dictionary<PropertyInfo, MDPropInfo> pattrs = new();
+    public Dictionary<int, MDPropInfo> pattrs = new();
     public MDTypeInfo(Type t)
     {
         type = t;
         foreach (var x in t.GetProperties())
-            this.pattrs[x] = new MDPropInfo(x);
+            this.pattrs[x.GetMetadataToken()] = new MDPropInfo(x);
     }
     public static MDTypeInfo get(Type t)
     {
@@ -130,7 +130,7 @@ public class ForeignKeyAttr : Attribute
 {
     public Type type;
     public Type tkey = typeof(int);
-    public static Dictionary<System.Reflection.PropertyInfo, List<Attribute>> fpropertis = new();
+    public static Dictionary<int, List<Attribute>> fpropertis = new();
     public ForeignKeyAttr(Type t)
     {
         type = t;
@@ -162,15 +162,15 @@ public class ForeignKeyAttr : Attribute
                 if (s != null)
                 {
                     var rv = propertis.Find(x => x.Name == s.Name);
-                    md.pattrs[rv].attrs.Add(new ForeignKeyAttribute(pr.Name));
-                    md.pattrs[pr].attrs.Add(new ForeignKeyAttribute(rv.Name));
+                    md.pattrs[rv.GetMetadataToken()].attrs.Add(new ForeignKeyAttribute(pr.Name));
+                    md.pattrs[pr.GetMetadataToken()].attrs.Add(new ForeignKeyAttribute(rv.Name));
                     if (pr.PropertyType.IsClass && pr.PropertyType != typeof(String) && pr.PropertyType != typeof(string) && pr.PropertyType != typeof(Guid))
                     {
-                        md.pattrs[rv].attrs.Add(new ForeignKeyAttr(pr.PropertyType));
+                        md.pattrs[rv.GetMetadataToken()].attrs.Add(new ForeignKeyAttr(pr.PropertyType));
                     }
                     else
                     {
-                        md.pattrs[pr].attrs.Add(new ForeignKeyAttr(rv.PropertyType));
+                        md.pattrs[pr.GetMetadataToken()].attrs.Add(new ForeignKeyAttr(rv.PropertyType));
                     }
                 }
 

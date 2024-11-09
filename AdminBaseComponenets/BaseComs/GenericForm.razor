@@ -5,6 +5,7 @@
 @using AdminBaseComponenets;
 @using Newtonsoft.Json
 @using System.ComponentModel.DataAnnotations.Schema;
+@using System.Reflection
 @inherits EditBase2<TItem>
 @{
     if(value is null){
@@ -42,7 +43,7 @@
                     }
                     {
                         ;
-                        defultIgnore = defultIgnore || ((property.GetCustomFirstAttributes<ForeignKeyAttribute>() != null) && !md.pattrs[property].attrs.OfType<ForeignKeyAttr>().Any());
+                        defultIgnore = defultIgnore || ((property.GetCustomFirstAttributes<ForeignKeyAttribute>() != null) && !md.pattrs[property.GetMetadataToken()].attrs.OfType<ForeignKeyAttr>().Any());
                     }
                     {
                         defultIgnore =  defultIgnore || (property.GetCustomFirstAttributes<InversePropertyAttribute>()!=null);
@@ -65,9 +66,7 @@
                     var z = createProp0(property, readOnly);
 
                         
-                        if (z != null)
-                        {
-                        Console.WriteLine($" {property.Name} : {z.GetType().Name} {z.inRowField()}");
+                        if (z != null) {
                         @if (z.inRowField())
                         {
                             

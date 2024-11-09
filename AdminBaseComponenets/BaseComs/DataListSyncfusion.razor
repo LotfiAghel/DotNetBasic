@@ -8,6 +8,7 @@
 @inject NavigationManager NavManager
 @using Blazorise.DataGrid
 @using System.ComponentModel.DataAnnotations.Schema
+@using System.Reflection
 @inherits NullableInput2<IReadOnlyCollection<TItem>>
 @inject IJSRuntime jsRuntime
 
@@ -95,7 +96,7 @@
             var md = MDTypeInfo.get(typeof(TItem));
 
             var atrs = prop.GetCustomAttributes(typeof(object), false).OfType<Attribute>().ToList();
-            var extaAtr = md.pattrs[prop].attrs;
+            var extaAtr = md.pattrs[prop.GetMetadataToken()].attrs;
             atrs.AddRange(extaAtr);
 
 

@@ -425,7 +425,7 @@ namespace AdminBaseComponenets
             //ForeignKeyAttr.cacl(property.DeclaringType);
             var md=MDTypeInfo.get(type0);
             property.GetHashCode();
-            var extaAtr= md.pattrs[property].attrs;
+            var extaAtr= md.pattrs[property.GetMetadataToken()].attrs;
             attrs.AddRange(extaAtr);
             if (inPropRender.ContainsKey(type))
             {

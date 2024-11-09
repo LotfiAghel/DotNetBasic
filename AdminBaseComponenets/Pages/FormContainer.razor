@@ -15,13 +15,14 @@
         value0 = (typeof(FormContainer).GetMethod(nameof(getValueFast0), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?
                         .MakeGenericMethod(genericArgs)
                       .Invoke(this, new object[] { Id }));
-
+        selectedTab = "value";
     }
     if (Id == "new")
     {
         value0 = genericArgs[0].GetConstructor(new Type[] { }).Invoke(new object[] { });// new genericArgs[0]();
         valueIsNew = true;
         ButtonState = "save new";
+        selectedTab = "value";
     }
 
     
@@ -78,7 +79,7 @@
 }
 else
 {
-    <Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+    <Tabs RenderMode=@TabsRenderMode.LazyLoad SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
         <Items>
             <Tab Name="value">Value</Tab>
             @foreach (var prop in genericArgs[0].GetProperties())
