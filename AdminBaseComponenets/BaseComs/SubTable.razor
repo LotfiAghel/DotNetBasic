@@ -32,7 +32,7 @@
             }
             else
             {
-                <PointerInput2 TItem=@TItem OnChange=OnChange2></PointerInput2>
+                <PointerInput2 TItem=@TItem value=@addingItem OnChange=OnChange2></PointerInput2>
             }
         </ModalBody>
         <ModalFooter>
@@ -55,6 +55,7 @@
     private Task ShowModal()
     {
         var titem = typeof(TItem);
+        if(addingItem==null){
         if (!titem.IsAbstract)
         {
             addingItem = titem.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
@@ -70,6 +71,7 @@
             var fidp = typeof(TItem).GetProperty(fmp).GetCustomFirstAttributes<ForeignKeyAttribute>().Name;
             var fidpp = typeof(TItem).GetProperty(fidp);
             //fidpp.SetValue(addingItem, masterEnityId);
+        }
         }
 
         return modalRef.Show();
