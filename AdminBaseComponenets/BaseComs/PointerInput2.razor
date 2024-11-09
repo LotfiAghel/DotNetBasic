@@ -95,9 +95,20 @@
         if(classType==null){
             value=null;
         }else{
-            if (value==null || classType != value.GetType())
+            if (value == null)
             {
-                value = JToken.FromObject(value).ToObject(classType) as TItem;// classType.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;//tmp=new ClassType()
+                value = classType.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;//tmp=new ClassType()
+            }else 
+            if (classType != value.GetType())
+            {
+                try
+                {
+                    value = JToken.FromObject(value).ToObject(classType) as TItem; // classType.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;//tmp=new ClassType()
+                }
+                catch
+                {
+                    value = classType.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;//tmp=new ClassType()
+                }
             }else{
                 return ;//nothing change
             }
