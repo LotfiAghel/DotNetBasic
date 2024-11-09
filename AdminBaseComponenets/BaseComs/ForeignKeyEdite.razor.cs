@@ -83,6 +83,8 @@ namespace AdminBaseComponenets.BaseComs
                         l.Add(new ForeignKey2<TEntity, TKEY>(value));
                     optionGenerator = l;
                 }
+
+                await tmp.getAll();
                 optionGenerator = tmp;//.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id)); 
             }
             

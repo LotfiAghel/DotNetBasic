@@ -516,11 +516,19 @@ namespace ClTool
         {
             return $"{typeof(TMASTER).GetUrlEncodeName()}/{masterId}/{collectionName}";
         }
+
+        private Task<List<T>> loadAll = null;
         public async Task<List<T>> getAll(bool forceReloadFromServer = false)
         {
-            if (cash != null && !forceReloadFromServer)
-                return cash;
-            return cash = await webClient.fetch<T, List<T>>(getPath(), HttpMethod.Get, null);
+            if (!forceReloadFromServer)
+            {
+                if (cash != null)
+                    return cash;
+                loadAll ??= webClient.fetch<T, List<T>>(getPath(), HttpMethod.Get, null);
+            }else
+                loadAll=webClient.fetch<T, List<T>>(getPath(), HttpMethod.Get, null);
+            
+            return cash = await loadAll;
         }
         public async Task<List<T>> getAll2(IQuery<T> inp)
         {
