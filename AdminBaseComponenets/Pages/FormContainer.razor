@@ -130,7 +130,7 @@ else
                         continue;
                     if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
                     {
-                        <TabPanel @key=@($"gfc/{(value0 as Models.IEntity0).getId().ToString()}/{prop.Name}") Name=@prop.GetPerisanName()>
+                        <TabPanel @key=@($"gfc/{(value0 as Models.IEntity0).getId().ToString()}/{prop.Name}") Name=@prop.Name>
                             @CreateDynamicComponentGrid(prop.PropertyType.GetGenericArguments()[0],(value0 as Models.IEntity0).getId(),prop.Name)
                         </TabPanel>
                     }
