@@ -46,7 +46,8 @@ namespace AdminClientViewModels
 
             await inp;
             try{
-                o.Result.onChanges?.invokeAll();
+                if(o!=null)
+                    o.Result.onChanges?.invokeAll();
             }catch{
 
             }

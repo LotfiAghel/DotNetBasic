@@ -25,36 +25,6 @@
     }
 }
 
-@if (itemName != null || true)
-{
-
-    @if (showModal)
-    {
-        <div class="modal fade show" id="myModal" style="display:block" aria-modal="true" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <!-- Modal Header -->
-                    <div class="modal-header">
-                        <h4 class="modal-title">Confirm action</h4>
-                        <button type="button" class="close" @onclick="@ModalCancel">&times;</button>
-                    </div>
-
-                    <div>@Program0.CreateDynamicComponent2(this, w, ttvalue)</div>;
-
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn" @onclick="@ModalCancel">Cancel</button>
-                        <button type="button" class="btn btn-danger" @onclick=@ModalOk>Delete</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    }
-}
-<hr />
-
 
 <Modal @ref=@modalRef Style="overflow:visible">
     <ModalContent VerticalAlignment=@VerticalAlignment.Top Size=ModalSize.ExtraLarge>
@@ -63,7 +33,15 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody Style="display: contents;">
-            <GenericForm TItem=@TItem value=@selectedTItem></GenericForm>
+            
+                @if (!typeof(TItem).IsAbstract) {
+                    <div>@Program0.CreateDynamicComponent2(this, popupWidget, selectedTItem,changeRefrence:OnChange2)</div>;
+                }
+                else
+                {
+                    <PointerInput2 TItem=@TItem value=@selectedTItem OnChange=OnChange2></PointerInput2>
+                }
+            
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
@@ -136,8 +114,16 @@
 
 
 @code {
-
-
+    [Inject] INotificationService NotificationService { get; set; }
+    [Inject] public IModalService ModalService { get; set; }
+    private void OnChange2(object x)
+    {
+        if (x == selectedTItem)
+            return;
+        selectedTItem = x as TItem;
+        
+        NotificationService.Info("change refrnce TODO", "change refrnce TODO");
+    }
     public async Task NavigateToNewTab2(MouseEventArgs args)
     {
         if (args.CtrlKey)
@@ -162,7 +148,19 @@
         //newItem = new TItem();
         //addingItem = typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
 
-        return modalRef.Show();
+        return ModalService.Show<PopupForm<TItem>>( x =>
+            {
+                //x.Add( x => x.OnValidate, FormularyValidate );
+                //x.Add( x => x.OnSuccess, FormularySuccess );
+                x.Add(x=> x.OnChange,OnChange2);
+                x.Add(x=>x.value,selectedTItem);
+            },
+            new ModalInstanceOptions()
+            {
+                UseModalStructure = false,
+                Style = "overflow:visible"
+                //Stateful = true
+            } );
     }
 
     private Task HideModal()

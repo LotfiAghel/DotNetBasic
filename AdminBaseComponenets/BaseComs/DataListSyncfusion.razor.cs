@@ -73,7 +73,7 @@ namespace AdminBaseComponenets.BaseComs
             }).ToList();
 
 
-        ComponentBase w = null;
+        ComponentBase popupWidget = null;
         TItem ttvalue;
 
         bool showModal = false;
@@ -119,7 +119,7 @@ namespace AdminBaseComponenets.BaseComs
             //@Program0.CreateDynamicComponent2(this, w, prop.GetValue(context))
             var pr = typeof(TItem).GetProperty(itemName);
             ttvalue = (TItem)(typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }));
-            w = Program0.createForm(typeof(TItem), new List<Attribute>());
+            popupWidget = Program0.createForm(typeof(TItem), new List<Attribute>());
             //Data.Add(ttvalue);
             showModal = true;
         }

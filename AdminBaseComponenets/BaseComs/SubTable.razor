@@ -21,32 +21,40 @@
 }
 
 
-<Modal @ref="modalRef" Style="overflow:visible">
-    <ModalContent Centered Size=ModalSize.ExtraLarge>
-        <ModalHeader>
-            <ModalTitle>Edit</ModalTitle>
-            <CloseButton />
-            <Button Color="Color.Primary" Clicked="@SaveModal">Save Changes</Button>
-        </ModalHeader>
-        <ModalBody>
-             @if (!typeof(TItem).IsAbstract) { 
-                <GenericForm TItem=@TItem value=@addingItem></GenericForm>
-            }
-            else
-            {
-                <PointerInput2 TItem=@TItem value=@addingItem OnChange=OnChange2></PointerInput2>
-            }
-        </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-            <Button Color="Color.Primary" Clicked="@SaveModal">Save Changes</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+
 @code {
     [Inject] INotificationService NotificationService { get; set; }
+    [Inject] public IModalService ModalService { get; set; }
     // reference to the modal component
-    private Modal modalRef;
+    
+    
+    public Task ShowFormulary()
+    {
+        
+        return ModalService.Show<PopupForm<TItem>>( x =>
+            {
+                //x.Add( x => x.OnValidate, FormularyValidate );
+                x.Add( x => x.OnSuccess, SaveModal );
+                x.Add(x=> x.OnChange,OnChange2);
+                x.Add(x=>x.value,addingItem);
+            },
+            new ModalInstanceOptions()
+            {
+                UseModalStructure = false,
+                //Stateful = true
+            } );
+    }
+    
+    private Task<bool> FormularyValidate(TItem employee)
+    {
+        return Task.FromResult(true);
+    }
+    private Task FormularySuccess( TItem employee )
+    {
+       
+        return InvokeAsync( StateHasChanged );
+    }
+    
     private void OnChange2(object x)
     {
         addingItem = x as TItem;// new genericArgs[0]();
@@ -59,33 +67,30 @@
     {
         var titem = typeof(TItem);
         if(addingItem==null){
-        if (!titem.IsAbstract)
-        {
-            addingItem = titem.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
-            var fmp = typeof(TMASTER).GetProperty(collectionName).GetCustomFirstAttributes<InversePropertyAttribute>().Property;
-            var fidp = typeof(TItem).GetProperty(fmp).GetCustomFirstAttributes<ForeignKeyAttribute>().Name;
-            var fidpp = typeof(TItem).GetProperty(fidp);
-            fidpp.SetValue(addingItem, masterEnityId);
-        }
-        else
-        {
-            addingItem = null;
-            var fmp = typeof(TMASTER).GetProperty(collectionName).GetCustomFirstAttributes<InversePropertyAttribute>().Property;
-            var fidp = typeof(TItem).GetProperty(fmp).GetCustomFirstAttributes<ForeignKeyAttribute>().Name;
-            var fidpp = typeof(TItem).GetProperty(fidp);
-            //fidpp.SetValue(addingItem, masterEnityId);
-        }
+            if (!titem.IsAbstract)
+            {
+                addingItem = titem.GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
+                var fmp = typeof(TMASTER).GetProperty(collectionName).GetCustomFirstAttributes<InversePropertyAttribute>().Property;
+                var fidp = typeof(TItem).GetProperty(fmp).GetCustomFirstAttributes<ForeignKeyAttribute>().Name;
+                var fidpp = typeof(TItem).GetProperty(fidp);
+                fidpp.SetValue(addingItem, masterEnityId);
+            }
+            else
+            {
+                addingItem = null;
+                var fmp = typeof(TMASTER).GetProperty(collectionName).GetCustomFirstAttributes<InversePropertyAttribute>().Property;
+                var fidp = typeof(TItem).GetProperty(fmp).GetCustomFirstAttributes<ForeignKeyAttribute>().Name;
+                var fidpp = typeof(TItem).GetProperty(fidp);
+                //fidpp.SetValue(addingItem, masterEnityId);
+            }
         }
 
-        return modalRef.Show();
+        return ShowFormulary();
+        //return modalRef.Show();
     }
 
-    private Task HideModal()
-    {
-        
-        return modalRef.Hide();
-    }
-    private async Task SaveModal()
+   
+    private async Task SaveModal(TItem data)
     {
         if (Data is null)
             Data = Program0.getEntityManager<TItem, TKEY>();
@@ -101,7 +106,7 @@
              NotificationService.Warning(e.Message, "save error");
         }
         Click();
-        modalRef.Hide();
+        
         return;
     }
 }

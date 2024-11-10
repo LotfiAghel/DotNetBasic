@@ -15,36 +15,11 @@
 
 
 @inherits ValueInput<TItem>
-<!--
-
-<p style="display: inline;color:blue" @onclick=@Click0>close</p>
-
-    @if (!ReadOnly)
-    {
-<Select TValue="string" SelectedValue=@typeName SelectedValueChanged=@Click2 >
-    <SelectItem TValue="string" value="null">null</SelectItem>
-    @foreach (var t in classess)
-    {
-        <SelectItem TValue="string" value=@t.Name>@t.GetPerisanName()</SelectItem>
-    }
-</Select>
-
-    }
-    else if (value != null)
-    {
-<div>@(value.GetType().Name)</div>
-    }
-
-@if (openOject)
+@if (value != null)
 {
-    if (w != null)
-    {
-        <div>@Program0.CreateDynamicComponent2(this, w, value, null, new List<System.Attribute>(), ReadOnly);</div>
-    }
+    widget = Program0.createForm(value.GetType(), new List<Attribute>() { });
 }
-
--->
-        <Accordion >
+<Accordion >
         <Collapse  @bind-Visible=@collapse1Visible>
              <CollapseHeader>
             <Heading Size="HeadingSize.Is6" >

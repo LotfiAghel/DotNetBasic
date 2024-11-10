@@ -1,0 +1,51 @@
+@typeparam TItem
+
+@inherits ValueInput<TItem>
+
+@{
+    popupWidget = Program0.createForm(typeof(TItem), new List<Attribute>());
+}
+
+<ModalHeader>
+    <ModalTitle>Edit</ModalTitle>
+    <CloseButton />
+    <Button Color="Color.Primary" Clicked="@SaveModal">Save Changes</Button>
+</ModalHeader>
+<ModalBody>
+    @if (!typeof(TItem).IsAbstract) {
+        <div>@Program0.CreateDynamicComponent2(this, popupWidget, value,changeRefrence:OnChange2)</div>;
+    }
+    else
+    {
+        <PointerInput2 TItem=@TItem value=@value OnChange=OnChange2></PointerInput2>
+    }
+</ModalBody>
+<ModalFooter>
+    <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+    <Button Color="Color.Primary" Clicked="@SaveModal">Save Changes</Button>
+</ModalFooter>
+
+
+
+@code{
+    
+    ComponentBase popupWidget = null;
+    [Parameter] public Func<TItem, Task> OnSuccess { get; set; }
+    //[Parameter] public Func<TItem, Task> oncha { get; set; }
+    private void OnChange2(object x)
+    {
+        OnChange?.Invoke(x);
+    }
+
+    private void SaveModal(MouseEventArgs obj)
+    {
+        OnSuccess?.Invoke(value);
+        //throw new NotImplementedException();
+    }
+
+    private void HideModal(MouseEventArgs obj)
+    {
+        //throw new NotImplementedException();
+    }
+
+}

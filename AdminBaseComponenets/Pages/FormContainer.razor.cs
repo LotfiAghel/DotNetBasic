@@ -225,10 +225,10 @@ namespace AdminBaseComponenets.Pages
 
                 valueIsNew = false;
 
-                var pr = genericArgs[0].GetProperty("id");
+                var pr = genericArgs[0].GetProperty(nameof(Models.Id4Entity.id));
                 var id = pr.GetValue(value0);
                 Console.WriteLine("FormC navigate ");
-                NavigationManager.NavigateTo($"/{entityName}/edit/{id}", false);
+                NavigationManager.NavigateTo($"/{entityName}/edit/{value0}", false);
 
 
 

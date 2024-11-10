@@ -66,6 +66,10 @@
                 SelectedValueChanged=@Click2
                 ReadOnly=@ReadOnly>
                     @if (optionGenerator != null)
+                    {
+                        <SelectItem TValue=TKEY Value=default(TKEY)>
+                            none @(default(TKEY))
+                        </SelectItem>
                         foreach (var t in optionGenerator)
                         {
 
@@ -76,6 +80,7 @@
                                 }
                             </SelectItem>
                         }
+                    }
                 </Select>
             }
         </Column>
