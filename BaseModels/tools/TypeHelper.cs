@@ -75,6 +75,15 @@ namespace Tools
                 if (displayName != null)
                     return displayName.txt;
             }
+            {
+                var displayName = t
+              .GetCustomAttributes(typeof(DisplayAttribute), false).OfType<DisplayAttribute>()
+              .FirstOrDefault();
+
+
+                if (displayName != null)
+                    return displayName.Name;
+            }
             return t.Name;
         }
         public static string GetPerisanName(this MethodInfo t)
