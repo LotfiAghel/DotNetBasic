@@ -258,9 +258,11 @@ namespace AdminClientViewModels
 
             if (res == null)
                 return null;
-            return res.Result;
+            if(res.Status==TaskStatus.RanToCompletion)
+                return res.Result;
+            return null;
 
-            
+
         }
 
         public async Task<object> get00(object id){

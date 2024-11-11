@@ -17,15 +17,15 @@
 @inherits ForeignKeyEditeBase<TEntity,TKEY>
 
 @{
-    fValue =default(TEntity);
-    var tmp = Program0.getEntityManager<TEntity, TKEY>();
+    //fValue =default(TEntity);
+    /*var tmp = Program0.getEntityManager<TEntity, TKEY>();
 
      fValue = tmp.getFromLoaded(value.getFValue());
      if(fValue!=null){
         viewComponenet = Program0.createWidget(fValue.GetType(), new List<Attribute>() {  });
         dataId = fValue.id;
      }
-
+    */
     
 }
 
@@ -39,7 +39,7 @@
         
         
     }else{
-        <div>@value.getFValue()</div>
+        <div>( id: @value.getFValue() )</div>
     }
     
 </div>
