@@ -22,7 +22,6 @@ namespace AdminBaseComponenets.BaseComs
     public partial class FileUploadBig : ValueInput<string> 
     {
 
-
         
         MarkupString AlertMessage = new MarkupString("<strong>No file selected</strong>");
     string AlertClass = "alert alert-info";
@@ -73,11 +72,13 @@ namespace AdminBaseComponenets.BaseComs
             int bytesRead;
             long totalBytesRead = 0;
             long fileSize = selectedFile.Size;
-
+            
             // Use a timer to update the UI every few hundred milliseconds.
             using var timer = new Timer(_ => InvokeAsync(() => StateHasChanged()));
             timer.Change(TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
-
+            string fd = null;
+            if (FilesDirectory != null) ;
+                fd = FilesDirectory;
             try
             {
                 var oldBase = ClTool.WebClient.webClient;
@@ -85,6 +86,7 @@ namespace AdminBaseComponenets.BaseComs
                 var tmp = await oldBase.fetch<Models.CreateSessionParams, Models.SessionCreationStatusResponse>("api/file/create", HttpMethod.Post, new Models.CreateSessionParams()
                     {
                         FileName = selectedFile.Name,
+                        dir = fd,
                         ChunkSize = 1000,
                         TotalSize = 10000
                     });

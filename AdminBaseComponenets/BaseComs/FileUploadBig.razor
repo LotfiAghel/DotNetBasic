@@ -6,8 +6,8 @@
 @using System.Threading;
 @inherits ValueInput<string>
 
-
-
+<div>salam2</div>
+<div>FilesDirectory : @FilesDirectory</div>
 
 @if (!string.IsNullOrWhiteSpace(value))
 {
@@ -37,4 +37,9 @@ else
             Please select a file to upload.
         </div>
     </form>
+}
+@code
+{
+    [CascadingParameter(Name="FilesDirectory")]
+    public string FilesDirectory { get; set; }
 }
