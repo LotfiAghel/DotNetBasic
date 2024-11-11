@@ -47,7 +47,7 @@
          </DataGridCommandColumn> -->
          @if (typeof(TItem).IsAbstract)
          {
-             <DataGridColumn TItem=TItem Field="$type" Caption="نوع">
+             <DataGridColumn TItem=TItem  Caption="نوع">
                  <DisplayTemplate>
                      @context.GetType().GetPerisanName()
                  </DisplayTemplate>
