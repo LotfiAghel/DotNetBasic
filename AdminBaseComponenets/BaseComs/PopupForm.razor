@@ -9,6 +9,7 @@
 <ModalHeader>
     <ModalTitle>Edit</ModalTitle>
     <CloseButton />
+    <Button Color="Color.Secondary" Clicked="ModalService.Hide">Close</Button>
     <Button Color="Color.Primary" Clicked="@SaveModal">Save Changes</Button>
 </ModalHeader>
 <ModalBody>
@@ -21,14 +22,14 @@
     }
 </ModalBody>
 <ModalFooter>
-    <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+    <Button Color="Color.Secondary" Clicked="ModalService.Hide">Close</Button>
     <Button Color="Color.Primary" Clicked="@SaveModal">Save Changes</Button>
 </ModalFooter>
 
 
 
 @code{
-    
+    [Inject] public IModalService ModalService { get; set; }
     ComponentBase popupWidget = null;
     [Parameter] public Func<TItem, Task> OnSuccess { get; set; }
     //[Parameter] public Func<TItem, Task> oncha { get; set; }
@@ -45,6 +46,7 @@
 
     private void HideModal(MouseEventArgs obj)
     {
+        
         //throw new NotImplementedException();
     }
 
