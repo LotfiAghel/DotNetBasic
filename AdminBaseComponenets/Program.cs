@@ -25,6 +25,7 @@ using AdminBaseComponenets.BaseComs;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using AdminBaseComponenets.BaseComs.InGrid;
+using Blazorise.Extensions;
 
 public static class ExtensionMethods
 {
@@ -561,7 +562,7 @@ namespace AdminBaseComponenets
             try
             {
                 var adminWriteBan = T.GetCustomAttributes(typeof(T2), true).OfType<T2>().FirstOrDefault();
-                if (adminWriteBan == null || adminWriteBan.kinds==null || adminWriteBan.kinds.Intersect(user.roles).Count() == 0 )
+                if (adminWriteBan == null || adminWriteBan.kinds==null || user==null || adminWriteBan.kinds.Intersect(user.roles).Count() == 0 )
                     return false;
             }
             catch
