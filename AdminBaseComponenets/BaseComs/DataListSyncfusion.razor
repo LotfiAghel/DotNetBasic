@@ -26,29 +26,6 @@
 }
 
 
-<Modal @ref=@modalRef Style="overflow:visible">
-    <ModalContent VerticalAlignment=@VerticalAlignment.Top Size=ModalSize.ExtraLarge>
-        <ModalHeader>
-            <ModalTitle>@(typeof(TItem).GetPerisanName())</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody Style="display: contents;">
-            
-                @if (!typeof(TItem).IsAbstract) {
-                    <div>@Program0.CreateDynamicComponent2(this, popupWidget, selectedTItem,changeRefrence:OnChange2)</div>;
-                }
-                else
-                {
-                    <PointerInput2 TItem=@TItem value=@selectedTItem OnChange=OnChange2></PointerInput2>
-                }
-            
-        </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-            <Button Color="Color.Primary" Clicked="@SaveModal">Save Changes</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
 
 <DataGrid TItem="TItem"
           Data=@value2
@@ -68,6 +45,14 @@
                      <Button Color="Color.Primary" Clicked=@NavigateToNewTab2 >Edit</Button>
              </EditCommandTemplate>
          </DataGridCommandColumn> -->
+         @if (typeof(TItem).IsAbstract)
+         {
+             <DataGridColumn TItem=TItem Field="$type" Caption="نوع">
+                 <DisplayTemplate>
+                     @context.GetType().GetPerisanName()
+                 </DisplayTemplate>
+             </DataGridColumn>
+         }
          @foreach (var prop in propertis)
         {
 
@@ -141,7 +126,7 @@
     }
 
 
-    private Modal modalRef;
+    //private Modal modalRef;
 
     private Task ShowModal()
     {
@@ -151,7 +136,7 @@
         return ModalService.Show<PopupForm<TItem>>( x =>
             {
                 //x.Add( x => x.OnValidate, FormularyValidate );
-                //x.Add( x => x.OnSuccess, FormularySuccess );
+                x.Add( x => x.OnSuccess, SaveModal );
                 x.Add(x=> x.OnChange,OnChange2);
                 x.Add(x=>x.value,selectedTItem);
             },
@@ -166,15 +151,12 @@
             } );
     }
 
-    private Task HideModal()
-    {
-
-        return modalRef.Hide();
-    }
-    private Task SaveModal()
+   
+    private Task SaveModal(TItem x)
     {
         var dataManager = Program0.getEntityManager<TItem, TKEY>();
         dataManager.update(selectedTItem);
-        return modalRef.Hide();
+        return InvokeAsync(StateHasChanged);
+        //return modalRef.Hide();
     }
 }
