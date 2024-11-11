@@ -48,18 +48,32 @@
                                 Console.WriteLine("setFValue0(j, x)");
                                 setValue(k, x);
                             };
-                            <div class="col-sm-12">
-                                
-                                @{
-                                    if (itemWidget != null)
-                                    {
-                                        <div>@Program0.CreateDynamicComponent2(this, itemWidget, value[k], onChangeRefrence,null,ReadOnly)</div>;
-                                    }
-                                }
-                </div>
-                ++j;
+                @if (!ReadOnly)
+                {
 
+                    <Button  Clicked="() => remove(k)" style="position: absolute; z-index: 10; margin: .5rem; left: 0%;">
+                        <mat-icon class="material-icons" style="font-size:14px; font-weight:bold; color:red">close</mat-icon>
+                    </Button>
+                }
+                <Div >
+                    @if (!ReadOnly)
+                    {
+
+                        <Button  Clicked="() => remove(k)" style="position: absolute; z-index: 10; margin: .5rem; left: 0%;">
+                            <mat-icon class="material-icons" style="font-size:14px; font-weight:bold; color:red">close</mat-icon>
+                        </Button>
+                    }
+                    @{
+                        if (itemWidget != null)
+                        {
+                            <div>@Program0.CreateDynamicComponent2(this, itemWidget, value[k], onChangeRefrence,null,ReadOnly)</div>;
                         }
+                    }
+                </Div>
+               
+
+                ++j;
+            }
                   
 
 
@@ -113,6 +127,12 @@
     {
         var tmp = Program0.getCollectionItemAttrs(Attributes);
         itemWidget = Program0.createForm4(typeof(TItem), tmp);
+    }
+
+    private void remove(int o)
+    {
+        if(value!=null && value.Count > o)
+            value.RemoveAt(o);
     }
 }
 
