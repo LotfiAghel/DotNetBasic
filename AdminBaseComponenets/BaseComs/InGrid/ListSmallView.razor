@@ -27,26 +27,40 @@
 
 <div class="row pt-2 pb-2" >
     @if (value != null)
-    if(viewComponenet != null)
     {
-       
-        @foreach(var t in value){
-                <div >@Program0.CreateDynamicComponent2(this, viewComponenet, t),</div>
-        }
-       
-        
-    }else{
-            
-                @foreach (var t in value)
+        int idx = 0;
+        if (viewComponenet != null)
+        {
+                foreach (var t in value)
                 {
+                    ++idx;
+                    if (idx > 5)
+                        break;
+                    <div >@Program0.CreateDynamicComponent2(this, viewComponenet, t),</div>
+                }
+        }
+        else
+        {
+                foreach (var t in value)
+                {
+                    ++idx;
+                    if (idx > 5)
+                        break;
                     <div>@t.ToString(),</div>
                 }
-            
         }
+        if (idx != value.Count)
+        {
+            <div>.. n:@(value.Count)</div>
+        }
+            
+
+        
+    }
     else
     {
-        <div>null</div>
+        <div > null </div >
     }
 
-    
+
 </div>
