@@ -289,7 +289,7 @@ namespace AdminBaseComponenets
             if (defultRenderer.ContainsKey(type))
                 return defultRenderer[type](prps);
 
-
+            
             if (type.IsGenericType)
             {
 
@@ -1096,7 +1096,7 @@ namespace AdminBaseComponenets
                 Console.WriteLine("formRenderer2(Range<>)");
                 return typeof(AdminBaseComponenets.BaseComs.RangeInput<>).MakeGenericType(type.GetGenericArguments()[0]);
             };
-
+            
             formRenderer2[typeof(List<>)] = (type, prps) =>
             {
                 Console.WriteLine("formRenderer2(List<>)");
@@ -1355,7 +1355,7 @@ namespace AdminBaseComponenets
             
         }
 
-        internal static void showPopUp(Exception e)
+        public static void showPopUp(Exception e)
         {
             //throw new NotImplementedException();
         }
