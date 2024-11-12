@@ -1342,6 +1342,18 @@ namespace AdminBaseComponenets
             
             
         }
+        public static void RegisterForm<T,T2,T3>()where T2: ValueInput<T3>,new()
+        where T:T3
+        {
+            Program0.formRenderer[typeof(T)] = (prps) =>
+            {
+
+
+                return new T2();
+            };
+            
+            
+        }
 
         internal static void showPopUp(Exception e)
         {
