@@ -87,7 +87,15 @@ namespace AdminBaseComponenets.BaseComs
 
                 
                 await tmp.getAll();
-                await tmp.get(value.Value);
+                try
+                {
+                    await tmp.get(value.Value);
+                }
+                catch
+                {
+                    
+                }
+
                 optionGenerator = tmp;//.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id)); 
             }
             
