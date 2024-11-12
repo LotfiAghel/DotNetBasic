@@ -38,9 +38,10 @@
         OnChange?.Invoke(x);
     }
 
-    private void SaveModal(MouseEventArgs obj)
+    private async Task SaveModal(MouseEventArgs obj)
     {
         OnSuccess?.Invoke(value);
+        await ModalService.Hide();
         //throw new NotImplementedException();
     }
 
