@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,21 +82,41 @@ namespace AdminBaseComponenets.BaseComs
             try
             {
                 var oldBase = ClTool.WebClient.webClient;
+                string checksum = "";
+                //using (FileStream fs = File.Open(path, FileMode.Open))
+                {
+                    //var arr=ReadToEnd(stream);
+                    //checksum = System.Text.Encoding.Default.GetString( MMD5.ComputeHash(arr));
+                }
+                stream.Position = 0;
+
                 //await oldBase.fetch("", null, HttpMethod.Get);
                 var tmp = await oldBase.fetch<Models.CreateSessionParams, Models.SessionCreationStatusResponse>("api/file/create", HttpMethod.Post, new Models.CreateSessionParams()
                     {
                         FileName = selectedFile.Name,
                         dir = fd,
                         ChunkSize = 1000,
-                        TotalSize = 10000
+                        TotalSize = 10000,
+                        checkSum= checksum,
+                        forceWrite = true
                     });
                 value = tmp.FileName;
-                OnChange(value);
+                
 
 
-
+                Task task = Task.Run(async () =>
+                {
+                    while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
+                    {
+                        totalBytesRead += bytesRead;
+                        ProgressPercentage = (int)(100 * totalBytesRead / fileSize);
+                        //await fs.WriteAsync(buffer, 0, bytesRead);
+                        await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, buffer, bytesRead);
+                    }
+                    OnChange(value);
+                });
                 //OnChange(value);
-
+                
                 while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
                 {
                     totalBytesRead += bytesRead;
@@ -104,6 +124,7 @@ namespace AdminBaseComponenets.BaseComs
                     //await fs.WriteAsync(buffer, 0, bytesRead);
                     await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, buffer, bytesRead);
                 }
+                OnChange(value);
             }
             finally
             {
