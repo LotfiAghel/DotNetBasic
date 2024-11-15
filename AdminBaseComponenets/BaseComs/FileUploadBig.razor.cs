@@ -88,7 +88,7 @@ namespace AdminBaseComponenets.BaseComs
                     //var arr=ReadToEnd(stream);
                     //checksum = System.Text.Encoding.Default.GetString( MMD5.ComputeHash(arr));
                 }
-                stream.Position = 0;
+                //stream.Position = 0;
 
                 //await oldBase.fetch("", null, HttpMethod.Get);
                 var tmp = await oldBase.fetch<Models.CreateSessionParams, Models.SessionCreationStatusResponse>("api/file/create", HttpMethod.Post, new Models.CreateSessionParams()
