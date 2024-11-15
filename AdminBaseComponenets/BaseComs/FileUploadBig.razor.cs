@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +14,9 @@ using ClTool;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Net.Http;
 using System.IO;
+using System.Security.Cryptography;
 using System.Threading;
-
+using Blazorise;
 namespace AdminBaseComponenets.BaseComs
 {
     
@@ -56,7 +57,59 @@ namespace AdminBaseComponenets.BaseComs
         SetAlert("alert alert-info", "oi oi-info", $"<strong>{selectedFile.Name}</strong> ({selectedFile.Size} bytes) file selected.");
         IsUploadDisabled = false;
     }
+    [Inject] IToastService ToastService { get; set; }
 
+    public static byte[] ReadToEnd(System.IO.Stream stream)
+    {
+        long originalPosition = 0;
+
+        if(stream.CanSeek)
+        {
+            originalPosition = stream.Position;
+            stream.Position = 0;
+        }
+
+        try
+        {
+            byte[] readBuffer = new byte[4096];
+
+            int totalBytesRead = 0;
+            int bytesRead;
+
+            while ((bytesRead = stream.Read(readBuffer, totalBytesRead, readBuffer.Length - totalBytesRead)) > 0)
+            {
+                totalBytesRead += bytesRead;
+
+                if (totalBytesRead == readBuffer.Length)
+                {
+                    int nextByte = stream.ReadByte();
+                    if (nextByte != -1)
+                    {
+                        byte[] temp = new byte[readBuffer.Length * 2];
+                        Buffer.BlockCopy(readBuffer, 0, temp, 0, readBuffer.Length);
+                        Buffer.SetByte(temp, totalBytesRead, (byte)nextByte);
+                        readBuffer = temp;
+                        totalBytesRead++;
+                    }
+                }
+            }
+
+            byte[] buffer = readBuffer;
+            if (readBuffer.Length != totalBytesRead)
+            {
+                buffer = new byte[totalBytesRead];
+                Buffer.BlockCopy(readBuffer, 0, buffer, 0, totalBytesRead);
+            }
+            return buffer;
+        }
+        finally
+        {
+            if(stream.CanSeek)
+            {
+                stream.Position = originalPosition; 
+            }
+        }
+    }
     private async void OnSubmit()
     {
         if (selectedFile != null)
@@ -103,7 +156,7 @@ namespace AdminBaseComponenets.BaseComs
                 value = tmp.FileName;
                 
 
-
+                OnChange(value);
                 Task task = Task.Run(async () =>
                 {
                     while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
@@ -117,14 +170,14 @@ namespace AdminBaseComponenets.BaseComs
                 });
                 //OnChange(value);
                 
-                while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
+                /*while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
                 {
                     totalBytesRead += bytesRead;
                     ProgressPercentage = (int)(100 * totalBytesRead / fileSize);
                     //await fs.WriteAsync(buffer, 0, bytesRead);
                     await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, buffer, bytesRead);
-                }
-                OnChange(value);
+                }*/
+               
             }
             finally
             {

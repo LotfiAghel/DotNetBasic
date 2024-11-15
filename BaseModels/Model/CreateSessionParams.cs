@@ -33,7 +33,7 @@ namespace Models
         public bool dontChangeFileNameWithGUID { get; set; } = false;
         public bool forceWrite { get; set; } = false;
         public string checkSum { get; set; }
-        public string checksum { get; set; }
+        
     }
 
     public class UploadFileChunk
