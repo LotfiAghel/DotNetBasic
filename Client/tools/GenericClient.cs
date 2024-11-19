@@ -116,11 +116,12 @@ namespace ClTool
 
                 string value = response.Headers.Get(i);
                 value = value.Replace("expires=Fri,", "expires=Fri ");
+                //HttpCookie.TryParse()
                 //var cc = new CookieHeaderValue(value);
                 //cookie2 = CookieHeaderValue.Parse(value);
-                foreach (var singleCookie in value.Split(','))
+                foreach (var singleCookie in value.Split(new char[]{';',','}))
                 {
-                    System.Text.RegularExpressions.Match match = Regex.Match(singleCookie, "(.+?)=(.+?);");
+                    System.Text.RegularExpressions.Match match = Regex.Match(singleCookie, "(.+?)=(.+?)");
                     if (match.Captures.Count == 0)
                         continue;
                     response.Cookies.Add(
