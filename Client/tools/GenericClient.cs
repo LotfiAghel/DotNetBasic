@@ -121,8 +121,19 @@ namespace ClTool
                 //cookie2 = CookieHeaderValue.Parse(value);
                 foreach (var singleCookie in value.Split(new char[]{';',','}))
                 {
-                    System.Text.RegularExpressions.Match match = Regex.Match(singleCookie, "(.+?)=(.+?)");
-                    if (match.Captures.Count == 0)
+                    //System.Text.RegularExpressions.Match match = singleCookie.Split("=");// Regex.Match(singleCookie, "(.+?)=*");
+                    var aa=singleCookie.Split("=");
+                    if(aa.Length!=2)
+                        continue;
+                    response.Cookies.Add(
+                        new Cookie(
+                            aa[0].Replace(" ", ""),
+                            aa[1],
+                            "/",
+                            request.Host.Split(':')[0]
+                        )
+                    );
+                    /*if (match.Captures.Count == 0)
                         continue;
                     response.Cookies.Add(
                         new Cookie(
@@ -131,7 +142,7 @@ namespace ClTool
                             "/",
                             request.Host.Split(':')[0]
                             )
-                        );
+                        );*/
                 }
             }
         }
