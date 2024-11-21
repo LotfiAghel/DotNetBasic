@@ -37,6 +37,7 @@ namespace AdminBaseComponenets.BaseComs
         {
             Console.WriteLine("Modal ok");
             showModal = false;
+            
         }
         protected override async Task OnInitializedAsync()
         {
@@ -76,27 +77,29 @@ namespace AdminBaseComponenets.BaseComs
 
             if (optionGenerator == null)
             {
+                await tmp.getAll();
                 if (typeof(TEntity).GetCustomFirstAttributes<BigTable>() != null)
                 {
                     var l = new List<ForeignKey2<TEntity, TKEY>>();
                     if(val != null)
                         l.Add(new ForeignKey2<TEntity, TKEY>(value));
                     optionGenerator = l;
-                }
-                
-
-                
-                await tmp.getAll();
-                try
-                {
-                    await tmp.get(value.Value);
-                }
-                catch
-                {
                     
                 }
+                //else
+                {
 
-                optionGenerator = tmp;//.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id)); 
+                    try
+                    {
+                        tmp.get(value.Value);
+                    }
+                    catch
+                    {
+
+                    }
+
+                    optionGenerator = tmp; //.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id));
+                }
             }
             
             // StateHasChanged();

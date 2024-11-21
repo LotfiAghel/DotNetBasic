@@ -65,6 +65,8 @@ namespace AdminClientViewModels
                 id2En[inp.id] = Task.FromResult<T>(inp);
                 return inp;
             }
+            if(!data.Contains(o.Result))
+                data.Add(o.Result);
             foreach (var pr in typeof(T).GetProperties())
             {
                 var setMethod = pr.GetSetMethod();
@@ -204,7 +206,7 @@ namespace AdminClientViewModels
             
 
             if (id2En.TryGetValue(id,out res))
-                return await res;
+                return await insertOrUpdate2(id,res);
             try
             {
                 System.Console.WriteLine("not have :" + id.ToString());
