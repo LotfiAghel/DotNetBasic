@@ -140,13 +140,13 @@ namespace AdminBaseComponenets
 
 
 
-        public virtual async Task<bool> setNull()
+        public virtual Task<bool> setNull()
         {
             //value=null;
             //OnChange(null);
             OnChange(null);
             __valueIsNull = true;
-            return true;
+            return Task.FromResult(true);
         }
 
 

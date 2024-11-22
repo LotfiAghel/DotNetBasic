@@ -1,21 +1,10 @@
 @typeparam TItem
 
-
-
-@using Microsoft.AspNetCore.Components.Rendering;
-@using Microsoft.AspNetCore.Components;
-
-
-@using System.Collections.Generic
-
-
-@using Newtonsoft.Json.Linq;
-
 @inherits ArrayInputBase<TItem>
 
 @{
-     var tmp = Program0.getCollectionItemAttrs(Attributes);
-        itemWidget = Program0.createForm4(typeof(TItem), tmp);
+     var wtmp = Program0.getCollectionItemAttrs(Attributes);
+     _itemWidget = Program0.createForm4(typeof(TItem), wtmp);
 }
    
 
@@ -24,14 +13,14 @@
         @if (value != null)
         {
              <Accordion>
-        <Collapse  Visible=@collapse1Visible>
+        <Collapse  Visible=@_collapse1Visible>
              <CollapseHeader>
                   <Row>
                     <Column ColumnSize="ColumnSize.Is4">
-                        <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)" >@(collapse1Visible? "close":"open")</Button>
+                        <Button Clicked="@(()=>_collapse1Visible = !_collapse1Visible)" >@(_collapse1Visible? "close":"open")</Button>
                     </Column>
                    <Column ColumnSize="ColumnSize.Is4">
-                        <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)" >count: @value.Count</Button>
+                        <Button Clicked="@(()=>_collapse1Visible = !_collapse1Visible)" >count: @value.Count</Button>
                   </Column>
                         <Column ColumnSize="ColumnSize.Is4">
                             <Button Clicked=@setNull>set null</Button>
@@ -41,9 +30,9 @@
             <CollapseBody>
                 @{
             int j = 0;
-            foreach(var context in value){
+            foreach(var unused in value){
                 int k = j;      
-                Action<object> onChangeRefrence = (x) =>
+                Action<object> onChangeReference = (x) =>
                             {
                                 Console.WriteLine("setFValue0(j, x)");
                                 setValue(k, x);
@@ -51,7 +40,7 @@
                 @if (!ReadOnly)
                 {
 
-                    <Button  Clicked="() => remove(k)" style="position: absolute; z-index: 10; margin: .5rem; left: 0%;">
+                    <Button  Clicked="() => remove(k)" style="position: absolute; z-index: 10; margin: .5rem; left: 0;">
                         <mat-icon class="material-icons" style="font-size:14px; font-weight:bold; color:red">close</mat-icon>
                     </Button>
                 }
@@ -59,14 +48,14 @@
                     @if (!ReadOnly)
                     {
 
-                        <Button  Clicked="() => remove(k)" style="position: absolute; z-index: 10; margin: .5rem; left: 0%;">
+                        <Button  Clicked="() => remove(k)" style="position: absolute; z-index: 10; margin: .5rem; left: 0;">
                             <mat-icon class="material-icons" style="font-size:14px; font-weight:bold; color:red">close</mat-icon>
                         </Button>
                     }
                     @{
-                        if (itemWidget != null)
+                        if (_itemWidget != null)
                         {
-                            <div>@Program0.CreateDynamicComponent2(this, itemWidget, value[k], onChangeRefrence,null,ReadOnly)</div>;
+                            <div>@Program0.CreateDynamicComponent2(this, _itemWidget, value[k], onChangeReference,null,ReadOnly)</div>
                         }
                     }
                 </Div>
@@ -100,33 +89,34 @@
 @code
 {
     public override bool inRowField()=>false;
-    ComponentBase itemWidget = null;
-    bool collapse1Visible = false;
-    async Task createArray()
+    ComponentBase _itemWidget = null;
+    bool _collapse1Visible = false;
+
+    Task createArray()
     {
         value = new List<TItem>();
         OnChange(value);
-
+        return Task.CompletedTask;
     }
 
-    async Task Add()
+    Task Add()
     {
         value.Add(default(TItem));
-        
-
+        return Task.CompletedTask;
     }
-    async Task setNull()
+
+    public override Task<bool> setNull()
     {
         value = null;
-        OnChange(value);
-
-
+        OnChange?.Invoke(value);
+        return Task.FromResult(true);
     }
     
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
         var tmp = Program0.getCollectionItemAttrs(Attributes);
-        itemWidget = Program0.createForm4(typeof(TItem), tmp);
+        _itemWidget = Program0.createForm4(typeof(TItem), tmp);
+        return Task.CompletedTask;
     }
 
     private void remove(int o)
