@@ -4,7 +4,7 @@
 <audio  @ref="_audioRef" style="width: 95%;" preload="none" controls><source src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}")/></audio>
 @code {
     private ElementReference _audioRef;
-    public double CurrentTime { get; set; }
+    public double CurrentTime { get; private set; }
     [Parameter]
     public Action<double> onChangeTime { get; set; }
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -18,7 +18,7 @@
 
     public async Task setTime(double time)
     {
-        await JsRuntime.InvokeVoidAsync("audioPlayerFunctions.setTime",new Object[]{_audioRef,time});
+        await JsRuntime.InvokeVoidAsync("audioPlayerFunctions.setTime",new object[]{_audioRef,time});
     } 
     [JSInvokable]
     public void UpdateTime(double time)
