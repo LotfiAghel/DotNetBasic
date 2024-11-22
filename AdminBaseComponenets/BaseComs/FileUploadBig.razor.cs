@@ -1,25 +1,90 @@
 ﻿using System.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-
-
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
 using Microsoft.AspNetCore.Components;
-using System.Net.NetworkInformation;
-using AdminBaseComponenets;
-using ClTool;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Net.Http;
 using System.IO;
-using System.Security.Cryptography;
 using System.Threading;
 using Blazorise;
+using Models;
+
 namespace AdminBaseComponenets.BaseComs
 {
-    
+    public class FileUploader
+    {
+        public static FileUploader instnace = new FileUploader();
+        public class State
+        {
+            public int ProgressPercentage { get; set; }
+            public long totalBytesRead=0,fileSize=0;
+
+            public bool Completed=false;
+        }
+
+        public static long maxFileSize = 1024L * 1024L * 1024L * 2L;
+        public Dictionary<string, State> Files { get; set; } = new Dictionary<string, State>();
+
+        public State upload(SessionCreationStatusResponse path, IBrowserFile selectedFile, Action<State> onUploadSection)
+        {
+            State upload1;
+            if(Files.TryGetValue(path.FileName, out upload1))
+                return upload1;
+            upload1 = Files[path.FileName] = new State();            
+            Stream stream = selectedFile.OpenReadStream(maxFileSize);
+            //var path = $"env.WebRootPath/{selectedFile.Name}";
+            //using FileStream fs = File.Create(path);
+
+            // Set buffer size to 512 KB.
+           
+            upload1.fileSize = selectedFile.Size;
+            
+            int bufferSize = 512 * 1024;
+            byte[] buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(bufferSize);
+            int bytesRead;
+            
+            
+           
+            
+            Task task = Task.Run(async () =>
+            {
+                try
+                {
+                    while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
+                    {
+
+                        //await fs.WriteAsync(buffer, 0, bytesRead);
+                        await ClTool.WebClient.webClient.uploadFileSection("api/file/upload", path.SessionId, 1, buffer,
+                            bytesRead);
+                        upload1.totalBytesRead += bytesRead;
+                        upload1.ProgressPercentage = (int)(100 * upload1.totalBytesRead / upload1.fileSize);
+                        onUploadSection(upload1);
+                    }
+                    upload1.Completed = true;
+                    onUploadSection(upload1);
+                }
+                catch (Exception ex)
+                {
+
+                }
+                
+                System.Buffers.ArrayPool<byte>.Shared.Return(buffer);    
+                
+                
+            });
+            return upload1;
+
+        }
+
+
+        public State getState(string path)
+        {
+            if (Files.TryGetValue(path, out var upload1) && !upload1.Completed)
+                return upload1;
+            return null;
+        } 
+    }
     public partial class FileUploadBig : ValueInput<string> 
     {
 
@@ -28,7 +93,7 @@ namespace AdminBaseComponenets.BaseComs
     string AlertClass = "alert alert-info";
     int ProgressPercentage = 0;
     IBrowserFile selectedFile = null;
-    long maxFileSize = 1024L * 1024L * 1024L * 2L;
+    
     string[] allowedExtensions = { ".zip", ".rar", ".png", ".jpg", ".mp3" };
     bool IsUploadDisabled = true;
     private Guid inputFileId = Guid.NewGuid();
@@ -42,9 +107,9 @@ namespace AdminBaseComponenets.BaseComs
         ProgressPercentage = 0;
         IsUploadDisabled = true;
 
-        if (selectedFile.Size > maxFileSize)
+        if (selectedFile.Size > FileUploader.maxFileSize)
         {
-            SetAlert("alert alert-danger", "oi oi-ban", $"File size exceeds the limit. Maximum allowed size is <strong>{maxFileSize / (1024 * 1024)} MB</strong>.");
+            SetAlert("alert alert-danger", "oi oi-ban", $"File size exceeds the limit. Maximum allowed size is <strong>{FileUploader.maxFileSize / (1024 * 1024)} MB</strong>.");
             return;
         }
 
@@ -115,16 +180,7 @@ namespace AdminBaseComponenets.BaseComs
         if (selectedFile != null)
         {
             IsUploadDisabled = true;
-            Stream stream = selectedFile.OpenReadStream(maxFileSize);
-            //var path = $"env.WebRootPath/{selectedFile.Name}";
-            //using FileStream fs = File.Create(path);
-
-            // Set buffer size to 512 KB.
-            int bufferSize = 512 * 1024;
-            byte[] buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(bufferSize);
-            int bytesRead;
-            long totalBytesRead = 0;
-            long fileSize = selectedFile.Size;
+           
             
             // Use a timer to update the UI every few hundred milliseconds.
             using var timer = new Timer(_ => InvokeAsync(() => StateHasChanged()));
@@ -157,17 +213,9 @@ namespace AdminBaseComponenets.BaseComs
                 
 
                 OnChange(value);
-                Task task = Task.Run(async () =>
-                {
-                    while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
-                    {
-                        totalBytesRead += bytesRead;
-                        ProgressPercentage = (int)(100 * totalBytesRead / fileSize);
-                        //await fs.WriteAsync(buffer, 0, bytesRead);
-                        await oldBase.uploadFileSection("api/file/upload", tmp.SessionId, 1, buffer, bytesRead);
-                    }
-                    OnChange(value);
-                });
+                
+                FileUploader.instnace.upload(tmp,selectedFile,onUploadSection);
+                this.StateHasChanged();
                 //OnChange(value);
                 
                 /*while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
@@ -181,18 +229,23 @@ namespace AdminBaseComponenets.BaseComs
             }
             finally
             {
-                System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+                
             }
 
             // Stop the timer and update the UI with the final progress.
             timer.Change(Timeout.Infinite, Timeout.Infinite);
-            ProgressPercentage = 100;
+            
             SetAlert("alert alert-success", "oi oi-check", $"<strong>{selectedFile.Name}</strong> ({selectedFile.Size} bytes) file uploaded on server.");
             inputFileId = Guid.NewGuid();
-            this.StateHasChanged();
+           
         }
     }
 
+    private void onUploadSection(FileUploader.State state)
+    {
+        ProgressPercentage = state.ProgressPercentage;
+        this.StateHasChanged();
+    }
     private void SetAlert(string alertClass, string iconClass, string message)
     {
         AlertClass = alertClass;

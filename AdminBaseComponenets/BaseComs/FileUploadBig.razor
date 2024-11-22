@@ -1,9 +1,4 @@
-﻿@using AdminBaseComponenets;
-@using ClTool
-@using Microsoft.AspNetCore.Components.Forms
-@using System.Net.Http
-@using System.IO
-@using System.Threading;
+﻿
 @inherits ValueInput<string>
 
 
@@ -13,15 +8,25 @@
     <Row>
         @value
     </Row>
-    if (value.ToLower().EndsWith(".png") || value.ToLower().EndsWith(".jpg"))
+    if (FileUploader.instnace.getState(value) == null)
     {
-        <img src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}") class="img" style="width: auto; height: 200px;"/>
+        if (value.ToLower().EndsWith(".png") || value.ToLower().EndsWith(".jpg"))
+        {
+            <img src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}") class="img" style="width: auto; height: 200px;"/>
+        }
+
+        if (value.ToLower().EndsWith(".mp3"))
+        {
+            <MyAudio value="@value"></MyAudio>
+        }
+    }
+    else
+    {
+        <div class="progress mb-3" style="height: 20px;">
+            <div class="progress-bar" role="progressbar" style="width: @ProgressPercentage%;" aria-valuenow="@ProgressPercentage" aria-valuemin="0" aria-valuemax="100">@ProgressPercentage% Complete</div>
+        </div>
     }
 
-    if (value.ToLower().EndsWith(".mp3"))
-    {
-        <MyAudio value="@value"></MyAudio>
-    }
     <Button Color=@Color.Danger Clicked=@(()=> setNull())>null</Button>
 }
 else
@@ -29,9 +34,7 @@ else
     <div class="@AlertClass" role="alert">
         @AlertMessage
     </div>
-    <div class="progress mb-3" style="height: 20px;">
-        <div class="progress-bar" role="progressbar" style="width: @ProgressPercentage%;" aria-valuenow="@ProgressPercentage" aria-valuemin="0" aria-valuemax="100">@ProgressPercentage% Complete</div>
-    </div>
+    
 
     <form @onsubmit="OnSubmit" class="needs-validation" novalidate>
         <div class="input-group mb-3">
