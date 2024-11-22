@@ -10,10 +10,18 @@
 
 @if (!string.IsNullOrWhiteSpace(value))
 {
-    <span>
+    <Row>
         @value
-    </span>
-    <img src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}") class="img" />
+    </Row>
+    if (value.ToLower().EndsWith(".png") || value.ToLower().EndsWith(".jpg"))
+    {
+        <img src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}") class="img" style="width: auto; height: 200px;"/>
+    }
+
+    if (value.ToLower().EndsWith(".mp3"))
+    {
+        <MyAudio value="@value"></MyAudio>
+    }
     <Button Color=@Color.Danger Clicked=@(()=> setNull())>null</Button>
 }
 else

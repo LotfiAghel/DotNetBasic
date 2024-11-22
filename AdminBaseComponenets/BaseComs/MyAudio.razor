@@ -1,0 +1,31 @@
+@inject IJSRuntime JsRuntime;
+@using Microsoft.JSInterop
+@inherits ValueInput<string>
+<audio  @ref="_audioRef" style="width: 95%;" preload="none" controls><source src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}")/></audio>
+@code {
+    private ElementReference _audioRef;
+    public double CurrentTime { get; set; }
+    [Parameter]
+    public Action<double> onChangeTime { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Periodically update the current time
+            await JsRuntime.InvokeVoidAsync("audioPlayerFunctions.initializeTimeUpdate", new object[]{ _audioRef,DotNetObjectReference.Create(this)});
+        }
+    }
+
+    public async Task setTime(double time)
+    {
+        await JsRuntime.InvokeVoidAsync("audioPlayerFunctions.setTime",new Object[]{_audioRef,time});
+    } 
+    [JSInvokable]
+    public void UpdateTime(double time)
+    {
+        CurrentTime = time;
+        onChangeTime?.Invoke(time);
+        
+    }
+    
+}
