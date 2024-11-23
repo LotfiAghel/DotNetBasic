@@ -33,6 +33,10 @@ namespace ClTool2
         }
         public override async Task<MyHttpResponse> fetch014(string url, string payload, HttpMethod method)
         {
+            for (int i=0; i<10 && string.IsNullOrEmpty(webClient.baseUrl); ++i)
+            {
+                await Task.Delay(100);
+            }
             HttpClientHandler handler = new HttpClientHandler();
 
             Console.WriteLine("CLtool2 fetch url " + url);
