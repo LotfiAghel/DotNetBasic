@@ -11,14 +11,17 @@
 
 @inherits ValueInput<String>
 
-@if (value.ToLower().EndsWith(".png") || value.ToLower().EndsWith(".jpg"))
+@if (value != null)
 {
-    <img src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}") class="img" style="width: auto; height: 20px;" alt=""/>
-}
+    if (value.ToLower().EndsWith(".png") || value.ToLower().EndsWith(".jpg"))
+    {
+        <img src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}") class="img" style="width: auto; height: 20px;" alt=""/>
+    }
 
-@if (value.ToLower().EndsWith(".mp3"))
-{
-    <MyAudio value="@value"></MyAudio>
+    if (value.ToLower().EndsWith(".mp3"))
+    {
+        <MyAudio value="@value"></MyAudio>
+    }
 }
 
 
