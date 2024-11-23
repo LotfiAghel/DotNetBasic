@@ -1356,5 +1356,16 @@ namespace AdminBaseComponenets
         {
             //throw new NotImplementedException();
         }
+
+        public static void RegisterInGird<T,T2>()where T2: ValueInput<T>,new()
+        {
+            Program0.defultRenderer[typeof(T)] = (prps) =>
+            {
+
+
+                return new T2();
+            };
+
+        }
     }
 }
