@@ -33,7 +33,7 @@ namespace AdminBaseComponenets.BaseComs.InGrid
            
             if (viewComponenet == null)
             {
-                viewComponenet = Program0.createWidget(typeof(TEntity), new List<Attribute>() { });
+                viewComponenet = Program0.createWidget(typeof(TEntity), Attributes);
             }
             StateHasChanged();
 

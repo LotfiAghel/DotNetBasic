@@ -63,7 +63,7 @@ namespace AdminBaseComponenets
 
         public static Dictionary<Type, Func<object>> defultCunstroctor = new Dictionary<Type, Func<object>>();
         public static Dictionary<Type, Func<List<Attribute>, ComponentBase>> defultRenderer = new Dictionary<Type, Func<List<Attribute>, ComponentBase>>();
-        public static Dictionary<Type, Func<Type, List<Attribute>, Type>> defultRenderer2 = new Dictionary<Type, Func<Type, List<Attribute>, Type>>();
+        public static Dictionary<Type, Func<Type, List<Attribute>, ValueInput0>> defultRenderer2 = new Dictionary<Type, Func<Type, List<Attribute>, ValueInput0>>();
 
 
         public static Dictionary<Type, Func<List<Attribute>, ValueInput0>> formRenderer = new ();
@@ -295,17 +295,11 @@ namespace AdminBaseComponenets
 
                 try
                 {
-                    Console.WriteLine("createWidget type.IsGenericType ");
                     if (defultRenderer2.ContainsKey(type.GetGenericTypeDefinition()))
                     {
-                        Console.WriteLine("defultRenderer2.ContainsKey(type.GetGenericTypeDefinition()) ");
-                        Type type1 = defultRenderer2[type.GetGenericTypeDefinition()](type, prps);
-                        Console.WriteLine(type1);
-                        var gt = type1;
-                        Console.WriteLine(gt);
-                        var gtc = gt.GetConstructor(new Type[] { });
-                        Console.WriteLine(gtc);
-                        return gtc.Invoke(new object[] { }) as ComponentBase;
+                        var result  = defultRenderer2[type.GetGenericTypeDefinition()](type, prps);
+                        result.Attributes = prps;
+                        return result;
                     }
 
                 }
@@ -644,20 +638,28 @@ namespace AdminBaseComponenets
 
             defultRenderer[typeof(string)] = (prps) =>
             {
-                var a = prps.GetFirst<Attribute, ForeignKeyAttr>();
-
-                if (a != null)
                 {
-                    Console.WriteLine("defultRenderer[typeof(int)]");
-                    
-                    var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
-                    var gtc = gt.GetConstructor(new[] { typeof(int) });
+                    var a = prps.GetFirst<Attribute, ForeignKeyAttr>();
+                
 
-                    return createWidget(
+                    if (a != null)
+                    {
+
+                        var gt = typeof(ForeignKey2<,>).MakeGenericType(a.getTypes());
+                        var gtc = gt.GetConstructor(new[] { typeof(int) });
+
+                        return createWidget(
                             gt,
                             new List<Attribute>()
-                    );/**/
+                        ); /**/
 
+                    }
+                }
+                {
+                    var a = prps.GetFirst<Attribute, SmallPicShow>();
+                
+
+                    return new FileInGrid();
                 }
                 return new StringInGrid();
             };
@@ -760,24 +762,19 @@ namespace AdminBaseComponenets
 
             defultRenderer2[typeof(ForeignKey<>)] = (type, prps) =>
             {
-                Console.WriteLine("defultRenderer2[ForeignKey<>]");
-                Console.WriteLine($"defultRenderer2[ForeignKey<>] IntegerFSmallView<{type.GetGenericArguments()[0]}>");
                 var z = type.GetGenericArguments().ToList();
                 z.Add(typeof(int));
-                return typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(z.ToArray());
+                return typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(z.ToArray()).GetConstructor(new Type[]{}).Invoke(new object[]{}) as ValueInput0;
 
             };
             defultRenderer2[typeof(ForeignKey2<,>)] = (type, prps) =>
             {
-                Console.WriteLine("defultRenderer2[ForeignKey<>]");
-                Console.WriteLine($"defultRenderer2[ForeignKey<>] IntegerFSmallView<{type.GetGenericArguments()}>");
-                return typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(type.GetGenericArguments());
+                return typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(type.GetGenericArguments()).GetConstructor(new Type[]{}).Invoke(new object[]{}) as ValueInput0;
 
             };
             defultRenderer2[typeof(List<>)] = (type, prps) =>
             {
-                Console.WriteLine("defultRenderer2[List<>]");
-                return typeof(BaseComs.InGrid.ListSmallView<>).MakeGenericType(type.GetGenericArguments());
+                return typeof(BaseComs.InGrid.ListSmallView<>).MakeGenericType(type.GetGenericArguments()).GetConstructor(new Type[]{}).Invoke(new object[]{}) as ValueInput0;
 
             };
 
@@ -785,21 +782,21 @@ namespace AdminBaseComponenets
 
 
 
-            defultRenderer[typeof(List<int>)] = (prps) =>
+            /*defultRenderer[typeof(List<int>)] = (prps) =>
             {
 
-                var a = getCollectionItemAttrs(prps);
-                /*foreach (var zz in z)
-                {
-
-                    createWidget(
-                            typeof(int),
-                            a
-                    );
-                }/**/
                 return null;
 
             };
+            defultRenderer[typeof(List<string>)] = (prps) =>
+            {
+
+                var a = getCollectionItemAttrs(prps);
+                if(a.Any(x => x.GetType().IsAssignableTo(typeof(FileString))) )
+                    return new FileInGrid();
+                return null;
+
+            };*/
             
 
 

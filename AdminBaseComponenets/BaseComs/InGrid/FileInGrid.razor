@@ -1,0 +1,41 @@
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+
+@inherits ValueInput<String>
+
+@if (value.ToLower().EndsWith(".png") || value.ToLower().EndsWith(".jpg"))
+{
+    <img src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}") class="img" style="width: auto; height: 20px;" alt=""/>
+}
+
+@if (value.ToLower().EndsWith(".mp3"))
+{
+    <MyAudio value="@value"></MyAudio>
+}
+
+
+
+
+
+
+
+@code
+{
+    
+    public String subS { get; set; }
+
+
+
+
+
+
+}
+

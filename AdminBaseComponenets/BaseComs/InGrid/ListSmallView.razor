@@ -28,27 +28,39 @@
 <div class="row pt-2 pb-2" >
     @if (value != null)
     {
-        int idx = 0;
-        if (viewComponenet != null)
-        {
-                foreach (var t in value)
-                {
-                    ++idx;
-                    if (idx > 5)
-                        break;
-                    <div >@Program0.CreateDynamicComponent2(this, viewComponenet, t),</div>
+        <div class="e-multi-select-wrapper e-down-icon" tabindex="-1" _bl_18="">
+            <span class="e-chips-collection" ondragover="event.preventDefault();" style="margin:20px">
+                @{
+                    int idx = 0;
+                    if (viewComponenet != null)
+                    {
+                        foreach (var t in value)
+                        {
+                            ++idx;
+                            if (idx > 5)
+                                break;
+                            <span class="e-chips " data-value=@t style="list-style-type:none; height:30px" @key=@t tabindex="1">
+                                <span class="e-chipcontsent">
+                                    @Program0.CreateDynamicComponent2(this, viewComponenet, t)
+                                </span>
+                            </span>
+
+                        }
+                    }
+                    else
+                    {
+                        foreach (var t in value)
+                        {
+                            ++idx;
+                            if (idx > 5)
+                                break;
+                            <div>@t.ToString() ;</div>
+                        }
+                    }
                 }
-        }
-        else
-        {
-                foreach (var t in value)
-                {
-                    ++idx;
-                    if (idx > 5)
-                        break;
-                    <div>@t.ToString(),</div>
-                }
-        }
+            </span >
+            </div>
+        
         if (idx != value.Count)
         {
             <div>.. n:@(value.Count)</div>
