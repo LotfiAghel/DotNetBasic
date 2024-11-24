@@ -22,9 +22,9 @@ public static class ExtensionMethods
     public static async Task<object> InvokeAsync(this MethodInfo @this, object obj, params object[] parameters)
     {
         var task = (Task)@this.Invoke(obj, parameters);
-        await task.ConfigureAwait(false);
+        await task!.ConfigureAwait(false);
         var resultProperty = task.GetType().GetProperty("Result");
-        return resultProperty.GetValue(task);
+        return resultProperty!.GetValue(task);
     }
 }
 namespace AdminBaseComponenets
@@ -51,7 +51,6 @@ namespace AdminBaseComponenets
         
         
 
-        public static Dictionary<Type, Func<object>> defultCunstroctor = new Dictionary<Type, Func<object>>();
         public static Dictionary<Type, Func<List<Attribute>, ComponentBase>> defultRenderer = new Dictionary<Type, Func<List<Attribute>, ComponentBase>>();
         public static Dictionary<Type, Func<Type, List<Attribute>, ValueInput0>> defultRenderer2 = new Dictionary<Type, Func<Type, List<Attribute>, ValueInput0>>();
 
@@ -797,7 +796,7 @@ namespace AdminBaseComponenets
 
         public static void GenerateForm()
         {
-            defultCunstroctor[typeof(String)] = () => new String("");
+           // defultCunstroctor[typeof(String)] = () => new String("");
 
             formRenderer2[typeof(FuncV<,>)] = (type, prps) =>
             {
