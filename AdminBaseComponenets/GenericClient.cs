@@ -43,7 +43,7 @@ namespace ClTool2
             using (var client = new HttpClient(handler))
             {
 
-                Console.WriteLine("baseUrl " + baseUrl);
+
                 client.BaseAddress = new Uri(baseUrl);
                 HttpContent content = null;
                 if (payload != null)
