@@ -154,6 +154,7 @@ namespace ClTool
         public Dictionary<string, string> headres = null;
         public virtual async Task<MyHttpResponse> fetch014(string url, string payload, HttpMethod method)
         {
+           
             Console.WriteLine("fetch url =" + baseUrl + url);
             if (payload != null)
                 Console.WriteLine("body =" + payload);
@@ -576,6 +577,9 @@ namespace ClTool
         }
         public async Task<T> get(TKEY id)
         {
+           
+
+            
             return await webClient.fetch<T, T>(additinalUrl + typeof(T).GetUrlEncodeName() + "/" + id, HttpMethod.Get, null);
         }
 
