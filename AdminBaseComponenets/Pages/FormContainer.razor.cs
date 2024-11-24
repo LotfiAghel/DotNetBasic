@@ -216,7 +216,7 @@ namespace AdminBaseComponenets.Pages
         {
             try
             {
-                Console.WriteLine("FormC Click ");
+                
                 ButtonState = "sending";
                 //StateHasChanged();
                 await save();
@@ -227,7 +227,7 @@ namespace AdminBaseComponenets.Pages
 
                 var pr = genericArgs[0].GetProperty(nameof(Models.Id4Entity.id));
                 var id = pr.GetValue(value0);
-                Console.WriteLine("FormC navigate ");
+                
                 NavigationManager.NavigateTo($"/{entityName}/edit/{value0}", false);
 
 
