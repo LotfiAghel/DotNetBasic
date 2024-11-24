@@ -1,31 +1,21 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.ComponentModel;
-using Newtonsoft.Json;
-using Newtonsoft.Json;
 using Models;
 using Microsoft.JSInterop;
 using System.Text.RegularExpressions;
 using AdminClientViewModels;
-using Models;
-using Tools;
 using Tools;
 using AdminBaseComponenets.BaseComs;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using AdminBaseComponenets.BaseComs.InGrid;
-using Blazorise.Extensions;
 
 public static class ExtensionMethods
 {
@@ -658,8 +648,8 @@ namespace AdminBaseComponenets
                 {
                     var a = prps.GetFirst<Attribute, SmallPicShow>();
                 
-
-                    return new FileInGrid();
+                    if(a!=null)
+                        return new FileInGrid();
                 }
                 return new StringInGrid();
             };
