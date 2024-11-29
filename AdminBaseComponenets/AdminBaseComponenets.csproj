@@ -59,8 +59,8 @@
     <PackageReference Include="CsvHelper" Version="33.0.1" />
 
 
-    <!-- <PackageReference Include="Sitko.Blazor.CKEditor" Version="4.2.1" />
-    <PackageReference Include="Sitko.Blazor.CKEditor.Bundle" Version="4.2.1" /> -->
+    <PackageReference Include="Sitko.Blazor.CKEditor" Version="4.2.1" />
+    <PackageReference Include="Sitko.Blazor.CKEditor.Bundle" Version="4.2.1" />
   
   
   
@@ -85,8 +85,8 @@
   
 
   <ItemGroup>
-    <ProjectReference Include="..\Sitko.Blazor.CKEditor\src\Sitko.Blazor.CKEditor\Sitko.Blazor.CKEditor.csproj" />
-    <ProjectReference Include="..\Sitko.Blazor.CKEditor\src\Sitko.Blazor.CKEditor.Bundle\Sitko.Blazor.CKEditor.Bundle.csproj" /> 
+    <!-- <ProjectReference Include="..\Sitko.Blazor.CKEditor\src\Sitko.Blazor.CKEditor\Sitko.Blazor.CKEditor.csproj" />
+    <ProjectReference Include="..\Sitko.Blazor.CKEditor\src\Sitko.Blazor.CKEditor.Bundle\Sitko.Blazor.CKEditor.Bundle.csproj" />  -->
     <ProjectReference Include="..\AdminClientViewModels\AdminClientViewModels.csproj" />
     <ProjectReference Include="..\BaseModels\BaseModels.csproj" />
     <ProjectReference Include="..\Client\Client.csproj" />
