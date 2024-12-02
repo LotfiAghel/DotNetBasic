@@ -861,7 +861,7 @@ namespace AdminBaseComponenets
                         return new AdminBaseComponenets.BaseComs.FileUploadBig();
                 }
                 {
-                    var x = prps.GetFirst<Attribute, Models.SmallPicShow>();
+                    var x = prps.GetFirst<Attribute, Models.FileString>();
                     if (x != null)
                         return new AdminBaseComponenets.BaseComs.FileUploadBig();
                 }
@@ -1090,7 +1090,7 @@ namespace AdminBaseComponenets
                 if (ItemType.IsGenericType && ItemType.GetGenericTypeDefinition() == typeof(ForeignKey<>))
                 {
                     var x = prps.GetFirst<Attribute, MultiSelect>();
-                    if (x != null)
+                    //if (x != null)
                         return typeof(AdminBaseComponenets.BaseComs.IntegerFMultiSelect<>).MakeGenericType(type.GetGenericArguments()[0].GetGenericArguments()[0]);
                 }
                 if (ItemType.IsGenericType && ItemType.GetGenericTypeDefinition() == typeof(ForeignKey2<,>))
