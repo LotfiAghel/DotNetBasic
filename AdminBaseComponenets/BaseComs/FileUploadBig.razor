@@ -12,12 +12,12 @@
     {
         if (value.ToLower().EndsWith(".png") || value.ToLower().EndsWith(".jpg"))
         {
-            <img src=@($"{ClTool.WebClient.webClient.baseUrl}Upload/{value}") class="img" style="width: auto; height: 200px;"/>
+            <img src=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}") class="img" style="width: auto; height: 200px;"/>
         }
 
         if (value.ToLower().EndsWith(".mp3"))
         {
-            <MyAudio value="@value"></MyAudio>
+            <MyAudio src=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}")  ></MyAudio>
         }
     }
     else
@@ -52,4 +52,7 @@ else
 {
     [CascadingParameter(Name="FilesDirectory")]
     public string FilesDirectory { get; set; }
+
+    [CascadingParameter(Name = "FilesDownloadDirectory")]
+    public string FilesDownloadDirectory { get; set; } = "Upload";
 }
