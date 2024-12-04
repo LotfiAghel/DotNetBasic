@@ -1,0 +1,50 @@
+@typeparam TKEY
+@inject NavigationManager NavManager
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+
+
+
+
+@using System.Collections.Generic
+
+
+@using Models
+@using Newtonsoft.Json.Linq;
+
+@inherits ValueInput<TKEY>
+
+    <Row>
+
+        
+        <Column ColumnSize
+        =ColumnSize.Is10
+        >
+            @if (optionGenerator != null)
+            {
+
+                <Select TValue=TKEY SelectedValue=@value
+                SelectedValueChanged=@Click2
+                ReadOnly=@ReadOnly>
+                    @if (optionGenerator != null)
+                        foreach (var t in optionGenerator)
+                        {
+
+                            <SelectItem TValue=TKEY Value=@t>
+                                @t
+                            </SelectItem>
+                        }
+                </Select>
+            }
+        </Column>
+    @if (!ReadOnly)
+    {
+       
+     
+    }
+</Row>
+
+<!-- <div>@optionGenerator.GetHashCode()</div>
+<div>@optionGenerator.Count()</div>-->
