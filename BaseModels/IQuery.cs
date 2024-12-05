@@ -128,13 +128,21 @@ namespace Models
     {
 
     }
-    public interface IQuery<T>: IQuery0
+    public interface IQuery<T,T2>: IQuery0
+    {
+
+        IQueryable<T2> run(IQueryable<T> q);
+        
+
+    }
+    public interface IQuery<T>: IQuery<T,T>
     {
 
         IQueryable<T> run(IQueryable<T> q);
         
 
     }
+   
     
 
     public interface IQuery2<T> : IQuery0
