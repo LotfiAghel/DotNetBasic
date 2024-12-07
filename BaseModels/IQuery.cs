@@ -3,11 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using static System.Collections.Specialized.BitVector32;
 
 namespace Models
@@ -205,6 +207,7 @@ namespace Models
         public IQuery<T> query { get; set; }
     }
 
+     
     public static class EXTENCTION
     {
 
@@ -217,12 +220,20 @@ namespace Models
 
         }
 
-       
+        public static ConcurrentDictionary<Guid, HashSet<Guid>> techer2Student = new ConcurrentDictionary<Guid, HashSet<Guid>>();
         public static System.Guid getUser2Id(this HttpContext a)
         {
             object res = null;
-            if (a.Items.TryGetValue("user2Id", out res) && res is Guid)
+            object connectionId = null;
+            if (a.Items.TryGetValue("connectionId", out res) && res is Guid)
                 return (Guid)res;
+            if (a.Items.TryGetValue("user2Id", out res) && res is Guid)
+            {
+                var stId=(Guid)res;
+                if(techer2Student[getUserId()].Contains(stId))
+                    return stId;
+            }
+
             return a.getUserId();
 
         }
