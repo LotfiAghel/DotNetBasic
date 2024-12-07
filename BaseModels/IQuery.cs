@@ -225,7 +225,7 @@ namespace Models
         {
             object res = null;
             object connectionId = null;
-            if (a.Items.TryGetValue("connectionId", out res) && res is Guid)
+            if (a.Items.TryGetValue("connectionid", out connectionId) && res is Guid)
                 return (Guid)res;
             if (a.Items.TryGetValue("user2Id", out res) && res is Guid)
             {
