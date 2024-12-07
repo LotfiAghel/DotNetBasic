@@ -230,7 +230,7 @@ namespace Models
             if (a.Items.TryGetValue("user2Id", out res) && res is Guid)
             {
                 var stId=(Guid)res;
-                if(techer2Student[getUserId()].Contains(stId))
+                if(techer2Student[a.getUserId()].Contains(stId))
                     return stId;
             }
 
