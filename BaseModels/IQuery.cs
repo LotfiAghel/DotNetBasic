@@ -217,6 +217,16 @@ namespace Models
 
         }
 
+       
+        public static System.Guid getUser2Id(this HttpContext a)
+        {
+            object res = null;
+            if (a.Items.TryGetValue("user2Id", out res) && res is Guid)
+                return (Guid)res;
+            return a.getUserId();
+
+        }
+
     }
     public class AccessCheckerVersion1<T> : IQuery<T>
     {
