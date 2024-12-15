@@ -555,6 +555,46 @@ namespace AdminBaseComponenets
             return true;
 
         }
+        public static bool checkPermission<T2>(PropertyInfo prop) where T2 : ACLAtr
+        {
+            if(user==null)
+                return false;
+            
+            if (checkPermission<T2>(prop.PropertyType.GetGenericArguments()[0]))
+                return true;
+            
+            try
+            {
+                var adminWriteBan = prop.GetCustomAttributes(typeof(T2), true).OfType<T2>().FirstOrDefault();
+                if (adminWriteBan == null || adminWriteBan.kinds==null || user==null || adminWriteBan.kinds.Intersect(user.roles).Count() == 0 )
+                    return false;
+            }
+            catch
+            {
+                return false;
+            };
+            return true;
+
+        }
+        public static bool checkPermission<T2>(MethodInfo prop) where T2 : ACLAtr
+        {
+            if(user==null)
+                return false;
+            if (checkPermission<T2>(prop.ReturnType.GetGenericArguments()[0]))
+                return true;
+            try
+            {
+                var adminWriteBan = prop.GetCustomAttributes(typeof(T2), true).OfType<T2>().FirstOrDefault();
+                if (adminWriteBan == null || adminWriteBan.kinds==null || user==null || adminWriteBan.kinds.Intersect(user.roles).Count() == 0 )
+                    return false;
+            }
+            catch
+            {
+                return false;
+            };
+            return true;
+
+        }
         public static async Task<bool> CheckLogin(IJSRuntime JsRuntime)
         {
 
