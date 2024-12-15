@@ -4,6 +4,7 @@
 
 @{
     popupWidget = Program0.createForm(typeof(TItem), new List<Attribute>());
+    ReadOnly = !Program0.checkPermission<Models.UpdateAccess>(typeof(TItem));
 }
 
 <ModalHeader>
@@ -14,7 +15,7 @@
 </ModalHeader>
 <ModalBody>
     @if (!typeof(TItem).IsAbstract) {
-        <div>@Program0.CreateDynamicComponent2(this, popupWidget, value,changeRefrence:OnChange2)</div>;
+        <div>@Program0.CreateDynamicComponent2(this, popupWidget, value,changeRefrence:OnChange2,ReadOnly:ReadOnly)</div>;
     }
     else
     {

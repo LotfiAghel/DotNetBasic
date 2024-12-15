@@ -14,7 +14,10 @@
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
 <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+@if (Program0.checkPermission<InsertAccess>(typeof(TItem)))
+{
     <Button Color="Color.Primary" Clicked="@ShowModal">create new</Button>
+}
 @if(value!=null){
     <DataListSyncfusion TItem=TItem TKEY=TKEY value=@value> </DataListSyncfusion>
 }else{

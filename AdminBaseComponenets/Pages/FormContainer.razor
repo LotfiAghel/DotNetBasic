@@ -86,11 +86,11 @@ else
                 if (y != null)
                     continue;
                 if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
-                {
-                    <Tab Name=@(prop.Name)>
-                        @prop.GetPerisanName()
-                    </Tab>
-                }
+                    if(Program0.checkPermission<SelectAccess>(prop.PropertyType.GetGenericArguments()[0])){
+                        <Tab Name=@(prop.Name)>
+                            @prop.GetPerisanName()
+                        </Tab>
+                    }
 
 
             }
@@ -100,11 +100,11 @@ else
                 if (y != null)
                     continue;
                 if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IQueryable<>))
-                {
-                    <Tab Name=@(prop.Name)>
-                        @prop.GetPerisanName()
-                    </Tab>
-                }
+                    if(Program0.checkPermission<SelectAccess>(prop.ReturnType.GetGenericArguments()[0])){
+                        <Tab Name=@(prop.Name)>
+                            @prop.GetPerisanName()
+                        </Tab>
+                    }
             }
         </Items>
         <Content>
@@ -129,7 +129,7 @@ else
                     if (y != null)
                         continue;
                     if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
-                    {
+                        if(Program0.checkPermission<SelectAccess>(prop.PropertyType.GetGenericArguments()[0])){
                         <TabPanel @key=@($"gfc/{(value0 as Models.IEntity0).getId().ToString()}/{prop.Name}") Name=@prop.Name>
                             @CreateDynamicComponentGrid(prop.PropertyType.GetGenericArguments()[0],(value0 as Models.IEntity0).getId(),prop.Name)
                         </TabPanel>
@@ -140,11 +140,11 @@ else
                 foreach (var prop in genericArgs[0].GetMethods())
                 {
                     if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IQueryable<>))
-                    {
-                        <TabPanel Label=@prop.GetPerisanName() @key=@($"gfc/{(value0 as Models.IEntity0).getId()}/{prop.Name}") Name=@(prop.Name)>
-                            @CreateDynamicComponentGrid(prop.ReturnType.GetGenericArguments()[0],(value0 as Models.IEntity0).getId(),prop.Name)
-                        </TabPanel>
-                    }
+                        if(Program0.checkPermission<SelectAccess>(prop.ReturnType.GetGenericArguments()[0])){
+                            <TabPanel Label=@prop.GetPerisanName() @key=@($"gfc/{(value0 as Models.IEntity0).getId()}/{prop.Name}") Name=@(prop.Name)>
+                                @CreateDynamicComponentGrid(prop.ReturnType.GetGenericArguments()[0],(value0 as Models.IEntity0).getId(),prop.Name)
+                            </TabPanel>
+                        }
                 }
 
             }
