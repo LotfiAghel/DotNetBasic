@@ -15,6 +15,7 @@
 @using System.Net.Http.Json;
 @using System.Collections;
 @using AdminBaseComponenets;
+@using Models
 
 
 @if (value != null)
@@ -40,7 +41,7 @@
             </div>
         }
     }
-    else if (value is EntityModel eM)
+    else if (value is EntityModel eM && Program0.checkPermission<SelectAccess>(eM.Type))
     {
         var link = $"page/{eM.Type.GetUrlEncodeName()}";
         var name = eM.Type.GetPerisanName();
