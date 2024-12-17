@@ -8,47 +8,22 @@
 
 
 @using System.Collections.Generic
+@using JetBrains.Annotations
 
 
 @using Newtonsoft.Json.Linq;
+@using Sitko.Blazor.CKEditor
 
 
 @inherits ValueInput<string>
+    <Button onclick="@OnSave()">save</Button>
+<CKEditor @bind-Value=@value
+          
+          ></CKEditor>
 
-
-
-    <RichTextEdit @ref="richTextEditRef"
-              Theme="RichTextEditTheme.Snow"
-              ContentChanged="@OnContentChanged"
-              PlaceHolder="Type your post here..."
-              ReadOnly=@ReadOnly
-              SubmitOnEnter="false"
-              
-              EnterPressed="@OnSave"
-              ToolbarPosition="Placement.Bottom">
-    <Editor>@value</Editor>
-    <Toolbar>
-        <RichTextEditToolbarGroup>
-            <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
-            <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
-            <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
-                <RichTextEditToolbarSelectItem Value="small" />
-                <RichTextEditToolbarSelectItem Selected />
-                <RichTextEditToolbarSelectItem Value="large" />
-                <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
-            </RichTextEditToolbarSelect>
-            <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
-            <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
-        </RichTextEditToolbarGroup>
-        <!-- Custom toolbar content -->
-        <RichTextEditToolbarGroup Float="Float.End">
-            <Button onClick="window.open('https://www.quilljs.com/','quilljs')"><Icon Name="IconName.InfoCircle" /></Button>
-            <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
-        </RichTextEditToolbarGroup>
-    </Toolbar>
-</RichTextEdit>
+   
 @code{
-    protected RichTextEdit richTextEditRef;
+    //protected RichTextEdit richTextEditRef;
 
     protected string contentAsHtml;
     protected string contentAsDeltaJson;
@@ -61,13 +36,14 @@
         contentAsDeltaJson = await richTextEditRef.GetDeltaAsync();
         contentAsText = await richTextEditRef.GetTextAsync();*/
     }
+    
 
-    public async Task OnSave()
+    private async Task OnSave( )
     {
-        savedContent = await richTextEditRef.GetHtmlAsync();
+        //savedContent = await richTextEditRef.GetHtmlAsync();
         //await richTextEditRef.ClearAsync();
 
-        this.value = savedContent;
+        //this.value = savedContent;
         if (prvValue != value)
         {
 
