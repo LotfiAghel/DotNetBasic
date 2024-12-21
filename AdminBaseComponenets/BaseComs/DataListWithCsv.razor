@@ -11,4 +11,53 @@
 @inherits NullableInput2<IReadOnlyCollection<TItem>>
 
 <InputFile @key=@(inputFileId) class="form-control" id="inputFile" OnChange="OnInputFileChange" aria-describedby="uploadButton" required />
+
+<Button onclick="@onClick"> new </Button>
 <DataListSyncfusion TItem=@TItem TKEY=@TKEY value=@value></DataListSyncfusion>
+
+
+@code {
+    [Inject] public IModalService ModalService { get; set; }
+    private Task onClick()
+    {
+        //newItem = new TItem();
+        //addingItem = typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
+        TItem nn=null;
+        if (value == null)
+        {
+            value = new List<TItem>();
+            OnChange(value);
+        }
+
+        if(value is List<TItem> lv)
+            lv.Add(nn=new TItem());
+        else
+        {
+            return null;
+        }
+        StateHasChanged();
+
+        return ModalService.Show<PopupForm<TItem>>( x =>
+            {
+                //x.Add( x => x.OnValidate, FormularyValidate );
+                //x.Add( x => x.OnSuccess, SaveModal );
+                x.Add(x=> x.OnChange,OnChange2);
+                x.Add(x=>x.value,nn);
+            },
+            new ModalInstanceOptions()
+            {
+                UseModalStructure = false,
+                Style = "overflow:visible",
+                Size = ModalSize.ExtraLarge,
+                Scrollable = true
+                
+                //Stateful = true
+            } );
+    }
+
+    private void OnChange2(object obj)
+    {
+        
+    }
+
+}

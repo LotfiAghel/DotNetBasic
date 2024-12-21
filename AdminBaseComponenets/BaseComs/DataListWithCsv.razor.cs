@@ -27,7 +27,7 @@ namespace AdminBaseComponenets.BaseComs
 
     
     public partial class DataListWithCsv<TItem, TKEY> : NullableInput2<IReadOnlyCollection<TItem>>
-         where TItem : class, Models.IIdMapper<TKEY>
+         where TItem : class, Models.IIdMapper<TKEY> , new()
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
 
