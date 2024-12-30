@@ -51,7 +51,7 @@
 
 
 
-    private string dateValue { get; set; } = DateTime.Now.ToPersianDateString("yyyy/MM/dd");
+    private string dateValue { get; set; } = DateTime.MinValue.ToPersianDateString("yyyy/MM/dd");
     private string dateValue2 => value>new DateTime(2000,1,1) ? value.ToPersianDateString("yyyy/MM/dd"):"TODO";
     private TimeSpan timeValue {
         get; 
