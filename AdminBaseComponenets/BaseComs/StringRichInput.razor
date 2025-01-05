@@ -13,18 +13,82 @@
 
 @using Newtonsoft.Json.Linq;
 @using Sitko.Blazor.CKEditor
-
+@using Blazored.TextEditor
 
 @inherits ValueInput<string>
-    <Button onclick="@OnSave()">save</Button>
-<CKEditor @bind-Value=@value
-          
-          ></CKEditor>
+
+
+<Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+    <Items>
+        <Tab Name="preview">preview</Tab>
+        <Tab Name="edite">edite</Tab>
+        <Tab Name="CKEditor">CKEditor</Tab>
+        <Tab Name="Blazord.TextEditor">Blazord.TextEditor</Tab>
+    </Items>
+    <Content>
+        <TabPanel Name="preview">
+            @value
+        </TabPanel >
+        <TabPanel Name="edite">
+           
+            <MemoEdit Text=@value ReadOnly=@ReadOnly  TextChanged=@Click2  TextAlignment=TextAlignment.Start AutoSize  dir="ltr"/>
+
+
+        </TabPanel >
+        <TabPanel Name="CKEditor">
+            <Button onclick="@OnSave()">save</Button>
+            <CKEditor @bind-Value=@value></CKEditor>
+        </TabPanel>
+        <TabPanel Name="Blazord.TextEditor">
+            <BlazoredTextEditor
+                
+                @ref="@editor">
+                <ToolbarContent>
+                    <select class="ql-header">
+                        <option selected=""></option>
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                    </select>
+                    <span class="ql-formats">
+                      <button class="ql-bold"></button>
+                      <button class="ql-italic"></button>
+                      <button class="ql-underline"></button>
+                      <button class="ql-strike"></button>
+                  </span>
+                    <span class="ql-formats">
+                      <select class="ql-color"></select>
+                      <select class="ql-background"></select>
+                  </span>
+                    <span class="ql-formats">
+                      <button class="ql-list" value="ordered"></button>
+                      <button class="ql-list" value="bullet"></button>
+                  </span>
+                    <span class="ql-formats">
+                      <button class="ql-link"></button>
+                  </span>
+                    <span class="ql-formats">
+                      <button class="ql-code-block"></button>
+                  </span>
+                </ToolbarContent>
+                <EditorContent>
+                    @((MarkupString) value)
+                </EditorContent>
+            </BlazoredTextEditor>
+            <Button @onclick="GetHtml">ذخیره HTML</Button>
+           
+        </TabPanel>
+    </Content>
+</Tabs>
 
    
 @code{
+    string toolbar = """"...markup here..."""";
+    
     //protected RichTextEdit richTextEditRef;
-
+    string selectedTab;
     protected string contentAsHtml;
     protected string contentAsDeltaJson;
     protected string contentAsText;
@@ -36,7 +100,51 @@
         contentAsDeltaJson = await richTextEditRef.GetDeltaAsync();
         contentAsText = await richTextEditRef.GetTextAsync();*/
     }
-    
+    async Task Click2(string  vv)
+    {
+        this.value=vv;
+        if (prvValue != value)
+        {
+
+            OnChange(value);
+        }
+        prvValue = value;
+
+    }
+    protected override void OnInitialized()
+    {
+        toolbar = """"
+                  <select class="ql-header">
+                      <option selected=""></option>
+                      <option value="1"></option>
+                      <option value="2"></option>
+                      <option value="3"></option>
+                      <option value="4"></option>
+                      <option value="5"></option>
+                  </select>
+                  <span class="ql-formats">
+                      <button class="ql-bold"></button>
+                      <button class="ql-italic"></button>
+                      <button class="ql-underline"></button>
+                      <button class="ql-strike"></button>
+                  </span>
+                  <span class="ql-formats">
+                      <select class="ql-color"></select>
+                      <select class="ql-background"></select>
+                  </span>
+                  <span class="ql-formats">
+                      <button class="ql-list" value="ordered"></button>
+                      <button class="ql-list" value="bullet"></button>
+                  </span>
+                  <span class="ql-formats">
+                      <button class="ql-link"></button>
+                  </span>
+                  <span class="ql-formats">
+                      <button class="ql-code-block"></button>
+                  </span>
+                  """";
+
+    }
 
     private async Task OnSave( )
     {
@@ -51,9 +159,24 @@
         }
         prvValue = value;
     }
+    private BlazoredTextEditor editor;
 
-   
-    
+    private async Task GetHtml()
+    {
+        value = await editor.GetHTML();
+        Console.WriteLine(value);
+        if (prvValue != value)
+        {
+
+            OnChange(value);
+        }
+        prvValue = value;
+    }
+
+    private void OnSelectedTabChanged(string obj)
+    {
+        selectedTab = obj;
+    }
 
 }
 

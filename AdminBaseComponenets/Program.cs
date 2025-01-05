@@ -16,7 +16,7 @@ using AdminBaseComponenets.BaseComs;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using AdminBaseComponenets.BaseComs.InGrid;
-
+using Blazored.TextEditor;
 public static class ExtensionMethods
 {
     public static async Task<object> InvokeAsync(this MethodInfo @this, object obj, params object[] parameters)
@@ -1328,7 +1328,9 @@ namespace AdminBaseComponenets
         public static async Task Main(string[] args)
         {
 
-         
+
+
+            
 
             
             //Register Syncfusion license
@@ -1358,7 +1360,7 @@ namespace AdminBaseComponenets
                 builder.Services.AddHttpContextAccessor();
             }/**/
 
-
+            //builder.Services.AddBlazoredTextEditor();
 
             await builder.Build().RunAsync();
 
