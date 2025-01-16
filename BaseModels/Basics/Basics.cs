@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 
 namespace Models
 {
@@ -103,6 +106,35 @@ namespace Models
         public ChangeEventList onChanges { get; set; }
 
     }
+    [GeneratedControllerAttribute]
+    [DefultSort<SortByCreateAtDescending<EntityHistory<int>>>()]
+    [SelectAccess(AdminUserRole.SUPER_USER)]
+    [ViewAccess(AdminUserRole.SUPER_USER)]
+    public class EntityHistory<TKEY> : IdMapper<TKEY>  where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
+    {
+        public string entityName { get; set; }
+        public TKEY entityId { get; set; }
+
+        [Column(TypeName = "jsonb")]
+        public JToken data { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]//this attrbute cuse this prop hiden from AdminClient
+        public IdMapper<TKEY> dataT { get => data.ToObject<IdMapper<TKEY>>();}
+
+
+        public static EntityHistory<TKEY> Create<T>(IIdMapper<TKEY> e)where T:IIdMapper<TKEY>
+        {
+            return new EntityHistory<TKEY>()
+            {
+                entityName = typeof(T).Name,
+                entityId = e.id,
+                createdAt = DateTime.UtcNow,
+                data = JToken.FromObject(e)
+            };
+        }
+    }
+
     [ShowClassHirarci]
     public abstract class AIdMapper<T> : IIdMapper<T> where T : IEquatable<T>, IComparable<T>, IComparable
     {
@@ -110,6 +142,9 @@ namespace Models
         [PersianLabel("شناسه")]
         [Models.IgnoreDefultForm]
         public T id { get; set; }
+        
+        
+       
 
         [JsonIgnore]
         [NotMapped]
@@ -163,6 +198,13 @@ namespace Models
         public object getId()
         {
             return id;
+        }
+        
+        
+        public IQueryable<EntityHistory<T>> History(IServiceProvider Services)
+        {
+            var oldDb = Services.GetRequiredService<IAssetManager>();
+            return oldDb.getDbSet<EntityHistory<T>>().Where(x => x.entityName==this.GetType().Name && x.entityId.Equals(this.id)); //TODO has error in derived tables
         }
 
         [JsonIgnore]

@@ -94,7 +94,7 @@ else
 
 
             }
-            @foreach (var prop in genericArgs[0].GetMethods())
+            @foreach (var prop in genericArgs[0].GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy))
             {
                 var y = prop.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
                 if (y != null)
@@ -137,7 +137,7 @@ else
 
 
                 }
-                foreach (var prop in genericArgs[0].GetMethods())
+                foreach (var prop in genericArgs[0].GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy))
                 {
                     if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IQueryable<>))
                         if(Program0.checkPermission<SelectAccess>(prop)){
