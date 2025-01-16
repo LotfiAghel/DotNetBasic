@@ -65,6 +65,13 @@ namespace Models
             return q.OrderByDescending(x => x.createdAt);
         }
     }
+    public class SortByCreateAtDescending2 : IQuery2<ICUAT> 
+    {
+        public IQueryable<T2> run<T2>(IQueryable<T2> q) where T2 : ICUAT
+        {
+            return q.OrderByDescending(x => x.createdAt);
+        }
+    }
 
     public abstract class CUAT:ICUAT
     {
@@ -106,8 +113,11 @@ namespace Models
         public ChangeEventList onChanges { get; set; }
 
     }
+    
+    
+    
     [GeneratedControllerAttribute]
-    [DefultSort<SortByCreateAtDescending<EntityHistory<int>>>()]
+    [DefultSort<SortByCreateAtDescending2>]
     [SelectAccess(AdminUserRole.SUPER_USER)]
     [ViewAccess(AdminUserRole.SUPER_USER)]
     public class EntityHistory<TKEY> : IdMapper<TKEY>  where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
