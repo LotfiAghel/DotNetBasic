@@ -122,6 +122,10 @@ namespace Models
     [ViewAccess(AdminUserRole.SUPER_USER)]
     public class EntityHistory<TKEY> : IdMapper<TKEY>  where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
+        
+        
+        public Guid ?adminId { get; set; }
+        
         public string entityName { get; set; }
         public TKEY entityId { get; set; }
 
@@ -133,10 +137,11 @@ namespace Models
         public IdMapper<TKEY> dataT { get => data.ToObject<IdMapper<TKEY>>();}
 
 
-        public static EntityHistory<TKEY> Create<T>(IIdMapper<TKEY> e)where T:IIdMapper<TKEY>
+        public static EntityHistory<TKEY> Create<T>(IIdMapper<TKEY> e,Guid adminId)where T:IIdMapper<TKEY>
         {
             return new EntityHistory<TKEY>()
             {
+                adminId = adminId,
                 entityName = typeof(T).Name,
                 entityId = e.id,
                 createdAt = DateTime.UtcNow,
