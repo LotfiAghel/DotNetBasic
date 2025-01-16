@@ -1015,6 +1015,12 @@ namespace AdminBaseComponenets
 
                 return new AdminBaseComponenets.BaseComs.JsonShow();
             };
+            
+            formRenderer[typeof(JObject)]= formRenderer[typeof(JObject)]= formRenderer[typeof(JArray)] = (prps) =>
+            {
+
+                return new AdminBaseComponenets.BaseComs.JsonShow();
+            };
 
 
 

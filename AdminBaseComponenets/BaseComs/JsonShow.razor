@@ -26,7 +26,7 @@
                                     await Click();
                                 };
     if(value.Type ==JTokenType.Array){
-            <div style="display: inline;"> <p style="display: inline;color:blue"  @onclick=@onClick2>[</p>
+            <div style="display: inline;" dir="ltr"> <p style="display: inline;color:blue"  @onclick=@onClick2>[</p>
                 @if(openOject){
                 foreach(var line in (value as JArray)){
                     <JsonShow value=@line></JsonShow><p style="display: inline;">&emsp;,</p>
@@ -37,7 +37,7 @@
             <p style="display: inline;color:blue"  @onclick=@onClick2>]</p></div>
     } else if(value.Type == JTokenType.Object){
         
-        <div style="display: inline;"><p style="display: inline;color:blue"  @onclick=@onClick2>{</p>
+        <div style="display: inline;" dir="ltr"><p style="display: inline;color:blue"  @onclick=@onClick2>{</p>
         @if(openOject){
             foreach(var line in (value as JObject)){
                 <div style="margin-left:20px;">"@line.Key":
@@ -45,33 +45,33 @@
                 </div>
             }
         }else{
-            <p style="display: inline;color:blue"  @onclick=@onClick2>..</p>
+            <p style="display: inline;color:blue"  dir="ltr" @onclick=@onClick2>..</p>
         }
         <p style="display: inline;color:blue"  @onclick=@onClick2>}</p></div>
     }else if(value.Type == JTokenType.String ){
-           <p style="display: inline;">
+           <p style="display: inline;" dir="ltr">
                     &emsp;"@value.ToString()"
                 </p>
         }else if(value.Type == JTokenType.Integer ){
-           <p style="display: inline;">
+           <p style="display: inline;" dir="ltr">
                     &emsp;@value.ToString()
                 </p>
         }else if(value.Type == JTokenType.Float ){
-           <p style="display: inline;">
+           <p style="display: inline;" dir="ltr">
                     &emsp;@value.ToString()f
                 </p>
         }else if(value.Type == JTokenType.Boolean){
             var ph=value.ToObject<bool>()?"true":"false";
-           <p style="display: inline;">
+           <p style="display: inline;" dir="ltr">
                     &emsp;@ph
                 </p>
         }else if(value.Type == JTokenType.Null ){
-           <p style="display: inline;">
+           <p style="display: inline;" dir="ltr">
                     &emsp;null
                 </p>
         }else{
                 
-                <p style="display: inline;">
+                <p style="display: inline;" dir="ltr">
                     &emsp;"@value.ToString()"
         </p>
 
