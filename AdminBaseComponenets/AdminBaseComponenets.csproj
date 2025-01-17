@@ -43,7 +43,7 @@
   
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.7.0" />
   
-  
+    <PackageReference Include="Blazorise.Video" Version="1.7.0" />
     <PackageReference Include="Blazorise.Icons.Material" Version="1.7.0" />
   
   

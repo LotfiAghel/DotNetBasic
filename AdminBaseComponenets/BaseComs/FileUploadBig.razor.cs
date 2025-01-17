@@ -94,7 +94,7 @@ namespace AdminBaseComponenets.BaseComs
     int ProgressPercentage = 0;
     IBrowserFile selectedFile = null;
     
-    string[] allowedExtensions = { ".zip", ".rar", ".png", ".jpg", ".mp3" };
+    string[] allowedExtensions = { ".zip", ".rar", ".png", ".jpg", ".mp3" ,".mp4" };
     bool IsUploadDisabled = true;
     private Guid inputFileId = Guid.NewGuid();
     protected void setNull(){

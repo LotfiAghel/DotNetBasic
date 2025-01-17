@@ -1,4 +1,4 @@
-﻿
+﻿@using Blazorise.Video;
 @inherits ValueInput<string>
 
 
@@ -19,6 +19,12 @@
         {
             <MyAudio src=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}")  ></MyAudio>
         }
+        if (value.ToLower().EndsWith(".mp4"))
+        {
+            <Video Source=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}")  ></Video>
+        }
+
+        
     }
     else
     {
