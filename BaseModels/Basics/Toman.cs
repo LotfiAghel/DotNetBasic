@@ -128,6 +128,13 @@ namespace Models
         {
         }
     }
+    
+    public class PublicClass : ACLAtr
+    {
+        public PublicClass() : base()
+        {
+        }
+    }
     public class SelectAccess : ACLAtr
     {
         public SelectAccess(params AdminUserRole[] args) : base(args)
