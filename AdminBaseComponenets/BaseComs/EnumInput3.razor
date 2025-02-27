@@ -23,15 +23,15 @@
 {
     if (!ReadOnly)
     {
-        <Select TValue="int" SelectedValue=@value0
+        <Select TValue="int" SelectedValue=@((int)Convert.ChangeType(value, typeof(ENUM)))
                 SelectedValueChanged=@Click2>
             @foreach (var i in optionGenerator)
             {
                 var ii = i;
-                int x = (int)Convert.ChangeType(i, typeof(ENUM));
+                int x = (int)Convert.ChangeType(ii, typeof(ENUM));
                 if (itemComponenet != null)
                 {
-                    <SelectItem TValue="int" Value=@x>@Program0.CreateDynamicComponent2(this, itemComponenet, i)</SelectItem>
+                    <SelectItem TValue="int" Value=@x>@Program0.CreateDynamicComponent2(this, itemComponenet, x)</SelectItem>
                 }
                 else
                 {
