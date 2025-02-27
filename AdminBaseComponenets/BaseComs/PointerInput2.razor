@@ -58,8 +58,9 @@
 
     ElementReference MyElementReference;
     ComponentBase widget = null;
-    bool collapse1Visible = false;
-    
+    [Parameter]
+    bool collapse1Visible { get; set; } = true;
+
     void Click2(Type type)
     {
 
