@@ -1,0 +1,29 @@
+﻿@typeparam TItem
+@typeparam TKEY
+
+@using PSC.Blazor.Components.Chartjs
+@using PSC.Blazor.Components.Chartjs.Enums
+@using PSC.Blazor.Components.Chartjs.Models
+@using PSC.Blazor.Components.Chartjs.Models.Common
+@using PSC.Blazor.Components.Chartjs.Models.Bar
+@using PSC.Blazor.Components.Chartjs.Models.Bubble
+@using PSC.Blazor.Components.Chartjs.Models.Doughnut
+@using PSC.Blazor.Components.Chartjs.Models.Line
+@using PSC.Blazor.Components.Chartjs.Models.Pie
+@using PSC.Blazor.Components.Chartjs.Models.Polar
+@using PSC.Blazor.Components.Chartjs.Models.Radar
+@using PSC.Blazor.Components.Chartjs.Models.Scatter
+
+
+@using Microsoft.JSInterop;
+@using Models
+@using System.Collections.Generic
+@using Newtonsoft.Json.Linq;
+@inject NavigationManager NavManager
+@using Blazorise.DataGrid
+@using System.ComponentModel.DataAnnotations.Schema
+@using System.Reflection
+@inherits NullableInput2<IReadOnlyCollection<TItem>>
+@inject IJSRuntime jsRuntime
+
+<Chart Config="_config1" @ref="_chart1"></Chart>

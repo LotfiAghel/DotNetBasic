@@ -1170,14 +1170,15 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, GridShow>();
                     if (x != null)
                     {
-                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0]);
+                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0],Program0.getKeyType(type.GetGenericArguments()[0]));
                     }
                 }
                 {
                     var x = prps.GetFirst<Attribute, ChartShow>();
                     if (x != null)
                     {
-                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0]);
+                        var tx= typeof(AdminBaseComponenets.BaseComs.DataListChartShow2<,>).MakeGenericType(type.GetGenericArguments()[0],Program0.getKeyType(type.GetGenericArguments()[0]));
+                        return tx;
                     }
                 }
 

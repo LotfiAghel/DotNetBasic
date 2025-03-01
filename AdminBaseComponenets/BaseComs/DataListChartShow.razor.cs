@@ -31,7 +31,7 @@ namespace AdminBaseComponenets.BaseComs
 
 
         [Parameter]
-        public string keyNAme { get; set; } = null;
+        public string keyName { get; set; } = null;
 
     
        
@@ -81,11 +81,12 @@ namespace AdminBaseComponenets.BaseComs
     // define specific dataset styles by targeting them with the DatasetIndex
     List<ChartDataLabelsDataset> lineDataLabelsDatasets = new() {};
 
-
+    private List<PropertyInfo> prs;
     public void load()
     {
+        prs = typeof(TItem).GetRuntimeProperties().ToList().Where(x => x.PropertyType == typeof(decimal)).ToList();
         int i = 0;
-        foreach(var pr in typeof(TItem).GetProperties())
+        foreach(var pr in prs)
             lineDataLabelsDatasets.Add(new ChartDataLabelsDataset()
             {
                 DatasetIndex = i++,
@@ -112,57 +113,47 @@ namespace AdminBaseComponenets.BaseComs
         Padding = new( 6 )
     };
 
-    private static string[] Labels = new string[] { "1", "2", "3", "4", "5", "6" };
+    
     private static string[] BackgroundColors = new string[] { "#4bc0c0", "#36a2eb", "#ff3d88" };
     private static string[] BorderColors = new string[] { "#4bc0c0", "#36a2eb", "#ff3d88" };
     private Random random = new( DateTime.Now.Millisecond );
 
     protected override async Task OnAfterRenderAsync( bool firstRender )
     {
+        Console.WriteLine(value.Count());
         if ( firstRender )
         {
+            load();
             await lineChart.Clear();
 
-            int i = 0;
-            foreach (var pr in typeof(TItem).GetProperties())
+            string[] Labels =value.Select(x=> x.id.ToString()).ToArray();
+            var Data=prs.Select(pr=> new LineChartDataset<decimal>()
             {
-                await lineChart.AddLabels(i, value.Select(x => (decimal)pr.GetValue(x)).ToArray());
-                await lineChart.AddData(i, value.Select(x => (decimal)pr.GetValue(x)).ToArray());
+                Label = $"# of randoms {pr.Name}",
+                Data = value.Select(x => (decimal)pr.GetValue(x)).ToList()
+            }).ToArray();
+
+            int i = 0;
+            //foreach (var pr in prs)
+            {
+                await lineChart.AddLabelsDatasetsAndUpdate(Labels,Data );
                 i++;
             }
 
             await lineChart.Clear();
 
             
-            
             i = 0;
-            foreach (var pr in typeof(TItem).GetProperties())
+            //foreach (var pr in prs)
             {
-                await lineChart.AddLabels(i, value.Select(x => (decimal)pr.GetValue(x)).ToArray());
-                await lineChart.AddData(i, value.Select(x => (decimal)pr.GetValue(x)).ToArray());
+                await lineChart.AddLabelsDatasetsAndUpdate(Labels,Data );
+                
                 i++;
             }
         }
     }
 
-    private async Task HandleRedraw<TDataSet, TItem, TOptions, TModel>( Blazorise.Charts.BaseChart<TDataSet, TItem, TOptions, TModel> chart, Func<int, TDataSet> getDataSet )
-        where TDataSet : ChartDataset<TItem>
-        where TOptions : ChartOptions
-        where TModel : ChartModel
-    {
-      
-    }
-
-    private LineChartDataset<decimal> GetLineChartDataset( int colorIndex ,PropertyInfo pi,IReadOnlyCollection<TItem> items)
-    {
-        return new()
-        {
-            Label = "# of randoms",
-            Data = items.Select(x=> (decimal)pi.GetValue(x)).ToList(),
-            BackgroundColor = BackgroundColors[colorIndex],
-            BorderColor = BorderColors[colorIndex],
-        };
-    }
+   
 
     
 
