@@ -209,6 +209,15 @@ public class GridShow : Attribute
 {
 
 }
+public class ChartShow : Attribute
+{
+    public string XAxiasName;
+
+    public ChartShow(string XAxiasName)
+    {
+        this.XAxiasName = XAxiasName;
+    }
+}
 public class CsvInput : Attribute
 {
 

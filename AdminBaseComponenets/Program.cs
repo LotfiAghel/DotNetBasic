@@ -1173,6 +1173,13 @@ namespace AdminBaseComponenets
                         return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0]);
                     }
                 }
+                {
+                    var x = prps.GetFirst<Attribute, ChartShow>();
+                    if (x != null)
+                    {
+                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0]);
+                    }
+                }
 
                 return typeof(AdminBaseComponenets.BaseComs.ArrayInput<>).MakeGenericType(type.GetGenericArguments()[0]);
             };
