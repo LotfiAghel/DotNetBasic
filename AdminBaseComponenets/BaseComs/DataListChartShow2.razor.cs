@@ -64,21 +64,25 @@ namespace AdminBaseComponenets.BaseComs
 
 
     private List<PropertyInfo> prs;
+    //private List<PropertyInfo> prs2;
     public void load()
     {
-        prs = typeof(TItem).GetRuntimeProperties().ToList().Where(x => x.PropertyType == typeof(decimal)).ToList();
+        prs = typeof(TItem).GetRuntimeProperties().ToList().Where(x => x.PropertyType == typeof(decimal) || x.PropertyType == typeof(int) ).ToList();
+        //prs2 = typeof(TItem).GetRuntimeProperties().ToList().Where(x => x.PropertyType == typeof(decimal) ).ToList();
         int i = 0;
         foreach(var pr in value)
             _config1.Data.Labels.Add(pr.id.ToString());
+        var rr = new Random();
         foreach (var pr in prs)
             _config1.Data.Datasets.Add(new LineDataset()
             {
                 Label = pr.Name,
-                Data = value.Select(x => (decimal?)pr.GetValue(x)).ToList(),
-                BackgroundColor = "rgba(75,192,192,0.2)",
-                BorderColor = "rgba(75,192,192,1)",
+                Data = (pr.PropertyType==typeof(decimal))? value.Select(x => (decimal?)pr.GetValue(x)).ToList() : value.Select(x => (int)pr.GetValue(x)).Select(x=> (decimal?)x).ToList(),
+                BackgroundColor = $"rgba({rr.Next(255)},{rr.Next(255)},{rr.Next(255)},0.2)",
+                BorderColor = $"rgba({rr.Next(255)},{rr.Next(255)},{rr.Next(255)},1)",
                 Fill = true
             });
+        
             
     }
     

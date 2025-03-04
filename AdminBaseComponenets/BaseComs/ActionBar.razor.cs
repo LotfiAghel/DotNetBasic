@@ -34,7 +34,7 @@ namespace AdminBaseComponenets.BaseComs
 
         public string ButtonState="send Action";
 
-        async Task onChange(object x)
+        void onChange(object x)
         {
             value=x as Models.IAction<TItem>;
         }

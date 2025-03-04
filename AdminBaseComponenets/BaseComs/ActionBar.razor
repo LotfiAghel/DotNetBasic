@@ -10,7 +10,7 @@
 
 @if(typeof(Models.IAction<TItem>).GetSubClasses(evenAbstracts:false).Count>0){
     <div>actions</div>
-    <AdminBaseComponenets.BaseComs.PointerInput2 TItem="Models.IAction<TItem>" value=@value>
+    <AdminBaseComponenets.BaseComs.PointerInput2 TItem="Models.IAction<TItem>" value=@value OnChange="@onChange">
         
     </AdminBaseComponenets.BaseComs.PointerInput2>
 
