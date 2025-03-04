@@ -202,6 +202,11 @@ namespace Models
         //public ForeignKey<T> foreignKey;       
         public Task<T> run(T entity, IServiceProvider Services);
     }
+    public interface IDbAction<T>: IAction0 //where T :Entity
+    {
+        //public ForeignKey<T> foreignKey;       
+        public Task<T> run(T entity, IServiceProvider Services);
+    }
 
     public class IQueryContainer<T>{
         public IQuery<T> query { get; set; }
