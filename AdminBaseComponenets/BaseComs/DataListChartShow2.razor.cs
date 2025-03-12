@@ -59,10 +59,12 @@ namespace AdminBaseComponenets.BaseComs
 
             
         }
-    
 
 
 
+        private static Dictionary<string, string> colormp = new();
+        private static Random rr = new Random();
+        
     private List<PropertyInfo> prs;
     //private List<PropertyInfo> prs2;
     public void load()
@@ -72,28 +74,27 @@ namespace AdminBaseComponenets.BaseComs
         int i = 0;
         foreach(var pr in value)
             _config1.Data.Labels.Add(pr.id.ToString());
-        var rr = new Random();
+        
         foreach (var pr in prs)
             _config1.Data.Datasets.Add(new LineDataset()
             {
                 Label = pr.Name,
                 Data = (pr.PropertyType==typeof(decimal))? value.Select(x => (decimal?)pr.GetValue(x)).ToList() : value.Select(x => (int)pr.GetValue(x)).Select(x=> (decimal?)x).ToList(),
-                BackgroundColor = $"rgba({rr.Next(255)},{rr.Next(255)},{rr.Next(255)},0.2)",
-                BorderColor = $"rgba({rr.Next(255)},{rr.Next(255)},{rr.Next(255)},1)",
+                BackgroundColor = getColor(pr.Name),
+                BorderColor =getColor(pr.Name),
                 Fill = true
             });
         _chart1.Height = "500";
         _chart1.Style = "display: block; box-sizing: border-box; height: 450px; width: 753px;";
 
     }
-    
-  
-    
-   
 
-    
-
-
+    private static string getColor(string prName)
+    {
+        if (!colormp.ContainsKey(prName))
+            colormp[prName]=$"rgba({rr.Next(255)},{rr.Next(255)},{rr.Next(255)},0.2)";
+        return colormp[prName];
+    }
     }
 
 
