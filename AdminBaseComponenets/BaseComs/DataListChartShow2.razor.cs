@@ -82,8 +82,9 @@ namespace AdminBaseComponenets.BaseComs
                 BorderColor = $"rgba({rr.Next(255)},{rr.Next(255)},{rr.Next(255)},1)",
                 Fill = true
             });
-        
-            
+        _chart1.Height = "500";
+        _chart1.Style = "display: block; box-sizing: border-box; height: 450px; width: 753px;";
+
     }
     
   

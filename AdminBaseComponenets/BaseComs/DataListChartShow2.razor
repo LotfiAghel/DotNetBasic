@@ -25,5 +25,7 @@
 @using System.Reflection
 @inherits NullableInput2<IReadOnlyCollection<TItem>>
 @inject IJSRuntime jsRuntime
-
-<Chart Config="_config1" @ref="_chart1"></Chart>
+@if (value!=null)
+{
+    <Chart Config="_config1" @ref="_chart1" Height="450px"></Chart>
+}
