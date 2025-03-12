@@ -1,25 +1,10 @@
 ﻿using System.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-
-
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
 using System.Reflection;
 using Microsoft.AspNetCore.Components;
-using Blazorise.DataGrid;
-using Models;
-using Tools;
-using Newtonsoft.Json;
-using Microsoft.JSInterop;
-using System.Threading;
-using AdminClientViewModels;
-using Blazorise.Charts;
-using Blazorise.Charts.DataLabels;
 using PSC.Blazor.Components.Chartjs;
-using PSC.Blazor.Components.Chartjs.Models.Bar;
 using PSC.Blazor.Components.Chartjs.Models.Common;
 using PSC.Blazor.Components.Chartjs.Models.Line;
 
@@ -89,10 +74,19 @@ namespace AdminBaseComponenets.BaseComs
 
     }
 
+    private static int t = 0;
+    static string[] colors =
+    [
+        "#0072B288", "#D55E0088", "#009E7388", "#CC79A788", "#E69F0088", 
+        "#F0E44288", "#56B4E988", "#99999988", "#80800088", "#80000088"
+    ];
+    
+
     private static string getColor(string prName)
     {
         if (!colormp.ContainsKey(prName))
-            colormp[prName]=$"rgba({rr.Next(255)},{rr.Next(255)},{rr.Next(255)},0.2)";
+            colormp[prName] = colors[(t++)%(colors.Length)];
+                //$"rgba({rr.Next(255)},{rr.Next(255)},{rr.Next(255)},0.2)";
         return colormp[prName];
     }
     }
