@@ -75,7 +75,8 @@ namespace AdminBaseComponenets.BaseComs
     }
 
     private static int t = 0;
-    static string[] colors =
+
+    private static string[] colors =
     [
         "#0072B288", "#D55E0088", "#009E7388", "#CC79A788", "#E69F0088", 
         "#F0E44288", "#56B4E988", "#99999988", "#80800088", "#80000088"
