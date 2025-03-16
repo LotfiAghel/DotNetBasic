@@ -542,9 +542,12 @@ namespace AdminBaseComponenets
         public static bool checkPermission<T2>(Type T) where T2 : ACLAtr
         {
             //return true;
+            
             try
             {
-                var adminWriteBan = T.GetCustomAttributes(typeof(T2), true).OfType<T2>().FirstOrDefault();
+                var md=MDTypeInfo.get(T);
+                var adminWriteBan=md.attrs.OfType<T2>().FirstOrDefault();
+                //var adminWriteBan = T.GetCustomAttributes(typeof(T2), true).OfType<T2>().FirstOrDefault();
                 if (adminWriteBan == null || adminWriteBan.kinds==null || user==null || adminWriteBan.kinds.Intersect(user.roles).Count() == 0 )
                     return false;
             }
