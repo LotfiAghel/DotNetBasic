@@ -1,13 +1,6 @@
 @typeparam TItem
 @typeparam TKEY
 
-
-
-@using Models
-@using AdminBaseComponenets
-@using System.ComponentModel;
-@using Tools;
-
 @if(typeof(Models.IAction<TItem>).GetSubClasses(evenAbstracts:false).Count>0){
     <div>actions</div>
     <AdminBaseComponenets.BaseComs.PointerInput2 TItem="Models.IAction<TItem>" value=@value OnChange="@onChange">
