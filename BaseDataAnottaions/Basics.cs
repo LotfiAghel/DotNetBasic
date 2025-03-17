@@ -101,12 +101,14 @@ public class MDTypeInfo
     public static Dictionary<Type, MDTypeInfo> mp = new();
     public Type type;
     public List<Attribute> attrs = new();
+    public List<Attribute> attrs2 = null;
     public Dictionary<int, MDPropInfo> pattrs = new();
     public MDTypeInfo(Type t)
     {
         type = t;
         foreach (var x in t.GetProperties())
             this.pattrs[x.GetMetadataToken()] = new MDPropInfo(x);
+        
     }
     public static MDTypeInfo get(Type t)
     {
@@ -123,6 +125,16 @@ public class MDTypeInfo
         return z;
     }
 
+
+    public List<Attribute> getAttrs()
+    {
+        if (attrs2 == null)
+        {
+            attrs2 = type.GetCustomAttributes<Attribute>().ToList();
+            attrs2.AddRange(attrs);
+        }
+        return attrs2;
+    }
 }
 
 
