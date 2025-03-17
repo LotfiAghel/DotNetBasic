@@ -70,7 +70,7 @@
                         <SelectItem TValue=TKEY Value=default(TKEY)>
                             none @(default(TKEY))
                         </SelectItem>
-                        foreach (var t in optionGenerator)
+                        if(optionGenerator!=null)foreach (var t in optionGenerator)
                         {
 
                             <SelectItem TValue=TKEY Value=@t.Value>
@@ -79,6 +79,16 @@
                                     <div>@Program0.CreateDynamicComponent2(this, itemComponenet, t)</div>
                                 }
                             </SelectItem>
+                        }
+                        else
+                        {
+                            
+                            <SelectItem TValue=TKEY Value=@value.getFValue()>
+                                @if (itemComponenet != null)
+                                {
+                                    <div>@Program0.CreateDynamicComponent2(this, itemComponenet, curentV)</div>
+                                }
+                            </SelectItem>                            
                         }
                     }
                 </Select>

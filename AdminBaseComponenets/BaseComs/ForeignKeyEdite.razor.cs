@@ -20,7 +20,7 @@ namespace AdminBaseComponenets.BaseComs
         Type[] genericArgs = new Type[] { null, typeof(int) };
 
 
-
+        private TEntity curentV=null;
 
 
 
@@ -77,28 +77,36 @@ namespace AdminBaseComponenets.BaseComs
 
             if (optionGenerator == null)
             {
-                await tmp.getAll();
-                if (typeof(TEntity).GetCustomFirstAttributes<BigTable>() != null)
+                if (!ReadOnly)
                 {
-                    var l = new List<ForeignKey2<TEntity, TKEY>>();
-                    if(val != null)
-                        l.Add(new ForeignKey2<TEntity, TKEY>(value));
-                    optionGenerator = l;
-                    
+                    await tmp.getAll();
+                    if (typeof(TEntity).GetCustomFirstAttributes<BigTable>() != null)
+                    {
+                        var l = new List<ForeignKey2<TEntity, TKEY>>();
+                        if (val != null)
+                            l.Add(new ForeignKey2<TEntity, TKEY>(value));
+                        optionGenerator = l;
+
+                    }
+
+                    //else
+                    {
+
+                        try
+                        {
+                            tmp.get(value.Value);
+                        }
+                        catch
+                        {
+
+                        }
+
+                        optionGenerator = tmp; //.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id));
+                    }
                 }
-                //else
+                else
                 {
-
-                    try
-                    {
-                        tmp.get(value.Value);
-                    }
-                    catch
-                    {
-
-                    }
-
-                    optionGenerator = tmp; //.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id));
+                    curentV=await tmp.get(value.getFValue());
                 }
             }
             
