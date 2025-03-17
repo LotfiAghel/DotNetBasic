@@ -546,9 +546,9 @@ namespace AdminBaseComponenets
             try
             {
                 var md=MDTypeInfo.get(T);
-                var adminWriteBan=md.attrs.OfType<T2>().FirstOrDefault();
+                var adminWriteBan=md.getAttrs().OfType<T2>().FirstOrDefault();
                 //var adminWriteBan = T.GetCustomAttributes(typeof(T2), true).OfType<T2>().FirstOrDefault();
-                if (adminWriteBan == null || adminWriteBan.kinds==null || user==null || adminWriteBan.kinds.Intersect(user.roles).Count() == 0 )
+                if (adminWriteBan == null || adminWriteBan.kinds==null || user==null || !adminWriteBan.kinds.Intersect(user.roles).Any() )
                     return false;
             }
             catch
