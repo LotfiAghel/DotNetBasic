@@ -16,7 +16,7 @@ using AdminBaseComponenets.BaseComs;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using AdminBaseComponenets.BaseComs.InGrid;
-using Blazored.TextEditor;
+
 public static class ExtensionMethods
 {
     public static async Task<object> InvokeAsync(this MethodInfo @this, object obj, params object[] parameters)
@@ -757,43 +757,21 @@ namespace AdminBaseComponenets
                 return null;
             };
 
-            defultRenderer[typeof(Rial)] = (prps) =>
-           {
-
-               return new RialInGrid();
-
-
-           };
-            defultRenderer[typeof(DateTime)] = (prps) =>
-            {
-
-                return new DateTimeInGrid();
-
-
-            };
+            defultRenderer[typeof(Rial)] = (prps) => new RialInGrid();
+            defultRenderer[typeof(DateTime)] = (prps) => new DateTimeInGrid();
 
 
 
-            defultRenderer[typeof(double)] = (prps) =>
-            {
+            defultRenderer[typeof(double)] = (prps) => createWidget(
+                typeof(string),
+                []
+            );
 
 
-                return createWidget(
-                                typeof(string),
-                                new List<Attribute>()
-                        );
-            };
-
-
-            defultRenderer[typeof(bool)] = (prps) =>
-            {
-
-
-                return createWidget(
-                                typeof(int),
-                                new List<Attribute>()
-                        );
-            };
+            defultRenderer[typeof(bool)] = (prps) => createWidget(
+                typeof(int),
+                []
+            );
 
             
 
@@ -803,19 +781,14 @@ namespace AdminBaseComponenets
             {
                 var z = type.GetGenericArguments().ToList();
                 z.Add(typeof(int));
-                return typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(z.ToArray()).GetConstructor(new Type[]{}).Invoke(new object[]{}) as ValueInput0;
+                return typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(z.ToArray()).GetConstructor([])?.Invoke(
+                    []) as ValueInput0;
 
             };
-            defultRenderer2[typeof(ForeignKey2<,>)] = (type, prps) =>
-            {
-                return typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(type.GetGenericArguments()).GetConstructor(new Type[]{}).Invoke(new object[]{}) as ValueInput0;
-
-            };
-            defultRenderer2[typeof(List<>)] = (type, prps) =>
-            {
-                return typeof(BaseComs.InGrid.ListSmallView<>).MakeGenericType(type.GetGenericArguments()).GetConstructor(new Type[]{}).Invoke(new object[]{}) as ValueInput0;
-
-            };
+            defultRenderer2[typeof(ForeignKey2<,>)] = (type, prps) => typeof(BaseComs.InGrid.IntegerFSmallView<,>).MakeGenericType(type.GetGenericArguments()).GetConstructor(
+                [])?.Invoke([]) as ValueInput0;
+            defultRenderer2[typeof(List<>)] = (type, prps) => typeof(BaseComs.InGrid.ListSmallView<>).MakeGenericType(type.GetGenericArguments()).GetConstructor(
+                [])?.Invoke([]) as ValueInput0;
 
             
 
