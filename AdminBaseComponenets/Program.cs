@@ -764,6 +764,13 @@ namespace AdminBaseComponenets
 
 
            };
+            defultRenderer[typeof(DateTime)] = (prps) =>
+            {
+
+                return new DateTimeInGrid();
+
+
+            };
 
 
 

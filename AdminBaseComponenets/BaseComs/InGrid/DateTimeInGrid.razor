@@ -1,0 +1,35 @@
+@using System.Globalization
+
+@inherits ValueInput<DateTime>
+
+
+
+<div class="row pt-2 pb-2">
+    <div class="col-sm-10">
+        @GetPersianDate()
+    </div>
+</div>
+
+
+
+
+
+
+@code
+{
+
+
+    public string GetPersianDate()
+    {
+        DateTime utcTime = this.value;
+        TimeZoneInfo tehranTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Tehran");
+        DateTime tehranTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, tehranTimeZone);
+
+        PersianCalendar pc = new PersianCalendar();
+        
+        return $"{pc.GetYear(tehranTime):0000}/{pc.GetMonth(tehranTime):00}/{pc.GetDayOfMonth(tehranTime):00} " +
+               $"{pc.GetHour(tehranTime):00}:{pc.GetMinute(tehranTime):00}:{pc.GetSecond(tehranTime):00}";
+    }
+
+}
+
