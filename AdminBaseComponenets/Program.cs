@@ -759,6 +759,17 @@ namespace AdminBaseComponenets
 
             defultRenderer[typeof(Rial)] = (prps) => new RialInGrid();
             defultRenderer[typeof(DateTime)] = (prps) => new DateTimeInGrid();
+            
+            
+            defultRenderer2[typeof(Nullable<>)] = (type, prps) =>
+            {
+                var z = type.GetGenericArguments().ToList();
+                var res= typeof(BaseComs.InGrid.NullableInGrid<>).MakeGenericType(z.ToArray()).GetConstructor([])?.Invoke(
+                    []) as ValueInput0;
+                res.Attributes = prps;
+                return res;
+
+            };
 
 
 
