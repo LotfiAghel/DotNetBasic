@@ -65,7 +65,7 @@ namespace AdminBaseComponenets.BaseComs
             {
                 Label = pr.Name,
                 Data = (pr.PropertyType==typeof(decimal))? value.Select(x => (decimal?)pr.GetValue(x)).ToList() : value.Select(x => (int)pr.GetValue(x)).Select(x=> (decimal?)x).ToList(),
-                BackgroundColor = getColor(pr.Name),
+                BackgroundColor = "#00000000",// getColor(pr.Name),
                 BorderColor =getColor(pr.Name),
                 Fill = true
             });
@@ -78,8 +78,8 @@ namespace AdminBaseComponenets.BaseComs
 
     private static string[] colors =
     [
-        "#0072B288", "#D55E0088", "#009E7388", "#CC79A788", "#E69F0088", 
-        "#F0E44288", "#56B4E988", "#99999988", "#80800088", "#80000088"
+        "#0072B2ff", "#D55E00ff", "#009E7388", "#CC79A788", "#E69F0088", 
+        "#F0E442ff", "#56B4E9ff", "#99999988", "#80800088", "#80000088"
     ];
     
 
