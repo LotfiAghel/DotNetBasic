@@ -22,11 +22,25 @@ namespace AdminBaseComponenets.BaseComs
 
             public bool Completed=false;
         }
+        public class ExpetainC
+        {
+            public int ProgressPercentage { get; set; }
+            public long totalBytesRead=0,fileSize=0;
+
+            public bool Completed=false;
+        }
+        public class ExpetainOut
+        {
+            
+            public bool Retry { get; set; }
+
+            
+        }
 
         public static long maxFileSize = 1024L * 1024L * 1024L * 2L;
         public Dictionary<string, State> Files { get; set; } = new Dictionary<string, State>();
 
-        public State upload(SessionCreationStatusResponse path, IBrowserFile selectedFile, Action<State> onUploadSection)
+        public State upload(SessionCreationStatusResponse path, IBrowserFile selectedFile, Action<State> onUploadSection,Func<Exception,Task<ExpetainOut>> onException=null)
         {
             State upload1;
             if(Files.TryGetValue(path.FileName, out upload1))
@@ -49,6 +63,7 @@ namespace AdminBaseComponenets.BaseComs
             
             Task task = Task.Run(async () =>
             {
+                while(true)
                 try
                 {
                     while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
@@ -66,7 +81,15 @@ namespace AdminBaseComponenets.BaseComs
                 }
                 catch (Exception ex)
                 {
-
+                    if (onException == null)
+                        break;
+                
+                    var oo = await onException(ex);
+                    if (!oo.Retry)
+                    {
+                        break;
+                    }
+                
                 }
                 
                 System.Buffers.ArrayPool<byte>.Shared.Return(buffer);    

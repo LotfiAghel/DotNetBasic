@@ -2,12 +2,15 @@
 @inherits ValueInput<string>
 
 
-
+<Row>
+    <StringInput value=@value OnChange=OnChange />
+</Row>
+<div>
+    @FilesDirectory 
+</div>
 @if (!string.IsNullOrWhiteSpace(value))
 {
-    <Row>
-        @value
-    </Row>
+    
     if (FileUploader.instnace.getState(value) == null)
     {
         if (value.ToLower().EndsWith(".png") || value.ToLower().EndsWith(".jpg"))
