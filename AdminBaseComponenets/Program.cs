@@ -642,6 +642,8 @@ namespace AdminBaseComponenets
                 return typeof(int);
             if (entity.IsAssignableTo(typeof(IIdMapper<long>)))
                 return typeof(long);
+            if (entity.IsAssignableTo(typeof(IIdMapper<DateTime>)))
+                return typeof(DateTime);
             throw new NotImplementedException();
 
         }
