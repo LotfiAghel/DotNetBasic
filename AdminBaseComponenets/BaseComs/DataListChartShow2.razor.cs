@@ -58,7 +58,10 @@ namespace AdminBaseComponenets.BaseComs
         //prs2 = typeof(TItem).GetRuntimeProperties().ToList().Where(x => x.PropertyType == typeof(decimal) ).ToList();
         int i = 0;
         foreach(var pr in value)
-            _config1.Data.Labels.Add(pr.id.ToString());
+            if(pr.id is DateTime dt)
+                _config1.Data.Labels.Add(dt.ToPersianDateString());
+            else
+                _config1.Data.Labels.Add(pr.id.ToString());
         
         foreach (var pr in prs)
             _config1.Data.Datasets.Add(new LineDataset()
