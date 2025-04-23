@@ -78,6 +78,7 @@ namespace AdminBaseComponenets.BaseComs
                     }
                     upload1.Completed = true;
                     onUploadSection(upload1);
+                    break;
                 }
                 catch (Exception ex)
                 {
