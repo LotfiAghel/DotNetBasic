@@ -131,21 +131,87 @@ namespace Models
 
         [Column(TypeName = "jsonb")]
         public JToken data { get; set; }
+        
+        
+        [Column(TypeName = "jsonb")]
+        public JToken dif { get; set; }
 
         [NotMapped]
         [JsonIgnore]//this attrbute cuse this prop hiden from AdminClient
         public IdMapper<TKEY> dataT { get => data.ToObject<IdMapper<TKEY>>();}
 
-
-        public static EntityHistory<TKEY> Create<T>(IIdMapper<TKEY> e,Guid adminId)where T:IIdMapper<TKEY>
+        public static JToken GetJsonDiff(JToken first, JToken second)
         {
+            if (JToken.DeepEquals(first, second))
+                return null;
+
+            if (first.Type != second.Type)
+                return second;
+
+            if (first is JObject obj1 && second is JObject obj2)
+            {
+                var diffObj = new JObject();
+                foreach (var property in obj2.Properties())
+                {
+                    var propName = property.Name;
+                    var firstProp = obj1.Property(propName);
+
+                    var diff = GetJsonDiff(firstProp?.Value, property.Value);
+                    if (diff != null)
+                    {
+                        diffObj[propName] = diff;
+                    }
+                }
+                return diffObj;
+            }
+            else if (first is JArray arr1 && second is JArray arr2)
+            {
+                var diffArray = new JArray();
+                int maxLength = Math.Max(arr1.Count, arr2.Count);
+
+                for (int i = 0; i < maxLength; i++)
+                {
+                    if (i >= arr1.Count)
+                    {
+                        // آیتم جدید اضافه شده
+                        diffArray.Add(arr2[i]);
+                    }
+                    else if (i >= arr2.Count)
+                    {
+                        // آیتمی حذف شده (میتونی حذف شده‌ها رو مدیریت کنی اگه خواستی)
+                        diffArray.Add(null);
+                    }
+                    else
+                    {
+                        var diff = GetJsonDiff(arr1[i], arr2[i]);
+                        diffArray.Add(diff);
+                    }
+                }
+
+                // اگر تمام دیف ها null بودن، یعنی آرایه بدون تغییر بوده
+                if (diffArray.All(x => x == null))
+                    return null;
+
+                return diffArray;
+            }
+            else
+            {
+                return second;
+            }
+        }
+
+        public static EntityHistory<TKEY> Create<T>(IIdMapper<TKEY> e,Guid adminId,JToken dd)where T:IIdMapper<TKEY>
+        {
+            var m = JToken.FromObject(e);
+            
             return new EntityHistory<TKEY>()
             {
                 adminId = adminId,
                 entityName = typeof(T).Name,
                 entityId = e.id,
                 createdAt = DateTime.UtcNow,
-                data = JToken.FromObject(e)
+                data = m,
+                dif = GetJsonDiff(dd, m)
             };
         }
     }
@@ -219,7 +285,7 @@ namespace Models
         public IQueryable<EntityHistory<T>> History(IServiceProvider Services)
         {
             var oldDb = Services.GetRequiredService<IAssetManager>();
-            return oldDb.getDbSet<EntityHistory<T>>().Where(x => x.entityName==this.GetType().Name && x.entityId.Equals(this.id)); //TODO has error in derived tables
+            return oldDb.getDbSet<EntityHistory<T>>().Where(x => x.entityName==this.GetType().Name && x.entityId.Equals(this.id)).OrderByDescending(x=> x.createdAt); //TODO has error in derived tables
         }
 
         [JsonIgnore]
