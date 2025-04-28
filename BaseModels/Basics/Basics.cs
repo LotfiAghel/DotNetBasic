@@ -203,15 +203,15 @@ namespace Models
             }
         }
 
-        public static EntityHistory<TKEY> Create<T>(IIdMapper<TKEY> e,Guid adminId,JToken dd)where T:IIdMapper<TKEY>
+        public static EntityHistory<TKEY> Create<T>(TKEY id, JToken e,Guid adminId,JToken dd)where T:IIdMapper<TKEY>
         {
-            var m = JToken.FromObject(e);
+            var m = e;
             
             return new EntityHistory<TKEY>()
             {
                 adminId = adminId,
                 entityName = typeof(T).Name,
-                entityId = e.id,
+                entityId = id,
                 createdAt = DateTime.UtcNow,
                 data = m,
                 dif = GetJsonDiff(dd, m)
