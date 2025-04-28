@@ -144,7 +144,10 @@ namespace Models
         {
             if (JToken.DeepEquals(first, second))
                 return null;
-
+            
+            if(first==null)
+                return second;
+            
             if (first.Type != second.Type)
                 return second;
 
