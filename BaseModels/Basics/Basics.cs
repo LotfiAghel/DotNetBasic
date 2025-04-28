@@ -260,6 +260,21 @@ namespace Models
             this.data = data;
         }
     }
+    public static class TypeHelper
+    {
+        public static List<Type> GetBaseClasses(Type type)
+        {
+            var bases = new List<Type>();
+
+            while (type.BaseType != null)
+            {
+                type = type.BaseType;
+                bases.Add(type);
+            }
+
+            return bases;
+        }
+    }
 
     [ShowClassHirarci]
     public class IdMapper<T> : CUAT, IIdMapper<T> where T : IEquatable<T>, IComparable<T>, IComparable
@@ -285,7 +300,9 @@ namespace Models
         public IQueryable<EntityHistory<T>> History(IServiceProvider Services)
         {
             var oldDb = Services.GetRequiredService<IAssetManager>();
-            return oldDb.getDbSet<EntityHistory<T>>().Where(x => x.entityName==this.GetType().Name && x.entityId.Equals(this.id)).OrderByDescending(x=> x.createdAt); //TODO has error in derived tables
+            var tyn=TypeHelper.GetBaseClasses(this.GetType()).Select(x=>x.Name);
+            return oldDb.getDbSet<EntityHistory<T>>().Where(x => tyn.Contains(x.entityName) 
+                                                                 && x.entityId.Equals(this.id)).OrderByDescending(x=> x.createdAt); //TODO has performance issue becus of derived tables
         }
 
         [JsonIgnore]
