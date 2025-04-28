@@ -265,9 +265,9 @@ namespace Models
     }
     public static class TypeHelper
     {
-        public static List<Type> GetBaseClasses(Type type)
+        public static List<Type> GetBaseClassesWithSelf(Type type)
         {
-            var bases = new List<Type>();
+            var bases = new List<Type>(){type};
 
             while (type.BaseType != null)
             {
@@ -303,7 +303,7 @@ namespace Models
         public IQueryable<EntityHistory<T>> History(IServiceProvider Services)
         {
             var oldDb = Services.GetRequiredService<IAssetManager>();
-            var tyn=TypeHelper.GetBaseClasses(this.GetType()).Select(x=>x.Name);
+            var tyn=TypeHelper.GetBaseClassesWithSelf(this.GetType()).Select(x=>x.Name);
             return oldDb.getDbSet<EntityHistory<T>>().Where(x => tyn.Contains(x.entityName) 
                                                                  && x.entityId.Equals(this.id)).OrderByDescending(x=> x.createdAt); //TODO has performance issue becus of derived tables
         }
