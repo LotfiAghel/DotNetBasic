@@ -217,8 +217,7 @@ namespace Models
 
         public static System.Guid getUserId(this HttpContext a)
         {
-            object res = null;
-            if (a.Items.TryGetValue("userId", out res) && res is Guid)
+            if (a.Items.TryGetValue("userId", out var res) && res is Guid)
                 return (Guid)res;
             return Guid.Empty;
 
@@ -227,16 +226,10 @@ namespace Models
         public static ConcurrentDictionary<Guid, HashSet<Guid>> techer2Student = new ConcurrentDictionary<Guid, HashSet<Guid>>();
         public static System.Guid getUser2Id(this HttpContext a)
         {
-            object res = null;
-            object connectionId = null;
-            if (a.Items.TryGetValue("connectionid", out connectionId) && res is Guid)
-                return (Guid)res;
-            if (a.Items.TryGetValue("user2Id", out res) && res is Guid)
-            {
-                var stId=(Guid)res;
-                if(techer2Student[a.getUserId()].Contains(stId))
-                    return stId;
-            }
+            if (!a.Items.TryGetValue("user2Id", out var res) || res is not Guid) return a.getUserId();
+            var stId=(Guid)res;
+            if(techer2Student[a.getUserId()].Contains(stId))
+                return stId;
 
             return a.getUserId();
 
