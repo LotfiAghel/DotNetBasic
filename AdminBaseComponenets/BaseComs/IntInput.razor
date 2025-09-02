@@ -31,13 +31,13 @@
 @code
 {
     
-    int prvValue;
+    int ?prvValue=null;
     
 
     async Task Click22(int vv)
     {
         value = vv;
-        if (prvValue != value)
+        if (prvValue==null || prvValue.Value != value)
         {
 
             OnChange(value);
