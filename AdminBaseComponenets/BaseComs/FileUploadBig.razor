@@ -18,7 +18,7 @@
             <img src=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}") class="img" style="width: auto; height: 200px;"/>
         }
 
-        if (value.ToLower().EndsWith(".mp3"))
+        if (value.ToLower().EndsWith(".mp3") || value.ToLower().EndsWith(".ogg"))
         {
             <MyAudio src=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}")  ></MyAudio>
         }
