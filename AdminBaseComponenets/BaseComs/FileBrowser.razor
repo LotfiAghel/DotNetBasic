@@ -60,6 +60,10 @@
                             <span class="oi oi-plus mr-2" aria-hidden="true"></span>
                             @( "ایجاد پوشه" )
                         </button>
+                        <button type="button" class="btn btn-outline-primary" @onclick="OpenUploadFileModal">
+                            <span class="oi oi-cloud-upload mr-2" aria-hidden="true"></span>
+                            @( "آپلود فایل" )
+                        </button>
                     </div>
 
 
@@ -187,6 +191,51 @@
     </div>
 </div>
 
+<!-- Upload File Modal -->
+<div class="modal fade @(ShowUploadFileModal ? "show d-block" : "")" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadFileModalLabel">آپلود فایل در پوشه جاری</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseUploadFileModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <InputFile OnChange="OnUploadFileInputChange" />
+                @if (!string.IsNullOrEmpty(UploadFileError))
+                {
+                    <div class="alert alert-danger mt-2">
+                        @UploadFileError
+                    </div>
+                }
+                @if (IsUploadingFile)
+                {
+                    <div class="mt-2">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: @UploadProgress%;" aria-valuenow="@UploadProgress" aria-valuemin="0" aria-valuemax="100">@UploadProgress%</div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="CloseUploadFileModal" disabled="@IsUploadingFile">لغو</button>
+                <button type="button" class="btn btn-primary" @onclick="UploadFile" disabled="@(SelectedUploadFile == null || IsUploadingFile)">
+                    @if (IsUploadingFile)
+                    {
+                        <span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+                        @( "در حال آپلود..." )
+                    }
+                    else
+                    {
+                        @( "آپلود" )
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @if (ShowBackdrop)
 {
     <div class="modal-backdrop fade show"></div>
@@ -205,7 +254,6 @@
     private Models.FileBrowserResponse BrowserResponse;
     private string CurrentPath = "";
 
-
     // Directory creation properties
     private bool ShowCreateDirectoryModal = false;
     private string CreateDirectoryModalClass => ShowCreateDirectoryModal ? "show d-block" : "";
@@ -213,6 +261,87 @@
     private bool IsCreatingDirectory = false;
     private string CreateDirectoryError = "";
     private bool CanCreateDirectory => !string.IsNullOrWhiteSpace(NewDirectoryName) && !IsCreatingDirectory;
+
+    // Upload file modal properties
+    private bool ShowUploadFileModal = false;
+    private IBrowserFile SelectedUploadFile = null;
+    private bool IsUploadingFile = false;
+    private int UploadProgress = 0;
+    private string UploadFileError = "";
+
+    private void OpenUploadFileModal()
+    {
+        SelectedUploadFile = null;
+        UploadFileError = "";
+        UploadProgress = 0;
+        ShowUploadFileModal = true;
+        StateHasChanged();
+    }
+
+    private void CloseUploadFileModal()
+    {
+        ShowUploadFileModal = false;
+        SelectedUploadFile = null;
+        UploadFileError = "";
+        UploadProgress = 0;
+        StateHasChanged();
+    }
+
+    private void OnUploadFileInputChange(InputFileChangeEventArgs e)
+    {
+        SelectedUploadFile = e.File;
+        UploadFileError = "";
+        UploadProgress = 0;
+    }
+
+    private async Task UploadFile()
+    {
+        if (SelectedUploadFile == null)
+        {
+            UploadFileError = "لطفا یک فایل انتخاب کنید.";
+            return;
+        }
+
+        IsUploadingFile = true;
+        UploadFileError = "";
+        UploadProgress = 0;
+        StateHasChanged();
+
+        try
+        {
+            // Use FileUploader.instnace.upload2 for upload with progress
+            await FileUploader.instnace.upload2(
+                SelectedUploadFile,
+                CurrentPath,
+                (state) =>
+                {
+                    UploadProgress = state.ProgressPercentage;
+                    StateHasChanged();
+                },
+                null,
+                async (ex) =>
+                {
+                    UploadFileError = $"خطا در آپلود فایل: {ex.Message}";
+                    StateHasChanged();
+                    // Do not retry
+                    return new FileUploader.ExpetainOut { Retry = false };
+                }
+            );
+
+            await NotificationService.Success($"فایل '{SelectedUploadFile.Name}' با موفقیت آپلود شد", "موفقیت");
+            CloseUploadFileModal();
+            await LoadFiles(CurrentPath);
+        }
+        catch (Exception ex)
+        {
+            UploadFileError = $"خطا در آپلود فایل: {ex.Message}";
+        }
+        finally
+        {
+            IsUploadingFile = false;
+            StateHasChanged();
+        }
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -274,7 +403,6 @@
 
         await CloseModal();
     }
-
 
     private async Task CloseModal()
     {

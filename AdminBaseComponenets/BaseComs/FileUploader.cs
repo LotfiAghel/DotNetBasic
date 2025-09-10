@@ -65,21 +65,15 @@ public class FileUploader
             if (onSessionCreated != null)
                 onSessionCreated(sessionResponse.FileName);
 
-            Files[sessionResponse.FileName] = uploadState;
+            
 
             // 2. Upload in chunks
-            Stream stream = selectedFile.OpenReadStream(maxFileSize);
-            int bufferSize = 512 * 1024;
-            byte[] buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(bufferSize);
-            int bytesRead;
-            int chunkIndex = 0;
+            
             upload(sessionResponse,selectedFile,onUploadSection,onException);
           
 
-            uploadState.Completed = true;
-            onUploadSection?.Invoke(uploadState);
-
-            System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+            
+            
         }
         catch (Exception ex)
         {
@@ -90,12 +84,12 @@ public class FileUploader
         return uploadState;
     }
    
-    public State upload(SessionCreationStatusResponse path, IBrowserFile selectedFile, Action<State> onUploadSection,Func<Exception,Task<ExpetainOut>> onException=null)
+    public State upload(SessionCreationStatusResponse fileUploadSesion, IBrowserFile selectedFile, Action<State> onUploadSection,Func<Exception,Task<ExpetainOut>> onException=null)
     {
         State upload1;
-        if(Files.TryGetValue(path.FileName, out upload1))
+        if(Files.TryGetValue(fileUploadSesion.FileName, out upload1))
             return upload1;
-        upload1 = Files[path.FileName] = new State();            
+        upload1 = Files[fileUploadSesion.FileName] = new State();            
         Stream stream = selectedFile.OpenReadStream(maxFileSize);
         //var path = $"env.WebRootPath/{selectedFile.Name}";
         //using FileStream fs = File.Create(path);
@@ -120,7 +114,7 @@ public class FileUploader
                     {
 
                         //await fs.WriteAsync(buffer, 0, bytesRead);
-                        await ClTool.WebClient.webClient.uploadFileSection("api/file/upload", path.SessionId, 1, buffer,
+                        await ClTool.WebClient.webClient.uploadFileSection("api/file/upload", fileUploadSesion.SessionId, 1, buffer,
                             bytesRead);
                         upload1.totalBytesRead += bytesRead;
                         upload1.ProgressPercentage = (int)(100 * upload1.totalBytesRead / upload1.fileSize);
