@@ -122,6 +122,7 @@ namespace AdminBaseComponenets.BaseComs
     public string[] allowedExtensions { get; set; }= [".zip", ".rar", ".png", ".jpg",".jpeg", ".mp3" ,".mp4",".apk",".ogg"];
     bool IsUploadDisabled = true;
     private Guid inputFileId = Guid.NewGuid();
+    private string cacheBuster = "";
     protected void setNull(){
             this.value=null;
             OnChange(value);
@@ -235,10 +236,11 @@ namespace AdminBaseComponenets.BaseComs
                         forceWrite = true
                     });
                 value = tmp.FileName;
-                
+
 
                 OnChange(value);
-                
+                cacheBuster = DateTime.Now.Ticks.ToString();
+
                 FileUploader.instnace.upload(tmp,selectedFile,onUploadSection);
                 this.StateHasChanged();
                 //OnChange(value);

@@ -15,16 +15,16 @@
     {
         if (value.ToLower().EndsWith(".png") || value.ToLower().EndsWith(".jpg"))
         {
-            <img src=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}") class="img" style="width: auto; height: 200px;"/>
+            <img src=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}?t={cacheBuster}") class="img" style="width: auto; height: 200px;"/>
         }
 
         if (value.ToLower().EndsWith(".mp3") || value.ToLower().EndsWith(".ogg"))
         {
-            <MyAudio src=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}")  ></MyAudio>
+            <MyAudio src=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}?t={cacheBuster}")  ></MyAudio>
         }
         if (value.ToLower().EndsWith(".mp4"))
         {
-            <Video Source=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}")  ></Video>
+            <Video Source=@($"{ClTool.WebClient.webClient.baseUrl}{FilesDownloadDirectory}/{value}?t={cacheBuster}")  ></Video>
         }
 
         
