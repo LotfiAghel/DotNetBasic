@@ -1,0 +1,361 @@
+@using System.Net.Http
+@using Blazorise.Snackbar
+@using System.Linq
+
+<div class="modal fade @ModalClass" id="fileBrowserModal" tabindex="-1" role="dialog" aria-labelledby="fileBrowserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileBrowserModalLabel">انتخاب فایل از سرور2</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if (IsLoading)
+                {
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">در حال بارگذاری...</span>
+                        </div>
+                        <p class="mt-2">در حال بارگذاری فایل‌ها...</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="mb-3">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="#" @onclick="() => NavigateToPath(null)" @onclick:preventDefault>ریشه</a>
+                                </li>
+                                @if (!string.IsNullOrEmpty(CurrentPath))
+                                {
+                                    var pathParts = CurrentPath.Split('/').Where(p => !string.IsNullOrEmpty(p)).ToArray();
+                                    var currentBuildPath = "";
+                                    for (int i = 0; i < pathParts.Length; i++)
+                                    {
+                                        currentBuildPath += pathParts[i];
+                                        var displayPath = currentBuildPath;
+                                        <li class="breadcrumb-item @(i == pathParts.Length - 1 ? "active" : "")">
+                                            @if (i < pathParts.Length - 1)
+                                            {
+                                                <a href="#" @onclick="() => NavigateToPath(displayPath)" @onclick:preventDefault>@pathParts[i]</a>
+                                            }
+                                            else
+                                            {
+                                                @pathParts[i]
+                                            }
+                                        </li>
+                                        currentBuildPath += "/";
+                                    }
+                                }
+                            </ol>
+                        </nav>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mb-3 d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary" @onclick="OpenCreateDirectoryModal">
+                            <span class="oi oi-plus mr-2" aria-hidden="true"></span>
+                            @( "ایجاد پوشه" )
+                        </button>
+                    </div>
+
+
+                    <div class="file-list" style="max-height: 400px; overflow-y: auto;">
+                        @if (BrowserResponse?.Items != null && BrowserResponse.Items.Any())
+                        {
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>نام</th>
+                                        <th>نوع</th>
+                                        <th>اندازه</th>
+                                        <th>تاریخ تغییر</th>
+                                        <th>عملیات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in BrowserResponse.Items)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (item.IsDirectory)
+                                                {
+                                                    <i class="oi oi-folder text-warning mr-2"></i>
+                                                    <a href="#" @onclick="() => NavigateToPath(item.Path)" @onclick:preventDefault>@item.Name</a>
+                                                }
+                                                else
+                                                {
+                                                    <i class="oi oi-file text-primary mr-2"></i>
+                                                    @item.Name
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.IsDirectory)
+                                                {
+                                                    <span class="badge badge-secondary">پوشه</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-info">@item.Extension.ToUpper()</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.IsDirectory)
+                                                {
+                                                    <span>-</span>
+                                                }
+                                                else
+                                                {
+                                                    @FormatFileSize(item.Size)
+                                                }
+                                            </td>
+                                            <td>@item.LastModified.ToString("yyyy/MM/dd HH:mm")</td>
+                                            <td>
+                                                @if (!item.IsDirectory)
+                                                {
+                                                    <button type="button" class="btn btn-sm btn-success" @onclick="() => SelectFile(item)">
+                                                        انتخاب
+                                                    </button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="text-center text-muted">
+                                <i class="oi oi-folder" style="font-size: 3rem;"></i>
+                                <p class="mt-2">هیچ فایلی در این مسیر یافت نشد</p>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="CloseModal">لغو</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Directory Modal -->
+<div class="modal fade @CreateDirectoryModalClass" id="createDirectoryModal" tabindex="-1" role="dialog" aria-labelledby="createDirectoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createDirectoryModalLabel">ایجاد پوشه جدید</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseCreateDirectoryModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="directoryName">نام پوشه:</label>
+                    <input type="text" class="form-control" id="directoryName" @bind="NewDirectoryName" @bind:event="oninput"
+                           placeholder="نام پوشه را وارد کنید" maxlength="50" />
+                    <small class="form-text text-muted">
+                        نام پوشه نمی‌تواند شامل کاراکترهای خاص مانند / \ : * ? " &lt; &gt; | باشد
+                    </small>
+                </div>
+                @if (!string.IsNullOrEmpty(CreateDirectoryError))
+                {
+                    <div class="alert alert-danger mt-2">
+                        @CreateDirectoryError
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="CloseCreateDirectoryModal">لغو</button>
+                <button type="button" class="btn btn-primary" @onclick="CreateDirectory" disabled="@(!CanCreateDirectory || IsCreatingDirectory)">
+                    @if (IsCreatingDirectory)
+                    {
+                        <span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+                        @( "در حال ایجاد..." )
+                    }
+                    else
+                    {
+                        @( "ایجاد پوشه" )
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
+    [Parameter] public EventCallback<string> OnFileSelected { get; set; }
+
+    [Inject] INotificationService NotificationService { get; set; }
+
+    private bool ShowBackdrop => IsVisible;
+    private string ModalClass => IsVisible ? "show d-block" : "";
+    private bool IsLoading = false;
+    private Models.FileBrowserResponse BrowserResponse;
+    private string CurrentPath = "";
+
+
+    // Directory creation properties
+    private bool ShowCreateDirectoryModal = false;
+    private string CreateDirectoryModalClass => ShowCreateDirectoryModal ? "show d-block" : "";
+    private string NewDirectoryName = "";
+    private bool IsCreatingDirectory = false;
+    private string CreateDirectoryError = "";
+    private bool CanCreateDirectory => !string.IsNullOrWhiteSpace(NewDirectoryName) && !IsCreatingDirectory;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsVisible && BrowserResponse == null)
+        {
+            await LoadFiles();
+        }
+    }
+
+    private async Task LoadFiles(string path = null)
+    {
+        IsLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            var url = "api/file/browse";
+            if (!string.IsNullOrEmpty(path))
+            {
+                url += $"?path={Uri.EscapeDataString(path)}";
+            }
+
+            // استفاده از الگوی WebClient پروژه
+            var response = await ClTool.WebClient.webClient.fetch<object, Models.FileBrowserResponse>(
+                url, HttpMethod.Get, null);
+
+            if (response != null && response.done) // استفاده از done بجای Success
+            {
+                BrowserResponse = response;
+                CurrentPath = response.CurrentPath;
+            }
+            else
+            {
+                await NotificationService.Warning(response?.text ?? "خطای نامشخص در بارگذاری فایل‌ها", "خطا در بارگذاری");
+            }
+        }
+        catch (Exception ex)
+        {
+            await NotificationService.Error($"خطا در بارگذاری فایل‌ها: {ex.Message}", "خطای اتصال");
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task NavigateToPath(string path)
+    {
+        await LoadFiles(path);
+    }
+
+    private async Task SelectFile(Models.FileBrowserItem item)
+    {
+        if (OnFileSelected.HasDelegate)
+        {
+            await OnFileSelected.InvokeAsync(item.Path);
+        }
+
+        await CloseModal();
+    }
+
+
+    private async Task CloseModal()
+    {
+        IsVisible = false;
+        await IsVisibleChanged.InvokeAsync(IsVisible);
+    }
+
+    private void OpenCreateDirectoryModal()
+    {
+        NewDirectoryName = "";
+        CreateDirectoryError = "";
+        ShowCreateDirectoryModal = true;
+        StateHasChanged();
+    }
+
+    private void CloseCreateDirectoryModal()
+    {
+        ShowCreateDirectoryModal = false;
+        NewDirectoryName = "";
+        CreateDirectoryError = "";
+        StateHasChanged();
+    }
+
+    private async Task CreateDirectory()
+    {
+        if (string.IsNullOrWhiteSpace(NewDirectoryName))
+        {
+            CreateDirectoryError = "نام پوشه نمی‌تواند خالی باشد";
+            return;
+        }
+
+        IsCreatingDirectory = true;
+        CreateDirectoryError = "";
+        StateHasChanged();
+
+        try
+        {
+            var url = $"api/file/createdir?path={Uri.EscapeDataString(CurrentPath ?? "")}&name={Uri.EscapeDataString(NewDirectoryName)}";
+
+            var response = await ClTool.WebClient.webClient.fetch<object, Models.FileBrowserResponse>(
+                url, HttpMethod.Post, null);
+
+            if (response != null && response.done)
+            {
+                // Update the file list with the response
+                BrowserResponse = response;
+                CurrentPath = response.CurrentPath;
+
+                // Close modal and show success message
+                CloseCreateDirectoryModal();
+
+                await NotificationService.Success($"پوشه '{NewDirectoryName}' با موفقیت ایجاد شد", "موفقیت");
+            }
+            else
+            {
+                CreateDirectoryError = response?.text ?? "خطا در ایجاد پوشه";
+            }
+        }
+        catch (Exception ex)
+        {
+            CreateDirectoryError = $"خطا در ایجاد پوشه: {ex.Message}";
+        }
+        finally
+        {
+            IsCreatingDirectory = false;
+            StateHasChanged();
+        }
+    }
+
+    private string FormatFileSize(long bytes)
+    {
+        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+        int order = 0;
+        double size = bytes;
+
+        while (size >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            size /= 1024;
+        }
+
+        return $"{size:0.##} {sizes[order]}";
+    }
+}

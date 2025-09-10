@@ -39,7 +39,61 @@ namespace AdminBaseComponenets.BaseComs
 
         public static long maxFileSize = 1024L * 1024L * 1024L * 2L;
         public Dictionary<string, State> Files { get; set; } = new Dictionary<string, State>();
+ public async Task<State> upload2(
+        IBrowserFile selectedFile,
+        string filesDirectory,
+        Action<State> onUploadSection,
+        Action<string> onSessionCreated = null,
+        Func<Exception, Task<ExpetainOut>> onException = null)
+    {
+        State uploadState = new State();
+        uploadState.fileSize = selectedFile.Size;
 
+        try
+        {
+            // 1. Create upload session
+            var sessionParams = new Models.CreateSessionParams()
+            {
+                FileName = selectedFile.Name,
+                dir = filesDirectory,
+                ChunkSize = 512 * 1024,
+                TotalSize = selectedFile.Size,
+                checkSum = "",
+                forceWrite = true
+            };
+
+            var oldBase = ClTool.WebClient.webClient;
+            var sessionResponse = await oldBase.fetch<Models.CreateSessionParams, Models.SessionCreationStatusResponse>(
+                "api/file/create", HttpMethod.Post, sessionParams);
+
+            if (onSessionCreated != null)
+                onSessionCreated(sessionResponse.FileName);
+
+            Files[sessionResponse.FileName] = uploadState;
+
+            // 2. Upload in chunks
+            Stream stream = selectedFile.OpenReadStream(maxFileSize);
+            int bufferSize = 512 * 1024;
+            byte[] buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(bufferSize);
+            int bytesRead;
+            int chunkIndex = 0;
+            upload(sessionResponse,selectedFile,onUploadSection,onException);
+          
+
+            uploadState.Completed = true;
+            onUploadSection?.Invoke(uploadState);
+
+            System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+        }
+        catch (Exception ex)
+        {
+            if (onException != null)
+                await onException(ex);
+        }
+
+        return uploadState;
+    }
+   
         public State upload(SessionCreationStatusResponse path, IBrowserFile selectedFile, Action<State> onUploadSection,Func<Exception,Task<ExpetainOut>> onException=null)
         {
             State upload1;
@@ -113,42 +167,64 @@ namespace AdminBaseComponenets.BaseComs
     {
 
         
-        MarkupString AlertMessage = new MarkupString("<strong>No file selected</strong>");
-    string AlertClass = "alert alert-info";
-    int ProgressPercentage = 0;
-    IBrowserFile selectedFile = null;
+        // Modal state for FileBrowser
+        private bool ShowFileBrowserModal = false;
     
-    [Parameter] 
-    public string[] allowedExtensions { get; set; }= [".zip", ".rar", ".png", ".jpg",".jpeg", ".mp3" ,".mp4",".apk",".ogg"];
-    bool IsUploadDisabled = true;
-    private Guid inputFileId = Guid.NewGuid();
-    private string cacheBuster = "";
-    protected void setNull(){
+        MarkupString AlertMessage = new MarkupString("<strong>No file selected</strong>");
+        string AlertClass = "alert alert-info";
+        int ProgressPercentage = 0;
+        IBrowserFile selectedFile = null;
+    
+        [Parameter]
+        public string[] allowedExtensions { get; set; }= [".zip", ".rar", ".png", ".jpg",".jpeg", ".mp3" ,".mp4",".apk",".ogg"];
+        bool IsUploadDisabled = true;
+        private Guid inputFileId = Guid.NewGuid();
+        private string cacheBuster = "";
+    
+        protected void setNull(){
             this.value=null;
             OnChange(value);
-    }
-    private void OnInputFileChange(InputFileChangeEventArgs e)
-    {
-        selectedFile = e.GetMultipleFiles()[0];
-        ProgressPercentage = 0;
-        IsUploadDisabled = true;
-
-        if (selectedFile.Size > FileUploader.maxFileSize)
-        {
-            SetAlert("alert alert-danger", "oi oi-ban", $"File size exceeds the limit. Maximum allowed size is <strong>{FileUploader.maxFileSize / (1024 * 1024)} MB</strong>.");
-            return;
         }
-
-        if (!allowedExtensions.Contains(Path.GetExtension(selectedFile.Name).ToLowerInvariant()))
+    
+        private void OnInputFileChange(InputFileChangeEventArgs e)
         {
-            SetAlert("alert alert-danger", "oi oi-warning", $"Invalid file type. Allowed file types are <strong>{string.Join(", ", allowedExtensions)}</strong>.");
-            return;
+            selectedFile = e.GetMultipleFiles()[0];
+            ProgressPercentage = 0;
+            IsUploadDisabled = true;
+    
+            if (selectedFile.Size > FileUploader.maxFileSize)
+            {
+                SetAlert("alert alert-danger", "oi oi-ban", $"File size exceeds the limit. Maximum allowed size is <strong>{FileUploader.maxFileSize / (1024 * 1024)} MB</strong>.");
+                return;
+            }
+    
+            if (!allowedExtensions.Contains(Path.GetExtension(selectedFile.Name).ToLowerInvariant()))
+            {
+                SetAlert("alert alert-danger", "oi oi-warning", $"Invalid file type. Allowed file types are <strong>{string.Join(", ", allowedExtensions)}</strong>.");
+                return;
+            }
+    
+            SetAlert("alert alert-info", "oi oi-info", $"<strong>{selectedFile.Name}</strong> ({selectedFile.Size} bytes) file selected.");
+            IsUploadDisabled = false;
         }
-
-        SetAlert("alert alert-info", "oi oi-info", $"<strong>{selectedFile.Name}</strong> ({selectedFile.Size} bytes) file selected.");
-        IsUploadDisabled = false;
-    }
-    [Inject] IToastService ToastService { get; set; }
+    
+        [Inject] IToastService ToastService { get; set; }
+    
+        // Handler for file selection from FileBrowser
+        private async Task OnFileSelectedFromBrowser(string filePath)
+        {
+            value = filePath;
+            OnChange(value);
+            ShowFileBrowserModal = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    
+        // Handler for closing the FileBrowser modal
+        private async Task OnFileBrowserModalClosed(bool visible)
+        {
+            ShowFileBrowserModal = visible;
+            await InvokeAsync(StateHasChanged);
+        }
 
     public static byte[] ReadToEnd(System.IO.Stream stream)
     {
@@ -277,6 +353,12 @@ namespace AdminBaseComponenets.BaseComs
     {
         AlertClass = alertClass;
         AlertMessage = new MarkupString($"<span class='{iconClass}' aria-hidden='true'></span> {message}");
+    }
+    // Opens the FileBrowser modal when "انتخاب از سرور" button is clicked
+    private void ShowFileBrowser()
+    {
+        ShowFileBrowserModal = true;
+        StateHasChanged();
     }
 
     }
