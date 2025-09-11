@@ -129,6 +129,34 @@
                                     }
                                 </tbody>
                             </table>
+                            <!-- Pagination Controls -->
+                            <div class="d-flex justify-content-center align-items-center mt-2">
+                                <button class="btn btn-sm btn-outline-secondary mx-1"
+                                        @onclick="PrevPage"
+                                        disabled="@(CurrentPage <= 1)">
+                                    قبلی
+                                </button>
+                                <span class="mx-2">
+                                    صفحه @CurrentPage از @TotalPages
+                                </span>
+                                <button class="btn btn-sm btn-outline-secondary mx-1"
+                                        @onclick="NextPage"
+                                        disabled="@(CurrentPage >= TotalPages)">
+                                    بعدی
+                                </button>
+                                <span class="mx-2">
+                                    (تعداد کل: @BrowserResponse.TotalCount)
+                                </span>
+                                <select class="form-control form-control-sm d-inline-block w-auto mx-2"
+                                        @onchange="OnPageSizeChanged"
+                                        value="@PageSize">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                <span class="mx-1">در هر صفحه</span>
+                            </div>
                         }
                         else
                         {
@@ -254,6 +282,13 @@
     private Models.FileBrowserResponse BrowserResponse;
     private string CurrentPath = "";
 
+    // Pagination properties
+    private int CurrentPage = 1;
+    private int PageSize = 50;
+    private int TotalPages => BrowserResponse != null && BrowserResponse.TotalCount > 0
+        ? (int)Math.Ceiling((double)BrowserResponse.TotalCount / PageSize)
+        : 1;
+
     // Directory creation properties
     private bool ShowCreateDirectoryModal = false;
     private string CreateDirectoryModalClass => ShowCreateDirectoryModal ? "show d-block" : "";
@@ -357,7 +392,7 @@
         }
     }
 
-    private async Task LoadFiles(string path = null)
+    private async Task LoadFiles(string path = null, int? page = null, int? pageSize = null)
     {
         IsLoading = true;
         StateHasChanged();
@@ -365,9 +400,18 @@
         try
         {
             var url = "api/file/browse";
+            var queryParams = new List<string>();
             if (!string.IsNullOrEmpty(path))
             {
-                url += $"?path={Uri.EscapeDataString(path)}";
+                queryParams.Add($"path={Uri.EscapeDataString(path)}");
+            }
+            int usePage = page ?? CurrentPage;
+            int usePageSize = pageSize ?? PageSize;
+            queryParams.Add($"page={usePage}");
+            queryParams.Add($"pageSize={usePageSize}");
+            if (queryParams.Count > 0)
+            {
+                url += "?" + string.Join("&", queryParams);
             }
 
             // استفاده از الگوی WebClient پروژه
@@ -378,6 +422,9 @@
             {
                 BrowserResponse = response;
                 CurrentPath = response.CurrentPath;
+                // Update page if needed (e.g., after directory change)
+                if (page != null) CurrentPage = usePage;
+                if (pageSize != null) PageSize = usePageSize;
             }
             else
             {
@@ -397,7 +444,8 @@
 
     private async Task NavigateToPath(string path)
     {
-        await LoadFiles(path);
+        CurrentPage = 1; // Reset to first page on directory change
+        await LoadFiles(path, 1, PageSize);
     }
 
     private async Task SelectFile(Models.FileBrowserItem item)
@@ -491,5 +539,31 @@
         }
 
         return $"{size:0.##} {sizes[order]}";
+    }
+    // Pagination event handlers
+    private async Task PrevPage()
+    {
+        if (CurrentPage > 1)
+        {
+            await LoadFiles(CurrentPath, CurrentPage - 1, PageSize);
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (BrowserResponse != null && CurrentPage < TotalPages)
+        {
+            await LoadFiles(CurrentPath, CurrentPage + 1, PageSize);
+        }
+    }
+
+    private async Task OnPageSizeChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int newSize) && newSize > 0)
+        {
+            PageSize = newSize;
+            CurrentPage = 1;
+            await LoadFiles(CurrentPath, 1, PageSize);
+        }
     }
 }
