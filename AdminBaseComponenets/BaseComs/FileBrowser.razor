@@ -318,7 +318,13 @@
                     UploadProgress = state.ProgressPercentage;
                     StateHasChanged();
                 },
-                null,
+                async (ex) =>
+                {
+                    await NotificationService.Success($"فایل '{SelectedUploadFile.Name}' با موفقیت آپلود شد", "موفقیت");
+                    StateHasChanged();
+                    CloseUploadFileModal();
+                    await LoadFiles(CurrentPath);
+                },
                 async (ex) =>
                 {
                     UploadFileError = $"خطا در آپلود فایل: {ex.Message}";
@@ -328,9 +334,9 @@
                 }
             );
 
-            await NotificationService.Success($"فایل '{SelectedUploadFile.Name}' با موفقیت آپلود شد", "موفقیت");
-            CloseUploadFileModal();
-            await LoadFiles(CurrentPath);
+           
+           
+           
         }
         catch (Exception ex)
         {
