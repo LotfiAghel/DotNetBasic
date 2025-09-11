@@ -51,16 +51,21 @@ namespace Models
         /// Current directory path
         /// </summary>
         public string CurrentPath { get; set; }
-
+    
         /// <summary>
-        /// List of files and directories
+        /// List of files and directories (paged)
         /// </summary>
         public List<FileBrowserItem> Items { get; set; } = new List<FileBrowserItem>();
-
+    
         /// <summary>
         /// Parent directory path (null if at root)
         /// </summary>
         public string ParentPath { get; set; }
+    
+        /// <summary>
+        /// Total number of items in the directory (for pagination)
+        /// </summary>
+        public int TotalCount { get; set; }
     }
 
     /// <summary>
