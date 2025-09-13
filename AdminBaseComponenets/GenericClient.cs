@@ -13,6 +13,9 @@ namespace ClTool2
 
     public class WebClient : ClTool.WebClient
     {
+        // Callback for forbidden (403) responses
+        public static Action onForbidden;
+
 
 
 
@@ -29,7 +32,7 @@ namespace ClTool2
         }
         public override void LoadCookie()
         {
-            
+
         }
         public override async Task<MyHttpResponse> fetch014(string url, string payload, HttpMethod method)
         {
@@ -42,6 +45,8 @@ namespace ClTool2
             Console.WriteLine("CLtool2 fetch url " + url);
             using (var client = new HttpClient(handler))
             {
+
+
 
 
                 client.BaseAddress = new Uri(baseUrl);
@@ -62,7 +67,6 @@ namespace ClTool2
 
 
 
-
                 Console.WriteLine("go to client.SendAsync(request)");
                 var result = await client.SendAsync(request);
                 Console.WriteLine("come from client.SendAsync(request)");
@@ -72,6 +76,10 @@ namespace ClTool2
                 {
                     onLogout.Invoke();
                 }
+                else if (result.StatusCode == HttpStatusCode.Forbidden && onForbidden != null)
+                {
+                    onForbidden.Invoke();
+                }
 
 
                 var ss = new MyHttpResponse()
@@ -79,7 +87,7 @@ namespace ClTool2
                     body = await result.Content.ReadAsStringAsync(),
                     header = new()
                 };
-                
+
                 foreach (var i in result.Content.Headers)
                 {
                     Console.WriteLine(i.Key);
@@ -88,7 +96,7 @@ namespace ClTool2
                 }
                 return ss;
             }
-            
+
 
 
         }
@@ -114,10 +122,9 @@ namespace ClTool2
                 {
                     Content = content
                 };
-               
+
                 request.Headers.Add("Access-Control-Allow-Credentials", "include");
                 request.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
-
 
 
 
@@ -131,15 +138,19 @@ namespace ClTool2
                 {
                     onLogout.Invoke();
                 }
+                else if (result.StatusCode == HttpStatusCode.Forbidden && onForbidden != null)
+                {
+                    onForbidden.Invoke();
+                }
 
-                
+
                 string resultContent = await result.Content.ReadAsStringAsync();
                 return resultContent;
             }
 
 
         }
-        
+
            public override async Task<UploadResult> uploadFileSection(string url, string sId, int chunkNumber, byte[] fileContent,int l)
         {
             using var content = new MultipartFormDataContent();
@@ -157,8 +168,9 @@ namespace ClTool2
             {
 
 
-                client.BaseAddress = new Uri(baseUrl);
 
+
+                client.BaseAddress = new Uri(baseUrl);
 
 
 
@@ -184,7 +196,7 @@ namespace ClTool2
         }
 
 
-        
+
         public override async Task<ClTool.UploadResult> sendFile(string url, MultipartFormDataContent content)
         {
             HttpClientHandler handler = new HttpClientHandler();
@@ -193,6 +205,8 @@ namespace ClTool2
             Console.WriteLine("fetch url " + url);
             using (var client = new HttpClient(handler))
             {
+
+
 
 
                 client.BaseAddress = new Uri(baseUrl);
@@ -219,6 +233,45 @@ namespace ClTool2
             }
 
 
+        }
+
+        public virtual async Task<Models.FileBrowserResponse> browseFiles(string url, string path = null, bool includeHidden = false)
+        {
+            HttpClientHandler handler = new HttpClientHandler();
+
+            Console.WriteLine("browse files url " + url);
+
+            // Build query parameters
+            var queryParams = new System.Collections.Generic.List<string>();
+            if (!string.IsNullOrEmpty(path))
+            {
+                queryParams.Add($"path={Uri.EscapeDataString(path)}");
+            }
+            if (includeHidden)
+            {
+                queryParams.Add($"includeHidden={includeHidden.ToString().ToLower()}");
+            }
+
+            var fullUrl = url;
+            if (queryParams.Any())
+            {
+                fullUrl += "?" + string.Join("&", queryParams);
+            }
+
+            using (var client = new HttpClient(handler))
+            {
+                client.BaseAddress = new Uri(baseUrl);
+
+                var request = new HttpRequestMessage(HttpMethod.Get, baseUrl + fullUrl);
+
+                request.Headers.Add("Access-Control-Allow-Credentials", "include");
+                request.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
+
+                var result = await client.SendAsync(request);
+
+                string resultContent = await result.Content.ReadAsStringAsync();
+                return JToken.Parse(resultContent).ToObject<Models.FileBrowserResponse>();
+            }
         }
 
 
