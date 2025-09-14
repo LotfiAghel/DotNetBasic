@@ -256,6 +256,26 @@ namespace AdminBaseComponenets.BaseComs
             }
         }
 
+        // Audio playback state
+        protected string PlayingAudioPath { get; set; } = null;
+        protected ElementReference audioRef;
+
+        protected void PlayAudio(Models.FileBrowserItem item)
+        {
+            PlayingAudioPath = item.Path;
+            StateHasChanged();
+        }
+
+        protected bool IsPlayingAudio(Models.FileBrowserItem item)
+        {
+            return PlayingAudioPath == item.Path;
+        }
+
+        protected void OnAudioEnded()
+        {
+            PlayingAudioPath = null;
+            StateHasChanged();
+        }
         protected void OpenCreateDirectoryModal()
         {
             NewDirectoryName = "";

@@ -116,6 +116,16 @@
                                                          loading="lazy"
                                                          onerror="this.onerror=null;this.src='/images/image-placeholder.png';" />
                                                 }
+                                                else if (!item.IsDirectory && IsAudioFile(item.Extension))
+                                                {
+                                                    <button class="btn btn-link p-0" title="Play Audio" @onclick="() => PlayAudio(item)">
+                                                        <span class="oi oi-media-play" style="font-size: 1.5rem;"></span>
+                                                    </button>
+                                                    @if (IsPlayingAudio(item))
+                                                    {
+                                                        <audio @ref="audioRef" src="@GetAudioUrl(item.Path)" autoplay @onended="OnAudioEnded"></audio>
+                                                    }
+                                                }
                                             </td>
                                             <td>
                                                 @if (item.IsDirectory)
