@@ -2,7 +2,7 @@
 @using Blazorise.Snackbar
 @using System.Linq
 
-<div class="modal fade @ModalClass" id="fileBrowserModal" tabindex="-1" role="dialog" aria-labelledby="fileBrowserModalLabel" aria-hidden="true">
+<div class="modal fade @ModalClass" id="fileBrowserModal" tabindex="-1" role="dialog" aria-labelledby="fileBrowserModalLabel" aria-hidden="@(!IsVisible).ToString().ToLower()">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -67,12 +67,19 @@
                     </div>
 
 
+                    <!-- Search box for filtering files -->
+                    <div class="mb-2">
+                        <input class="form-control" type="text" placeholder="جستجو در نام فایل‌ها..."
+                               @bind="SearchTerm" @bind:event="oninput"
+                               style="max-width: 300px; display: inline-block;" />
+                    </div>
                     <div class="file-list" style="max-height: 400px; overflow-y: auto;">
                         @if (BrowserResponse?.Items != null && BrowserResponse.Items.Any())
                         {
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
+                                        <th>تصویر</th>
                                         <th>نام</th>
                                         <th>نوع</th>
                                         <th>اندازه</th>
@@ -84,6 +91,15 @@
                                     @foreach (var item in BrowserResponse.Items)
                                     {
                                         <tr>
+                                            <td>
+                                                @if (!item.IsDirectory && IsImageFile(item.Extension))
+                                                {
+                                                    <img src="@GetThumbnailUrl(item.Path)" alt="thumbnail"
+                                                         style="width:40px;height:40px;object-fit:cover;vertical-align:middle;"
+                                                         loading="lazy"
+                                                         onerror="this.onerror=null;this.src='/images/image-placeholder.png';" />
+                                                }
+                                            </td>
                                             <td>
                                                 @if (item.IsDirectory)
                                                 {
@@ -409,6 +425,10 @@
             int usePageSize = pageSize ?? PageSize;
             queryParams.Add($"page={usePage}");
             queryParams.Add($"pageSize={usePageSize}");
+            if (!string.IsNullOrWhiteSpace(SearchTerm))
+            {
+                queryParams.Add($"search={Uri.EscapeDataString(SearchTerm)}");
+            }
             if (queryParams.Count > 0)
             {
                 url += "?" + string.Join("&", queryParams);
@@ -565,5 +585,42 @@
             CurrentPage = 1;
             await LoadFiles(CurrentPath, 1, PageSize);
         }
+    }
+    // ... rest of the code ...
+
+    // Search/filter state
+    private string _searchTerm = "";
+    private string SearchTerm
+    {
+        get => _searchTerm;
+        set
+        {
+            if (_searchTerm != value)
+            {
+                _searchTerm = value;
+                CurrentPage = 1;
+                // Fire and forget, don't await in setter
+                _ = LoadFiles(CurrentPath, 1, PageSize);
+            }
+        }
+    }
+
+    private async Task OnSearchChanged(ChangeEventArgs e)
+    {
+        CurrentPage = 1;
+        await LoadFiles(CurrentPath, 1, PageSize);
+    }
+    private bool IsImageFile(string extension)
+    {
+        if (string.IsNullOrWhiteSpace(extension)) return false;
+        var ext = extension.Trim().ToLower();
+        // Backend returns extension without dot
+        return ext == "jpg" || ext == "jpeg" || ext == "png" || ext == "gif" || ext == "bmp" || ext == "webp";
+    }
+
+    private string GetThumbnailUrl(string path)
+    {
+         
+         return $"{ClTool.WebClient.webClient.baseUrl}/Upload/{path}";
     }
 }
