@@ -3,19 +3,14 @@
 @using System.Linq
 <ModalHeader>
     <ModalTitle>
-        write all options to create
+        انتخاب فایل از سرور
     </ModalTitle>
     <CloseButton />
 </ModalHeader>
 <ModalBody>
 <div>
     <div class="filebrowser-form">
-        <div class="header">
-            <h5>انتخاب فایل از سرور</h5>
-            <button type="button" class="close" @onclick="OnCancelClicked">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+        
         <div class="body">
                 @if (IsLoading)
                 {
@@ -29,35 +24,52 @@
                 else
                 {
                     <div class="mb-3">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item">
-                                    <a href="#" @onclick="() => NavigateToPath(null)" @onclick:preventDefault>ریشه</a>
-                                </li>
-                                @if (!string.IsNullOrEmpty(CurrentPath))
-                                {
-                                    var pathParts = CurrentPath.Split('/').Where(p => !string.IsNullOrEmpty(p)).ToArray();
-                                    var currentBuildPath = "";
-                                    for (int i = 0; i < pathParts.Length; i++)
+                        <div class="d-flex align-items-center mb-1">
+                            <nav aria-label="breadcrumb" class="flex-grow-1 mb-0">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item">
+                                        <a href="#" @onclick="() => NavigateToPath(null)" @onclick:preventDefault>ریشه</a>
+                                    </li>
+                                    @if (!string.IsNullOrEmpty(CurrentPath))
                                     {
-                                        currentBuildPath += pathParts[i];
-                                        var displayPath = currentBuildPath;
-                                        <li class="breadcrumb-item @(i == pathParts.Length - 1 ? "active" : "")">
-                                            @if (i < pathParts.Length - 1)
-                                            {
-                                                <a href="#" @onclick="() => NavigateToPath(displayPath)" @onclick:preventDefault>@pathParts[i]</a>
-                                            }
-                                            else
-                                            {
-                                                @pathParts[i]
-                                            }
-                                        </li>
-                                        currentBuildPath += "/";
+                                        var pathParts = CurrentPath.Split('/').Where(p => !string.IsNullOrEmpty(p)).ToArray();
+                                        var currentBuildPath = "";
+                                        for (int i = 0; i < pathParts.Length; i++)
+                                        {
+                                            currentBuildPath += pathParts[i];
+                                            var displayPath = currentBuildPath;
+                                            <li class="breadcrumb-item @(i == pathParts.Length - 1 ? "active" : "")">
+                                                @if (i < pathParts.Length - 1)
+                                                {
+                                                    <a href="#" @onclick="() => NavigateToPath(displayPath)" @onclick:preventDefault>@pathParts[i]</a>
+                                                }
+                                                else
+                                                {
+                                                    @pathParts[i]
+                                                }
+                                            </li>
+                                            currentBuildPath += "/";
+                                        }
                                     }
-                                }
-                            </ol>
-                        </nav>
+                                </ol>
+                            </nav>
+                            <button class="btn btn-sm btn-outline-success ms-2" title="افزودن به بوکمارک" style="font-size:1.1rem;padding:2px 6px;" @onclick="AddQuickAccess">
+                                +
+                            </button>
+                        </div>
                     </div>
+                    @if (QuickAccessDirs.Count > 0)
+                    {
+                        <div class="mt-2 border-top pt-2 d-flex flex-wrap align-items-center" style="font-size:0.95rem;">
+                            <span class="me-2 text-muted" style="font-size:0.95rem;">بوکمارک‌ها:</span>
+                            @foreach (var quick in QuickAccessDirs)
+                            {
+                                <button class="btn btn-sm btn-outline-secondary me-1 mb-1" style="font-size:0.95rem;padding:2px 8px;" title="@quick" @onclick="() => NavigateToPath(quick)">
+                                    @System.IO.Path.GetFileName(quick)
+                                </button>
+                            }
+                        </div>
+                    }
 
                     <!-- Action Buttons -->
                     <div class="mb-3 d-flex gap-2">
@@ -185,6 +197,7 @@
                                 <i class="oi oi-folder" style="font-size: 3rem;"></i>
                                 <p class="mt-2">هیچ فایلی در این مسیر یافت نشد</p>
                             </div>
+                            
                         }
                     </div>
                 }
@@ -288,5 +301,5 @@
 </ModalBody>
 <ModalFooter>
     
-    <Button Color="Color.Secondary" Clicked="ModalService.Hide">Close</Button>
+    <Button Color="Color.Secondary" Clicked="OnCancelClicked">Close</Button>
 </ModalFooter>
