@@ -59,32 +59,16 @@ else
         </form>
         <div class="flex-shrink-0 d-flex gap-2">
             <!-- Upload and file browser buttons are available when used in AdminClient context -->
-            <button type="button" class="btn btn-outline-primary" @onclick="ShowFileBrowser">
+            <button type="button" class="btn btn-outline-primary" @onclick="ShowFileBrowserModal">
                 <span class="oi oi-folder" aria-hidden="true"></span> انتخاب از سرور
             </button>
         </div>
     </div>
-@if (ShowFileBrowserModal)
-{
-    <FileBrowser IsVisible="ShowFileBrowserModal"
-                 IsVisibleChanged="OnFileBrowserModalClosed"
-                 OnFileSelected="OnFileSelectedFromBrowser" />
-}
 }
 
 <!-- FileBrowser and FileUploadModal components are available in AdminClient project -->
 
 @code
 {
-    [CascadingParameter(Name="FilesDirectory")]
-    public string FilesDirectory { get; set; }
 
-    [CascadingParameter(Name = "FilesDownloadDirectory")]
-    public string FilesDownloadDirectory { get; set; } = "Upload";
-
-    // Note: FileBrowser and FileUploadModal components are available in AdminClient project
-    // These would be used when FileUploadBig is used in AdminClient context
-
-    // Note: FileBrowser and FileUploadModal functionality is available in AdminClient project
-    // When FileUploadBig is used in AdminClient context, these methods would be implemented
 }

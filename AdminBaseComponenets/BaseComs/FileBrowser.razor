@@ -2,16 +2,16 @@
 @using Blazorise.Snackbar
 @using System.Linq
 
-<div class="modal fade @ModalClass" id="fileBrowserModal" tabindex="-1" role="dialog" aria-labelledby="fileBrowserModalLabel" aria-hidden="@(!IsVisible).ToString().ToLower()">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="fileBrowserModalLabel">انتخاب فایل از سرور2</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseModal">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
+
+<div>
+    <div class="filebrowser-form">
+        <div class="header">
+            <h5>انتخاب فایل از سرور</h5>
+            <button type="button" class="close" @onclick="OnCancelClicked">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="body">
                 @if (IsLoading)
                 {
                     <div class="text-center">
@@ -136,7 +136,7 @@
                                             <td>
                                                 @if (!item.IsDirectory)
                                                 {
-                                                    <button type="button" class="btn btn-sm btn-success" @onclick="() => SelectFile(item)">
+                                                    <button type="button" class="btn btn-sm btn-success" @onclick="() => OnSuccessClicked(item)">
                                                         انتخاب
                                                     </button>
                                                 }
@@ -184,12 +184,12 @@
                     </div>
                 }
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @onclick="CloseModal">لغو</button>
+            <div class="footer">
+                <button type="button" class="btn btn-secondary" @onclick="OnCancelClicked">لغو</button>
             </div>
         </div>
     </div>
-</div>
+
 
 <!-- Create Directory Modal -->
 <div class="modal fade @CreateDirectoryModalClass" id="createDirectoryModal" tabindex="-1" role="dialog" aria-labelledby="createDirectoryModalLabel" aria-hidden="true">
@@ -280,347 +280,3 @@
     </div>
 </div>
 
-@if (ShowBackdrop)
-{
-    <div class="modal-backdrop fade show"></div>
-}
-
-@code {
-    [Parameter] public bool IsVisible { get; set; }
-    [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
-    [Parameter] public EventCallback<string> OnFileSelected { get; set; }
-
-    [Inject] INotificationService NotificationService { get; set; }
-
-    private bool ShowBackdrop => IsVisible;
-    private string ModalClass => IsVisible ? "show d-block" : "";
-    private bool IsLoading = false;
-    private Models.FileBrowserResponse BrowserResponse;
-    private string CurrentPath = "";
-
-    // Pagination properties
-    private int CurrentPage = 1;
-    private int PageSize = 50;
-    private int TotalPages => BrowserResponse != null && BrowserResponse.TotalCount > 0
-        ? (int)Math.Ceiling((double)BrowserResponse.TotalCount / PageSize)
-        : 1;
-
-    // Directory creation properties
-    private bool ShowCreateDirectoryModal = false;
-    private string CreateDirectoryModalClass => ShowCreateDirectoryModal ? "show d-block" : "";
-    private string NewDirectoryName = "";
-    private bool IsCreatingDirectory = false;
-    private string CreateDirectoryError = "";
-    private bool CanCreateDirectory => !string.IsNullOrWhiteSpace(NewDirectoryName) && !IsCreatingDirectory;
-
-    // Upload file modal properties
-    private bool ShowUploadFileModal = false;
-    private IBrowserFile SelectedUploadFile = null;
-    private bool IsUploadingFile = false;
-    private int UploadProgress = 0;
-    private string UploadFileError = "";
-
-    private void OpenUploadFileModal()
-    {
-        SelectedUploadFile = null;
-        UploadFileError = "";
-        UploadProgress = 0;
-        ShowUploadFileModal = true;
-        StateHasChanged();
-    }
-
-    private void CloseUploadFileModal()
-    {
-        ShowUploadFileModal = false;
-        SelectedUploadFile = null;
-        UploadFileError = "";
-        UploadProgress = 0;
-        StateHasChanged();
-    }
-
-    private void OnUploadFileInputChange(InputFileChangeEventArgs e)
-    {
-        SelectedUploadFile = e.File;
-        UploadFileError = "";
-        UploadProgress = 0;
-    }
-
-    private async Task UploadFile()
-    {
-        if (SelectedUploadFile == null)
-        {
-            UploadFileError = "لطفا یک فایل انتخاب کنید.";
-            return;
-        }
-
-        IsUploadingFile = true;
-        UploadFileError = "";
-        UploadProgress = 0;
-        StateHasChanged();
-
-        try
-        {
-            // Use FileUploader.instnace.upload2 for upload with progress
-            await FileUploader.instnace.upload2(
-                SelectedUploadFile,
-                CurrentPath,
-                (state) =>
-                {
-                    UploadProgress = state.ProgressPercentage;
-                    StateHasChanged();
-                },
-                async (ex) =>
-                {
-                    await NotificationService.Success($"فایل '{SelectedUploadFile.Name}' با موفقیت آپلود شد", "موفقیت");
-                    StateHasChanged();
-                    CloseUploadFileModal();
-                    await LoadFiles(CurrentPath);
-                },
-                async (ex) =>
-                {
-                    UploadFileError = $"خطا در آپلود فایل: {ex.Message}";
-                    StateHasChanged();
-                    // Do not retry
-                    return new FileUploader.ExpetainOut { Retry = false };
-                }
-            );
-
-           
-           
-           
-        }
-        catch (Exception ex)
-        {
-            UploadFileError = $"خطا در آپلود فایل: {ex.Message}";
-        }
-        finally
-        {
-            IsUploadingFile = false;
-            StateHasChanged();
-        }
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (IsVisible && BrowserResponse == null)
-        {
-            await LoadFiles();
-        }
-    }
-
-    private async Task LoadFiles(string path = null, int? page = null, int? pageSize = null)
-    {
-        IsLoading = true;
-        StateHasChanged();
-
-        try
-        {
-            var url = "api/file/browse";
-            var queryParams = new List<string>();
-            if (!string.IsNullOrEmpty(path))
-            {
-                queryParams.Add($"path={Uri.EscapeDataString(path)}");
-            }
-            int usePage = page ?? CurrentPage;
-            int usePageSize = pageSize ?? PageSize;
-            queryParams.Add($"page={usePage}");
-            queryParams.Add($"pageSize={usePageSize}");
-            if (!string.IsNullOrWhiteSpace(SearchTerm))
-            {
-                queryParams.Add($"search={Uri.EscapeDataString(SearchTerm)}");
-            }
-            if (queryParams.Count > 0)
-            {
-                url += "?" + string.Join("&", queryParams);
-            }
-
-            // استفاده از الگوی WebClient پروژه
-            var response = await ClTool.WebClient.webClient.fetch<object, Models.FileBrowserResponse>(
-                url, HttpMethod.Get, null);
-
-            if (response != null && response.done) // استفاده از done بجای Success
-            {
-                BrowserResponse = response;
-                CurrentPath = response.CurrentPath;
-                // Update page if needed (e.g., after directory change)
-                if (page != null) CurrentPage = usePage;
-                if (pageSize != null) PageSize = usePageSize;
-            }
-            else
-            {
-                await NotificationService.Warning(response?.text ?? "خطای نامشخص در بارگذاری فایل‌ها", "خطا در بارگذاری");
-            }
-        }
-        catch (Exception ex)
-        {
-            await NotificationService.Error($"خطا در بارگذاری فایل‌ها: {ex.Message}", "خطای اتصال");
-        }
-        finally
-        {
-            IsLoading = false;
-            StateHasChanged();
-        }
-    }
-
-    private async Task NavigateToPath(string path)
-    {
-        CurrentPage = 1; // Reset to first page on directory change
-        await LoadFiles(path, 1, PageSize);
-    }
-
-    private async Task SelectFile(Models.FileBrowserItem item)
-    {
-        if (OnFileSelected.HasDelegate)
-        {
-            await OnFileSelected.InvokeAsync(item.Path);
-        }
-
-        await CloseModal();
-    }
-
-    private async Task CloseModal()
-    {
-        IsVisible = false;
-        await IsVisibleChanged.InvokeAsync(IsVisible);
-    }
-
-    private void OpenCreateDirectoryModal()
-    {
-        NewDirectoryName = "";
-        CreateDirectoryError = "";
-        ShowCreateDirectoryModal = true;
-        StateHasChanged();
-    }
-
-    private void CloseCreateDirectoryModal()
-    {
-        ShowCreateDirectoryModal = false;
-        NewDirectoryName = "";
-        CreateDirectoryError = "";
-        StateHasChanged();
-    }
-
-    private async Task CreateDirectory()
-    {
-        if (string.IsNullOrWhiteSpace(NewDirectoryName))
-        {
-            CreateDirectoryError = "نام پوشه نمی‌تواند خالی باشد";
-            return;
-        }
-
-        IsCreatingDirectory = true;
-        CreateDirectoryError = "";
-        StateHasChanged();
-
-        try
-        {
-            var url = $"api/file/createdir?path={Uri.EscapeDataString(CurrentPath ?? "")}&name={Uri.EscapeDataString(NewDirectoryName)}";
-
-            var response = await ClTool.WebClient.webClient.fetch<object, Models.FileBrowserResponse>(
-                url, HttpMethod.Post, null);
-
-            if (response != null && response.done)
-            {
-                // Update the file list with the response
-                BrowserResponse = response;
-                CurrentPath = response.CurrentPath;
-
-                // Close modal and show success message
-                CloseCreateDirectoryModal();
-
-                await NotificationService.Success($"پوشه '{NewDirectoryName}' با موفقیت ایجاد شد", "موفقیت");
-            }
-            else
-            {
-                CreateDirectoryError = response?.text ?? "خطا در ایجاد پوشه";
-            }
-        }
-        catch (Exception ex)
-        {
-            CreateDirectoryError = $"خطا در ایجاد پوشه: {ex.Message}";
-        }
-        finally
-        {
-            IsCreatingDirectory = false;
-            StateHasChanged();
-        }
-    }
-
-    private string FormatFileSize(long bytes)
-    {
-        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
-        int order = 0;
-        double size = bytes;
-
-        while (size >= 1024 && order < sizes.Length - 1)
-        {
-            order++;
-            size /= 1024;
-        }
-
-        return $"{size:0.##} {sizes[order]}";
-    }
-    // Pagination event handlers
-    private async Task PrevPage()
-    {
-        if (CurrentPage > 1)
-        {
-            await LoadFiles(CurrentPath, CurrentPage - 1, PageSize);
-        }
-    }
-
-    private async Task NextPage()
-    {
-        if (BrowserResponse != null && CurrentPage < TotalPages)
-        {
-            await LoadFiles(CurrentPath, CurrentPage + 1, PageSize);
-        }
-    }
-
-    private async Task OnPageSizeChanged(ChangeEventArgs e)
-    {
-        if (int.TryParse(e.Value?.ToString(), out int newSize) && newSize > 0)
-        {
-            PageSize = newSize;
-            CurrentPage = 1;
-            await LoadFiles(CurrentPath, 1, PageSize);
-        }
-    }
-    // ... rest of the code ...
-
-    // Search/filter state
-    private string _searchTerm = "";
-    private string SearchTerm
-    {
-        get => _searchTerm;
-        set
-        {
-            if (_searchTerm != value)
-            {
-                _searchTerm = value;
-                CurrentPage = 1;
-                // Fire and forget, don't await in setter
-                _ = LoadFiles(CurrentPath, 1, PageSize);
-            }
-        }
-    }
-
-    private async Task OnSearchChanged(ChangeEventArgs e)
-    {
-        CurrentPage = 1;
-        await LoadFiles(CurrentPath, 1, PageSize);
-    }
-    private bool IsImageFile(string extension)
-    {
-        if (string.IsNullOrWhiteSpace(extension)) return false;
-        var ext = extension.Trim().ToLower();
-        // Backend returns extension without dot
-        return ext == "jpg" || ext == "jpeg" || ext == "png" || ext == "gif" || ext == "bmp" || ext == "webp";
-    }
-
-    private string GetThumbnailUrl(string path)
-    {
-         
-         return $"{ClTool.WebClient.webClient.baseUrl}/Upload/{path}";
-    }
-}

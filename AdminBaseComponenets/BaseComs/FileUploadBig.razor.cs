@@ -15,7 +15,7 @@ namespace AdminBaseComponenets.BaseComs
 
         
         // Modal state for FileBrowser
-        private bool ShowFileBrowserModal = false;
+        
     
         MarkupString AlertMessage = new MarkupString("<strong>No file selected</strong>");
         string AlertClass = "alert alert-info";
@@ -58,20 +58,16 @@ namespace AdminBaseComponenets.BaseComs
         [Inject] IToastService ToastService { get; set; }
     
         // Handler for file selection from FileBrowser
-        private async Task OnFileSelectedFromBrowser(string filePath)
+        public Task OnFileSelectedFromBrowser(string filePath)
         {
             value = filePath;
             OnChange(value);
-            ShowFileBrowserModal = false;
-            await InvokeAsync(StateHasChanged);
+            
+            return InvokeAsync(StateHasChanged);
         }
     
         // Handler for closing the FileBrowser modal
-        private async Task OnFileBrowserModalClosed(bool visible)
-        {
-            ShowFileBrowserModal = visible;
-            await InvokeAsync(StateHasChanged);
-        }
+        
 
     public static byte[] ReadToEnd(System.IO.Stream stream)
     {
@@ -202,10 +198,31 @@ namespace AdminBaseComponenets.BaseComs
         AlertMessage = new MarkupString($"<span class='{iconClass}' aria-hidden='true'></span> {message}");
     }
     // Opens the FileBrowser modal when "انتخاب از سرور" button is clicked
-    private void ShowFileBrowser()
+    
+    
+    [CascadingParameter(Name="FilesDirectory")]
+    public string FilesDirectory { get; set; }
+
+    [CascadingParameter(Name = "FilesDownloadDirectory")]
+    public string FilesDownloadDirectory { get; set; } = "Upload";
+
+    // Note: FileBrowser and FileUploadModal components are available in AdminClient project
+    // These would be used when FileUploadBig is used in AdminClient context
+
+    // Note: FileBrowser and FileUploadModal functionality is available in AdminClient project
+    // When FileUploadBig is used in AdminClient context, these methods would be implemented
+    [Inject] public IModalService ModalService { get; set; }
+
+    private async Task ShowFileBrowserModal()
     {
-        ShowFileBrowserModal = true;
-        StateHasChanged();
+        var options = new ModalInstanceOptions()
+        {
+            UseModalStructure = false
+        };
+        await ModalService.Show<FileBrowser>(x =>
+        {
+            x.Add(fileBrowser => fileBrowser.OnSuccess, OnFileSelectedFromBrowser);
+        }, options);
     }
 
     }
