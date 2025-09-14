@@ -1,8 +1,13 @@
 @using System.Net.Http
 @using Blazorise.Snackbar
 @using System.Linq
-
-
+<ModalHeader>
+    <ModalTitle>
+        write all options to create
+    </ModalTitle>
+    <CloseButton />
+</ModalHeader>
+<ModalBody>
 <div>
     <div class="filebrowser-form">
         <div class="header">
@@ -280,3 +285,8 @@
     </div>
 </div>
 
+</ModalBody>
+<ModalFooter>
+    
+    <Button Color="Color.Secondary" Clicked="ModalService.Hide">Close</Button>
+</ModalFooter>

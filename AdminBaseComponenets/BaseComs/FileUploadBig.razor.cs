@@ -217,6 +217,8 @@ namespace AdminBaseComponenets.BaseComs
     {
         var options = new ModalInstanceOptions()
         {
+            Size = ModalSize.Large,
+            
             UseModalStructure = false
         };
         await ModalService.Show<FileBrowser>(x =>
