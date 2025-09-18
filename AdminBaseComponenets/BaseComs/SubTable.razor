@@ -19,7 +19,7 @@
     <Button Color="Color.Primary" Clicked="@ShowModal">create new</Button>
 }
 @if(value!=null){
-    <DataListSyncfusion TItem=TItem TKEY=TKEY value=@value> </DataListSyncfusion>
+    <DataListBlazorise TItem=TItem TKEY=TKEY value=@value> </DataListBlazorise>
 }else{
     Click();
     if(ButtonState.Length<3)

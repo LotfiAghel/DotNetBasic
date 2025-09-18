@@ -1166,7 +1166,7 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, GridShow>();
                     if (x != null)
                     {
-                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0],Program0.getKeyType(type.GetGenericArguments()[0]));
+                        return typeof(AdminBaseComponenets.BaseComs.DataListBlazorise<,>).MakeGenericType(type.GetGenericArguments()[0],Program0.getKeyType(type.GetGenericArguments()[0]));
                     }
                 }
                 {
@@ -1203,7 +1203,7 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, GridShow>();
                     if (x != null)
                     {
-                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0]);
+                        return typeof(AdminBaseComponenets.BaseComs.DataListBlazorise<,>).MakeGenericType(type.GetGenericArguments()[0]);
                     }
                 }
 
@@ -1238,7 +1238,7 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, GridShow>();
                     if (x != null)
                     {
-                        return typeof(AdminBaseComponenets.BaseComs.DataListSyncfusion<,>).MakeGenericType(type.GetGenericArguments()[0]);
+                        return typeof(AdminBaseComponenets.BaseComs.DataListBlazorise<,>).MakeGenericType(type.GetGenericArguments()[0]);
                     }
                 }
 

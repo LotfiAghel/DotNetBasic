@@ -19,7 +19,7 @@ using AdminClientViewModels;
 namespace AdminBaseComponenets.BaseComs
 {
     
-    public partial class DataListSyncfusion<TItem,TKEY> : NullableInput2<IReadOnlyCollection<TItem>>
+    public partial class DataListBlazorise<TItem,TKEY> : NullableInput2<IReadOnlyCollection<TItem>>
          where TItem : class, Models.IIdMapper<TKEY>
             where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
