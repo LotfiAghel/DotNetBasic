@@ -236,7 +236,7 @@ namespace AdminBaseComponenets.BaseComs
         protected async Task NavigateToPath(string path)
         {
             CurrentPage = 1;
-            SearchTerm = ""; // Reset search box when folder changes
+            _searchTerm = ""; // Reset search box when folder changes
             await LoadFiles(path, 1, PageSize);
         }
 
