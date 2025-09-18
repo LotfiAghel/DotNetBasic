@@ -14,6 +14,7 @@ namespace AdminBaseComponenets.BaseComs
     {
         [Parameter] public Func<string, Task> OnSuccess { get; set; }
         [Parameter] public EventCallback OnCancel { get; set; }
+        [Parameter] public string InitialPath { get; set; }
 
         // Bookmark logic
         protected List<string> QuickAccessDirs { get; set; } = new List<string>();
