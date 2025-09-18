@@ -215,15 +215,26 @@ namespace AdminBaseComponenets.BaseComs
 
     private async Task ShowFileBrowserModal()
     {
+        string initialPath = FilesDirectory;
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            try
+            {
+                initialPath = System.IO.Path.GetDirectoryName(value);
+            }
+            catch { initialPath = null; }
+        }
+        
+
         var options = new ModalInstanceOptions()
         {
             Size = ModalSize.Large,
-            
             UseModalStructure = false
         };
         await ModalService.Show<FileBrowser>(x =>
         {
             x.Add(fileBrowser => fileBrowser.OnSuccess, OnFileSelectedFromBrowser);
+            x.Add(fileBrowser => fileBrowser.InitialPath, initialPath);
         }, options);
     }
 
