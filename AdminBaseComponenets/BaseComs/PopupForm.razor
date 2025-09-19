@@ -4,7 +4,8 @@
 
 @{
     popupWidget = Program0.createForm(typeof(TItem), new List<Attribute>());
-    ReadOnly = !Program0.checkPermission<Models.UpdateAccess>(typeof(TItem));
+    if(!ReadOnly)
+        ReadOnly = !Program0.checkPermission<Models.UpdateAccess>(typeof(TItem));
 }
 
 <ModalHeader>

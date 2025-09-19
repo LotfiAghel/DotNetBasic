@@ -75,7 +75,7 @@ namespace AdminBaseComponenets.BaseComs
             TEntity val = default(TEntity);
             var tmp = Program0.getEntityManager<TEntity, TKEY>();
             if (!value.Equals(default(TKEY)))
-                val = await tmp.get(value);
+                curentV=val = await tmp.get(value);
 
             if (optionGenerator == null)
             {
@@ -106,10 +106,8 @@ namespace AdminBaseComponenets.BaseComs
                         optionGenerator = tmp; //.ToList().ConvertAll(x => new ForeignKey2<TEntity,TKEY>(x.id));
                     }
                 }
-                else
-                {
-                    curentV=await tmp.get(value.getFValue());
-                }
+                curentV=await tmp.get(value.getFValue());
+
             }
             
             // StateHasChanged();
@@ -145,13 +143,16 @@ namespace AdminBaseComponenets.BaseComs
         {
             //newItem = new TItem();
             //addingItem = typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
-
+            
+                
+            Console.WriteLine($"value {curentV!=null}");
             return ModalService.Show<PopupForm<TEntity>>( x =>
                 {
                     //x.Add( x => x.OnValidate, FormularyValidate );
                     x.Add( x => x.OnSuccess ,SaveModal);
                     //x.Add(x=> x.OnChange,OnChange2);
                     x.Add(x=>x.value,curentV);
+                    x.Add(x=>x.ReadOnly,true);
                 },
                 new ModalInstanceOptions()
                 {
