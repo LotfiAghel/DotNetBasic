@@ -33,7 +33,7 @@
             <BarItem>
                 <BarDropdown RightAligned>
                     <BarDropdownToggle>
-                        <BarIcon IconName="IconName.Edit"  />
+                        <BarIcon IconName="IconName.Circle"  />
                         @(value.Name)
                     </BarDropdownToggle>
                     <BarDropdownMenu>
@@ -63,7 +63,10 @@
                     if (t.Name != null)
                         name = t.Name;
                     
-                    <BarItem  title=@name><BarLink To=@link>@name</BarLink></BarItem>
+                    <BarItem title=@name>
+                        
+                        <BarLink To=@link><BarIcon IconName="IconName.Search"  />@name</BarLink>
+                    </BarItem>
                     
                 }else if(value is ApiViewNode t2 ){
 
@@ -72,7 +75,9 @@
                     if (t2.name != null)
                         name = t2.name;
                     
-                    <BarItem  title=@name><BarLink To=@link>@name</BarLink></BarItem>
+                    <BarItem title=@name>
+                        <BarLink To=@link><BarIcon IconName="IconName.Search"  />@name</BarLink>
+                    </BarItem>
 
                 }
             
