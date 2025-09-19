@@ -6,6 +6,7 @@ using Models;
 using Blazorise;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 
 namespace AdminBaseComponenets.BaseComs
 {
@@ -33,6 +34,7 @@ namespace AdminBaseComponenets.BaseComs
 
         bool showModal = false;
         [Inject] public IModalService ModalService { get; set; }
+        [Inject] private IJSRuntime jsRuntime { get; set; }
 
         void ModalCancel() => showModal = false;
         void ModalOk()
@@ -115,14 +117,20 @@ namespace AdminBaseComponenets.BaseComs
 
 
         }
-        public void OnButtonClicked(MouseEventArgs args)
+        public async Task OnButtonClicked(MouseEventArgs args)
         {
+            
+            
+            
             
             if (args.CtrlKey)
             {
-                NavManager.NavigateTo($"{typeof(TEntity).GetUrlEncodeName()}/edit/{value.Value}");
+                
+                string url = $"{typeof(TEntity).GetUrlEncodeName()}/edit/{value.Value}";
+
+                jsRuntime.InvokeAsync<object>("open", url, "_blank");
             }
-            if (args.AltKey)
+            else if (args.AltKey)
             {
                 ShowModal();
             }
