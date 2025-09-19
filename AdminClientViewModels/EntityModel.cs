@@ -21,7 +21,8 @@ namespace AdminClientViewModels
     }
     public abstract class ATreeNode
     {
-        public string Name { get; set; }
+        public string? name { get; set; }
+        public string Icon { get; set; }
     }
     public class TreeNode : ATreeNode
     {
@@ -38,13 +39,14 @@ namespace AdminClientViewModels
     {
         
         public string url { get; set; }
-        public string name { get; set; }
+        
     }
 
     public class ApiViewNode:ATreeNode
     {
         
         public string url { get; set; }
-        public string name { get; set; }
+        
+        
     }
 }

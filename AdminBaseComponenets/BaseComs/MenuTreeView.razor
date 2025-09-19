@@ -34,7 +34,7 @@
                 <BarDropdown RightAligned>
                     <BarDropdownToggle>
                         <BarIcon IconName="IconName.Circle"  />
-                        @(value.Name)
+                        @(value.name)
                     </BarDropdownToggle>
                     <BarDropdownMenu>
                         @foreach (var line in trNode.children)
@@ -50,33 +50,29 @@
     {
         var link = $"page/{eM.Type.GetUrlEncodeName()}";
         var name = eM.Type.GetPerisanName();
-        if (eM.Name != null)
-            name = eM.Name;
+        if (eM.name != null)
+            name = eM.name;
 
         <BarItem  title=@name><BarLink To=@link>@name</BarLink></BarItem>
         
         
     }else if (value is PageViewNode t)
                 {
-                    var link = $"{t.url}";
-                    var name = t.name;
-                    if (t.Name != null)
-                        name = t.Name;
                     
-                    <BarItem title=@name>
-                        
-                        <BarLink To=@link><BarIcon IconName="IconName.Search"  />@name</BarLink>
+                    
+
+                    <BarItem title=@t.name>
+                        <BarLink To=@t.url><BarIcon IconName="IconName.Search"  />@t.name</BarLink>
                     </BarItem>
                     
                 }else if(value is ApiViewNode t2 ){
 
                     var link = $"apiPage/{Program0.ConvertUrl(t2.url)}";
-                    var name = t2.name;
-                    if (t2.name != null)
-                        name = t2.name;
                     
-                    <BarItem title=@name>
-                        <BarLink To=@link><BarIcon IconName="IconName.Search"  />@name</BarLink>
+
+                    <BarItem title=@(((ATreeNode)t2).name)>
+                        <BarLink To=@link><BarIcon IconName="IconName.Search"  />@(((ATreeNode)t2).name)
+                        </BarLink>
                     </BarItem>
 
                 }
