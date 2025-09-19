@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Tools;
 using Models;
 using Blazorise;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace AdminBaseComponenets.BaseComs
 {
@@ -30,7 +32,7 @@ namespace AdminBaseComponenets.BaseComs
         private Modal modalRef;
 
         bool showModal = false;
-
+        [Inject] public IModalService ModalService { get; set; }
 
         void ModalCancel() => showModal = false;
         void ModalOk()
@@ -115,10 +117,54 @@ namespace AdminBaseComponenets.BaseComs
 
 
         }
-        public void OnButtonClicked()
+        public void OnButtonClicked(MouseEventArgs args)
         {
-            NavManager.NavigateTo($"{typeof(TEntity).GetUrlEncodeName()}/edit/{value.Value}");
+            
+            if (args.CtrlKey)
+            {
+                NavManager.NavigateTo($"{typeof(TEntity).GetUrlEncodeName()}/edit/{value.Value}");
+            }
+            if (args.AltKey)
+            {
+                ShowModal();
+            }
+            else
+            {
+                NavManager.NavigateTo($"{typeof(TEntity).GetUrlEncodeName()}/edit/{value.Value}");
+            }
+            
+            
         }
+        private Task SaveModal(TEntity x)
+        {
+            
+            return InvokeAsync(StateHasChanged);
+            //return modalRef.Hide();
+        }
+        private Task ShowModal()
+        {
+            //newItem = new TItem();
+            //addingItem = typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
+
+            return ModalService.Show<PopupForm<TEntity>>( x =>
+                {
+                    //x.Add( x => x.OnValidate, FormularyValidate );
+                    x.Add( x => x.OnSuccess ,SaveModal);
+                    //x.Add(x=> x.OnChange,OnChange2);
+                    x.Add(x=>x.value,curentV);
+                },
+                new ModalInstanceOptions()
+                {
+                    UseModalStructure = false,
+                    Style = "overflow:visible",
+                    Size = ModalSize.ExtraLarge,
+                    Scrollable = true
+                
+                    //Stateful = true
+                } );
+        }
+
+
         public void OnSearchClick()
         {
             showModal = true;
