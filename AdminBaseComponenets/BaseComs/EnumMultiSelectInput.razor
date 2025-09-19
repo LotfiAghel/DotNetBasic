@@ -54,7 +54,7 @@
         </span>
         <span class="e-multi-searcher">
 
-            @if ( generator != null && generator.Count()>0 && !ReadOnly){
+            @if ( generator != null && !ReadOnly){
                     Action<object> onChange = async( x) =>
                                     {
                                             Console.WriteLine( $"onClick2 onClick2 00 {x}");

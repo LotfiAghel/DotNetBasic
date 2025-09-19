@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Models;
 using System.Collections.ObjectModel;
+using AdminClientViewModels;
 
 namespace AdminBaseComponenets
 {
@@ -142,7 +143,7 @@ namespace AdminBaseComponenets
 
         public virtual Task<bool> setNull()
         {
-            //value=null;
+            value=default(T);
             //OnChange(null);
             OnChange(null);
             __valueIsNull = true;
@@ -314,6 +315,10 @@ namespace AdminBaseComponenets
             if(value!=null)foreach (var item in value)
                 mark.Add(item);
         }
+        public virtual async Task loadExtra()
+        {
+            
+        }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
@@ -353,12 +358,20 @@ namespace AdminBaseComponenets
         where T : class, Models.IIdMapper<TKEY>
      where TKEY : IEquatable<TKEY>, IComparable<TKEY>, IComparable
     {
+        private IEntityService<T, TKEY> tmp;
         public MarkedGenerator2()
         {
-            enumList = Program0.getEntityManager<T,TKEY>();
+            tmp = Program0.getEntityManager<T, TKEY>();
             
+            enumList = tmp;
+
 
             //initList(x.ConvertAll(x => new ForeignKey2<T, TKEY>(x.id)));
+
+        }
+        public override async Task loadExtra()
+        {
+            tmp.getAll();
             
         }
     }

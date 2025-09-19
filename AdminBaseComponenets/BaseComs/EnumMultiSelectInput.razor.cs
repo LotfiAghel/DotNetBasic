@@ -37,6 +37,7 @@ namespace AdminBaseComponenets.BaseComs
 
             }
             generator.load(value);
+            generator.loadExtra();
 
             if(itemComponenet==null)
                 itemComponenet  = Program0.createWidget(typeof(ENUM), null);
