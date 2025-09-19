@@ -27,8 +27,9 @@
     </div>
 
     <div class="col-4">
-        <SfTimePicker TValue="DateTime?" Value='@dayTime' ValueChanged="@Click2"
-                      Readonly=@ReadOnly></SfTimePicker>
+        <TimePicker TValue="DateTime" @bind-Time="@value" />
+        <!-- Removed SfTimePicker component -->
+        <!-- Removed invalid SfTimePicker line -->
     </div>
     @* <div class="col-2">
         <Select @bind-Value="@Hours" onchange=@Click2()>
