@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic;
@@ -8,6 +13,31 @@ using Newtonsoft.Json.Linq;
 
 namespace SGSStandalone.Core
 {
+	public static class StringExtenction
+	{
+		public static List<string> ToWords(this string sl)
+		{
+			return Regex.Matches(sl, @"\p{L}+")
+				.Cast<Match>()
+				.Select(m => m.Value)
+				.ToList();
+		}
+		public static string GetSHA256Checksum(this string input)
+		{
+			using (SHA256 sha256 = SHA256.Create())
+			{
+				byte[] bytes = Encoding.UTF8.GetBytes(input);
+				byte[] hashBytes = sha256.ComputeHash(bytes);
+
+				// تبدیل بایت‌ها به رشته‌ی هگزادسیمال
+				StringBuilder sb = new StringBuilder();
+				foreach (var b in hashBytes)
+					sb.Append(b.ToString("x2"));
+
+				return sb.ToString();
+			}
+		}
+	}
     public static class TimeUtils
     {
         public static DateTime milliSecToUtc(this long ts)

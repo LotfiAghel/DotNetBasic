@@ -21,6 +21,7 @@ namespace Models
             DB_ANALYSIS = 4,
             ADMIN = 5,
             GO_CLINT = 1000,
+            AI=1100
         }
         public HashSet<Kind> kinds;
         public CustomIgnoreTag(params Kind[] args)
