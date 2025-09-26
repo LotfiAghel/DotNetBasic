@@ -11,7 +11,7 @@ using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace SGSStandalone.Core
+namespace SGS.Core
 {
 	public static class StringExtenction
 	{
