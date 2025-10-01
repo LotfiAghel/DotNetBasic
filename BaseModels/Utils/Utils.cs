@@ -13,6 +13,14 @@ using Newtonsoft.Json.Linq;
 
 namespace SGS.Core
 {
+		public static class CollectionExtensions
+		{
+			public static bool IsNullOrEmpty<T>(this IEnumerable<T> source)
+			{
+				return source == null || !source.Any();
+			}
+		}
+	
 	public static class StringExtenction
 	{
 		public static List<string> ToWords(this string sl)
