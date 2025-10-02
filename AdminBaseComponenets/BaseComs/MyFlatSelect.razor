@@ -20,10 +20,10 @@
    
             
                  var color0=(null!=value)?Color.Secondary:Color.Primary;
-                            <Button Color=@color0 Clicked=@(()=> onclick(null))>null</Button>
+                            <Button  Size="Size.ExtraSmall" Color=@color0 Clicked=@(()=> onclick(null))>null</Button>
                 foreach (var t in options){
                             var color=(t!=value)?Color.Secondary:Color.Primary;
-                            <Button Color=@color Clicked=@(()=> onclick(t))>@Program0.CreateDynamicComponent2(this, itemComponenet, t)</Button>
+                            <Button Size="Size.ExtraSmall" Color=@color Clicked=@(()=> onclick(t))>@Program0.CreateDynamicComponent2(this, itemComponenet, t)</Button>
                 }
             
  

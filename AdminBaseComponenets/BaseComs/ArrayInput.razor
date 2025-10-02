@@ -13,17 +13,19 @@
         @if (value != null)
         {
              <Accordion>
-        <Collapse  Visible=@_collapse1Visible>
+        <Collapse   @bind-Visible=@collapse1Visible>
              <CollapseHeader>
                   <Row>
                     <Column ColumnSize="ColumnSize.Is4">
-                        <Button Clicked="@(()=>_collapse1Visible = !_collapse1Visible)" >@(_collapse1Visible? "close":"open")</Button>
+                        <!-- <Button Size="Size.ExtraSmall" Clicked="@(()=>_collapse1Visible = !_collapse1Visible)" >@(_collapse1Visible? "close":"open")</Button> -->
+                        <AccordionToggle TextSize="TextSize.ExtraSmall">@(collapse1Visible? "close":"open")</AccordionToggle>
+
                     </Column>
                    <Column ColumnSize="ColumnSize.Is4">
-                        <Button Clicked="@(()=>_collapse1Visible = !_collapse1Visible)" >count: @value.Count</Button>
+                        <Button Size="Size.ExtraSmall" Clicked="@(()=>collapse1Visible = !collapse1Visible)" >count: @value.Count</Button>
                   </Column>
                         <Column ColumnSize="ColumnSize.Is4">
-                            <Button Clicked=@setNull>set null</Button>
+                            <Button Size="Size.ExtraSmall" Clicked=@setNull>set null</Button>
                         </Column>
                   </Row>
               </CollapseHeader>
@@ -90,7 +92,9 @@
 {
     public override bool inRowField()=>false;
     ComponentBase _itemWidget = null;
-    bool _collapse1Visible = false;
+    
+    [Parameter]
+    public bool collapse1Visible { get; set; } = true;
 
     Task createArray()
     {
