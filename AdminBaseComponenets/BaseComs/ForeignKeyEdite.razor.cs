@@ -173,11 +173,72 @@ namespace AdminBaseComponenets.BaseComs
                 } );
         }
 
+        public async  Task  onClickCustom2(TKEY id)
+        {
+            
+            await  Click2(id);
+               
+        }
 
+        public async Task onchangeSerachDataRefrense(IQuery<TEntity> valueSearch)
+        {
+            this.serachData = valueSearch;
+        }
+        private IQuery<TEntity> serachData=null;
+        private Task<ModalInstance> x;
+    public Task ShowSearch()
+    {
+
+        Action<TKEY> onClickCustom22 = async (key) =>
+        {
+            await onClickCustom2(key);
+            ModalService.Hide();
+        };
+        /*x= ModalService.Show<SearchPage<TEntity,TKEY>>( x =>
+            {
+                //x.Add( x => x.OnValidate, FormularyValidate );
+                x.Add( x => x.onClickCustom, onClickCustom22 );
+                x.Add( x => x.onchangeSerachDataRefrense, onchangeSerachDataRefrense );
+                x.Add( x => x.serachData, serachData );
+                
+            },
+            new ModalInstanceOptions()
+            {
+                UseModalStructure = false,
+                Style = "overflow:visible",
+                Size = ModalSize.ExtraLarge,
+                Scrollable = true
+            } );*/
+        x= ModalService.Show<PopupGenral<SearchPage<TEntity,TKEY>>>( x =>
+            {
+                //x.Add( x => x.OnValidate, FormularyValidate );
+                //x.Add( x => x.onClickCustom, onClickCustom22 );
+                //x.Add( x => x.onchangeSerachDataRefrense, onchangeSerachDataRefrense );
+                //x.Add( x => x.serachData, serachData );
+                x.Add( x => x.popupWidget, new SearchPage<TEntity,TKEY>()
+                {
+                    onchangeSerachDataRefrense=onchangeSerachDataRefrense,
+                    onClickCustom = onClickCustom22,
+                    serachData = serachData
+                } );
+                
+                
+            },
+            new ModalInstanceOptions()
+            {
+                UseModalStructure = false,
+                Style = "overflow:visible",
+                Size = ModalSize.ExtraLarge,
+                Scrollable = true
+            } );
+        return x;
+    }
+    
         public void OnSearchClick()
         {
-            showModal = true;
-            
+            ShowSearch();
+            //showModal = true;
+
         }
 
     }

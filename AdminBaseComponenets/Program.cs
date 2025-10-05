@@ -214,6 +214,41 @@ namespace AdminBaseComponenets
                   builder.CloseComponent();
               };
 
+        
+      
+        
+          public static RenderFragment CreateDynamicComponent00(object thiz, ComponentBase c) => builder =>
+              {
+                  if (c == null)
+                      return ;
+
+                  var gt = c.GetType();
+
+                  
+                  
+                  builder.OpenComponent(0, gt);
+                  foreach (var gti in gt.GetProperties())
+                  {
+                      
+                      var pr = gti.GetCustomFirstAttributes<ParameterAttribute>();
+                      if (pr != null)
+                      {
+                          var z=gti.GetValue(c);
+                          if(z!=null) // if remove this line you have strange exception
+                            builder.AddAttribute(1, gti.Name, gti.GetValue(c));
+
+                      }/**/
+                  }
+                  
+                
+                  
+                 
+                
+                
+                  builder.CloseComponent();
+              };
+
+        
         public static List<Attribute> getCollectionItemAttrs(List<Attribute> collectionAttr)
         {
             var a = collectionAttr.FindAll(x => x is CollectionAttr).ConvertAll<CollectionAttr>(x => x as CollectionAttr);

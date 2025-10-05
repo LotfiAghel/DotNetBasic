@@ -1,0 +1,25 @@
+@typeparam TCOMP
+
+@inherits ValueInput<TCOMP>
+
+@{
+    //popupWidget =   typeof(TCOMP).GetConstructor([]).Invoke([]) as TCOMP;
+}
+<ModalHeader>
+    <ModalTitle>Edit</ModalTitle>
+    <CloseButton />
+    <Button Color="Color.Secondary" Clicked="ModalService.Hide">Close</Button>
+    
+</ModalHeader>
+<ModalBody>
+    <div>@Program0.CreateDynamicComponent00(this, popupWidget)</div>
+    
+    <TCOMP></TCOMP>
+    
+</ModalBody>
+<ModalFooter>
+    <Button Color="Color.Secondary" Clicked="ModalService.Hide">Close</Button>
+    
+</ModalFooter>
+
+
