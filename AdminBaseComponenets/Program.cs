@@ -1148,7 +1148,7 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, GridShow>();
                     if (x != null)
                     {
-                        return typeof(AdminBaseComponenets.BaseComs.DictinaryStringKeyInput<>).MakeGenericType(type.GetGenericArguments()[1]);
+                        return typeof(AdminBaseComponenets.BaseComs.DictionaryTKeyInput<,>).MakeGenericType(type.GetGenericArguments());
                     }
                 }
 
@@ -1289,7 +1289,7 @@ namespace AdminBaseComponenets
                     var x = prps.GetFirst<Attribute, GridShow>();
                     //if (x != null)
                     {
-                        return typeof(AdminBaseComponenets.BaseComs.DictinaryStringKeyInput<>).MakeGenericType(type.GetGenericArguments()[1]);
+                        return typeof(AdminBaseComponenets.BaseComs.DictionaryTKeyInput<,>).MakeGenericType(type.GetGenericArguments());
                     }
                 }
 

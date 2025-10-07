@@ -462,9 +462,36 @@ namespace AdminBaseComponenets
         }
 
     }
+    public class DictionaryTKeyBase<TKEY,T> : NullableInput2<Dictionary<TKEY, T>>
+    {
 
 
-    public class DictinaryStringKeyBase<T> : NullableInput2<Dictionary<string, T>>
+
+
+
+
+
+        public T tmp = default(T);
+        public void setValue(TKEY idx, object x)
+        {
+            //Console.WriteLine("setFValue0 --------" + idx + "/" + value.Count + " <= " + JToken.FromObject(x));
+
+
+            value[idx] = (T)x;
+
+        }
+        public void removeKey(TKEY idx)
+        {
+            //Console.WriteLine("setFValue0 --------" + idx + "/" + value.Count + " <= " + JToken.FromObject(x));
+
+            value.Remove(idx);
+            //value[idx] = (T)x;
+
+        }
+
+    }
+
+    public class DictionaryStringKeyBase<T> : NullableInput2<Dictionary<string, T>>
     {
 
 

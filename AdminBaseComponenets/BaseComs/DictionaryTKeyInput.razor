@@ -1,0 +1,89 @@
+@typeparam TKEY
+@typeparam TItem
+
+
+
+@using Microsoft.AspNetCore.Components.Rendering;
+@using Microsoft.AspNetCore.Components;
+
+
+@using System.Collections.Generic
+
+
+@using Newtonsoft.Json.Linq;
+
+@inherits DictionaryTKeyBase<TKEY,TItem>
+
+
+
+
+<div class="row pt-2 pb-2">
+    <div class="col-sm-12">
+
+        @if (value != null)
+        {
+            //<JsonShow value=@JToken.FromObject(value)></JsonShow>
+            ComponentBase strF = Program0.createForm(typeof(TKEY),new (){ });
+            ComponentBase valueF = Program0.createForm(typeof(TItem), new() { });
+            foreach(var entry in value)
+            {
+                <Row>
+                    @if(!ReadOnly){
+                        <Column ColumnSize="ColumnSize.Is1" Class="d-flex align-items-start">
+                            <Button Size="Size.ExtraSmall" Color="Color.Danger" Clicked="@(() => RemoveKey(entry.Key))">Remove</Button>
+                        </Column>
+                    }
+
+                    <Column ColumnSize="ColumnSize.Is3">
+                        @Program0.CreateDynamicComponent2(this, strF, entry.Key, null, null, ReadOnly)
+                    </Column>
+                    <Column ColumnSize="ColumnSize.Is8">
+                        @Program0.CreateDynamicComponent2(this, valueF, entry.Value, null, null, ReadOnly)
+                    </Column>
+
+                </Row>
+            }
+
+        }
+        else
+        {
+            @if(!ReadOnly){
+                <Button Outlined="true" Clicked="@createArray">new </Button>
+            }
+        }
+
+
+
+    </div>
+</div>
+
+
+@code
+{
+    ComponentBase w = null;
+
+    async Task createArray()
+    {
+        value = new Dictionary<TKEY,TItem>();
+        OnChange(value);
+
+    }
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var tmp = Program0.getCollectionItemAttrs(Attributes);
+        w = Program0.createForm(typeof(TItem), tmp);
+    }
+
+    void RemoveKey(TKEY key)
+    {
+        if (value != null && !ReadOnly)
+        {
+            
+            removeKey(key);
+            //OnChange(value);
+        }
+    }
+}
+
