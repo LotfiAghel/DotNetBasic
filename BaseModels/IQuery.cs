@@ -144,8 +144,7 @@ namespace Models
         
 
     }
-   
-    
+
 
     public interface IQuery2<T> : IQuery0
     {
