@@ -1,14 +1,12 @@
 ﻿@typeparam TItem
 @typeparam TKEY
 
-@using PSC.Blazor.Components.Chartjs
-
-
-@using Microsoft.JSInterop;
-@inject NavigationManager NavManager
+@using Blazorise.Charts
+@using Microsoft.AspNetCore.Components
 @inherits NullableInput2<IReadOnlyCollection<TItem>>
-@inject IJSRuntime jsRuntime
-@if (value!=null)
+
+@if (value != null)
 {
-    <Chart Config="_config1" @ref="_chart1" Height="450px"></Chart>
+    <LineChart @ref="lineChart" TItem="decimal" />
+    
 }
