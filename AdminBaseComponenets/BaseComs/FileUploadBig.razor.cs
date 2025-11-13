@@ -23,7 +23,7 @@ namespace AdminBaseComponenets.BaseComs
         IBrowserFile selectedFile = null;
     
         [Parameter]
-        public string[] allowedExtensions { get; set; }= [".zip", ".rar", ".png", ".jpg",".jpeg", ".mp3" ,".mp4",".apk",".ogg"];
+        public string[] allowedExtensions { get; set; }= [".zip", ".rar", ".png", ".jpg",".jpeg", ".mp3" ,".mp4",".apk",".ogg",".gif",".svg"];
         bool IsUploadDisabled = true;
         private Guid inputFileId = Guid.NewGuid();
         private string cacheBuster = "";

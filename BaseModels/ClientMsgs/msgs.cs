@@ -11,6 +11,12 @@ namespace ClientMsgs
         public bool done { get; set; }
         public string text { get; set; }
     }
+    public class ObjectContainerResponse<T>
+    {
+        public bool done { get; set; }
+        public string text { get; set; }
+        public T data{ get; set; }
+    }
     
     public class GetIds<KEY>
     {
