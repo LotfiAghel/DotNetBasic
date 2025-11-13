@@ -119,7 +119,7 @@ namespace AdminBaseComponenets.BaseComs
             //if ( firstRender )
             {
                 await HandleRedraw();
-                await HandleRedraw2();
+                //await HandleRedraw2();
             }
         }
 
