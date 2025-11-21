@@ -1332,7 +1332,7 @@ namespace AdminBaseComponenets
         public static Dictionary<string, Type> apis = new Dictionary<string, Type>();
         public static Dictionary<Regex, Type> apis2 = new Dictionary<Regex, Type>();
         
-        public static Dictionary<Type, List<Func<object,(string,HttpMethod,Type)>>> actionAtach = 
+        public static Dictionary<Type, List<Func<object,(string,HttpMethod,Type,string)>>> actionAtach = 
             new ();
 
         public static void addApiRegex(string url, Type t)
