@@ -1,13 +1,26 @@
 @typeparam TItem
+@using System.Net.Http
 @typeparam TKEY
-
+<div>actions00</div>
 @if(typeof(Models.IAction<TItem>).GetSubClasses(evenAbstracts:false).Count>0){
     <div>actions</div>
-    <AdminBaseComponenets.BaseComs.PointerInput2 TItem="Models.IAction<TItem>" value=@value OnChange="@onChange">
-        
-    </AdminBaseComponenets.BaseComs.PointerInput2>
-
+    <AdminBaseComponenets.BaseComs.PointerInput2 TItem="Models.IAction<TItem>" value=@value OnChange="@onChange"/> 
     <Button Outlined="true" Clicked="@Click">@ButtonState</Button>
+
+   
+}
+@{
+    <div>@(Program0.actionAtach.Count)</div>
+    if (Program0.actionAtach.ContainsKey(typeof(TItem)))
+    {
+        <div>actions11</div>
+        foreach (var act in Program0.actionAtach[typeof(TItem)])
+        {
+            <div>actions22</div>
+            var x = act(Data2);
+            <ApiCall url=@x.Item1 method=@x.Item2 type=@(x.Item3) title="--"/>
+        }
+    }
 }
 
 

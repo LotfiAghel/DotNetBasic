@@ -15,6 +15,7 @@ using Tools;
 using AdminBaseComponenets.BaseComs;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
 using AdminBaseComponenets.BaseComs.InGrid;
 
 public static class ExtensionMethods
@@ -487,6 +488,9 @@ namespace AdminBaseComponenets
             if (value is Models.IEntity0 vl2)
                 builder.AddAttribute(1, "entityId", vl2.getId());
 
+
+            if (value !=null)
+                builder.AddAttribute(1, nameof(ActionBar<IIdMapper<int>,int>.Data2),value);
 
             builder.CloseComponent();
         };
@@ -1327,6 +1331,9 @@ namespace AdminBaseComponenets
         }
         public static Dictionary<string, Type> apis = new Dictionary<string, Type>();
         public static Dictionary<Regex, Type> apis2 = new Dictionary<Regex, Type>();
+        
+        public static Dictionary<Type, List<Func<object,(string,HttpMethod,Type)>>> actionAtach = 
+            new ();
 
         public static void addApiRegex(string url, Type t)
         {

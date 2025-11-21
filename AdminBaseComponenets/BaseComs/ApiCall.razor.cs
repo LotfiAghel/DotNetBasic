@@ -51,7 +51,7 @@ namespace AdminBaseComponenets.BaseComs
                 ((dynamic)comp).url = url;
                 ((dynamic)comp).title = title;
                 ((dynamic)comp).method = method;
-                methodValue = type.GetConstructor(new Type[] { }).Invoke(new object[] { });
+                methodValue = type.GetConstructor([])?.Invoke([]);
             }
         }
         

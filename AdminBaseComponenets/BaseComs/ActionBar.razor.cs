@@ -23,7 +23,8 @@ namespace AdminBaseComponenets.BaseComs
         public Models.IAction<TItem> value { get; set; }
 
 
-        TItem Data2;
+        [Parameter]
+        public TItem Data2 { get; set; }
 
 
         [Parameter]
