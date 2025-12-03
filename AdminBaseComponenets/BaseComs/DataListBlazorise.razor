@@ -86,7 +86,15 @@
             }
 
         }
-    </DataGridColumns>
+         <DataGridColumn TItem=TItem Caption="actions">
+
+             <DisplayTemplate>
+                 <Button Color="Color.Primary" Clicked=@(()=>openActions(context)) >actions</Button>
+             </DisplayTemplate>
+
+         </DataGridColumn>
+     
+         </DataGridColumns>
     <!-- <DetailRowTemplate>
     @{
         var f2 = Program0.createForm(typeof(TItem), new());
@@ -128,35 +136,5 @@
 
     //private Modal modalRef;
 
-    private Task ShowModal()
-    {
-        //newItem = new TItem();
-        //addingItem = typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
-
-        return ModalService.Show<PopupForm<TItem>>( x =>
-            {
-                //x.Add( x => x.OnValidate, FormularyValidate );
-                x.Add( x => x.OnSuccess, SaveModal );
-                x.Add(x=> x.OnChange,OnChange2);
-                x.Add(x=>x.value,selectedTItem);
-            },
-            new ModalInstanceOptions()
-            {
-                UseModalStructure = false,
-                Style = "overflow:visible",
-                Size = ModalSize.ExtraLarge,
-                Scrollable = true
-                
-                //Stateful = true
-            } );
-    }
-
    
-    private Task SaveModal(TItem x)
-    {
-        var dataManager = Program0.getEntityManager<TItem, TKEY>();
-        dataManager.update(selectedTItem);
-        return InvokeAsync(StateHasChanged);
-        //return modalRef.Hide();
-    }
 }

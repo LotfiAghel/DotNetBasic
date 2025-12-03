@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Microsoft.JSInterop;
 using System.Threading;
 using AdminClientViewModels;
+using Blazorise;
 
 namespace AdminBaseComponenets.BaseComs
 {
@@ -156,10 +157,56 @@ namespace AdminBaseComponenets.BaseComs
             
 
         }
+        private Task ShowModal()
+        {
+            //newItem = new TItem();
+            //addingItem = typeof(TItem).GetConstructor(new Type[] { }).Invoke(new object[] { }) as TItem;// new genericArgs[0]();
 
+            return ModalService.Show<PopupForm<TItem>>( x =>
+                {
+                    //x.Add( x => x.OnValidate, FormularyValidate );
+                    x.Add( x => x.OnSuccess, SaveModal );
+                    x.Add(x=> x.OnChange,OnChange2);
+                    x.Add(x=>x.value,selectedTItem);
+                },
+                new ModalInstanceOptions()
+                {
+                    UseModalStructure = false,
+                    Style = "overflow:visible",
+                    Size = ModalSize.ExtraLarge,
+                    Scrollable = true
+                
+                    //Stateful = true
+                } );
+        }
 
+   
+        private Task SaveModal(TItem x)
+        {
+            var dataManager = Program0.getEntityManager<TItem, TKEY>();
+            dataManager.update(selectedTItem);
+            return InvokeAsync(StateHasChanged);
+            //return modalRef.Hide();
+        }
 
+        private Task openActions(TItem context)
+        {
+            return ModalService.Show<ActionBar<TItem,TKEY>>( x =>
+                {
+                    //x.Add( x => x.OnValidate, FormularyValidate );
+                    x.Add( x => x.Data2, context );
 
+                },
+                new ModalInstanceOptions()
+                {
+                    UseModalStructure = false,
+                    Style = "overflow:visible",
+                    Size = ModalSize.Default,
+                    Scrollable = true
+                
+                    //Stateful = true
+                } );
+        }
     }
 
 
