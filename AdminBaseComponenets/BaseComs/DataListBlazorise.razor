@@ -86,15 +86,18 @@
             }
 
         }
-         <DataGridColumn TItem=TItem Caption="actions">
+         @if (Program0.actionAtach.ContainsKey(typeof(TItem)))
+         {
+             <DataGridColumn TItem=TItem Caption="actions">
 
-             <DisplayTemplate>
-                 <Button Color="Color.Primary" Clicked=@(()=>openActions(context)) >actions</Button>
-             </DisplayTemplate>
+                 <DisplayTemplate>
+                     <Button Color="Color.Primary" Clicked=@(() => openActions(context))>actions</Button>
+                 </DisplayTemplate>
 
-         </DataGridColumn>
-     
-         </DataGridColumns>
+             </DataGridColumn>
+         }
+
+     </DataGridColumns>
     <!-- <DetailRowTemplate>
     @{
         var f2 = Program0.createForm(typeof(TItem), new());
