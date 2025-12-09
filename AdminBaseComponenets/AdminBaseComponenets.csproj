@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <UseBlazorWebAssembly>true</UseBlazorWebAssembly>
     <!-- <RunAOTCompilation>true</RunAOTCompilation> -->
   </PropertyGroup>
@@ -10,18 +10,25 @@
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
-  <!--<ItemGroup>
-    <ProjectReference Include="..\Blazorise\Shared\Blazorise.Shared\Blazorise.Shared.csproj" />
+  <ItemGroup>
+    <!-- <ProjectReference Include="..\Blazorise\Shared\Blazorise.Shared\Blazorise.Shared.csproj" /> -->
      
     <ProjectReference Include="..\Blazorise\Source\Blazorise.Material\Blazorise.Material.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Blazorise\Blazorise.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Components\Blazorise.Components.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.RichTextEdit\Blazorise.RichTextEdit.csproj" />
+      <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Charts\Blazorise.Charts.csproj" />
+      <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Charts.DataLabels\Blazorise.Charts.DataLabels.csproj" />
+      <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Charts.Streaming\Blazorise.Charts.Streaming.csproj" />
+      <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Charts.Annotation\Blazorise.Charts.Annotation.csproj" />
+      <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Charts.Zoom\Blazorise.Charts.Zoom.csproj" />
+      <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Video\Blazorise.Video.csproj" />
+      
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Sidebar\Blazorise.Sidebar.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.DataGrid\Blazorise.DataGrid.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Icons.FontAwesome\Blazorise.Icons.FontAwesome.csproj" />
     <ProjectReference Include="..\Blazorise\Source\Extensions\Blazorise.Icons.Material\Blazorise.Icons.Material.csproj" />
-  </ItemGroup> -->
+  </ItemGroup> 
   
 <ItemGroup>
   
@@ -32,7 +39,7 @@
     <PackageReference Include="Blazored.TextEditor" Version="1.1.2" />
   
   
-    <PackageReference Include="Blazorise" Version="1.8" />
+   <!-- <PackageReference Include="Blazorise" Version="1.8" />
   
   
     <PackageReference Include="Blazorise.Charts.DataLabels" Version="1.8" />
@@ -64,7 +71,7 @@
 
       
     
-    <PackageReference Include="Blazorise.Charts" Version="1.8" />
+    <PackageReference Include="Blazorise.Charts" Version="1.8" /> 
     
     
     
@@ -82,7 +89,7 @@
     
     
     
-    <PackageReference Include="Blazorise.Charts.Zoom" Version="1.8" />
+    <PackageReference Include="Blazorise.Charts.Zoom" Version="1.8" />-->
     
 
 
@@ -121,10 +128,14 @@
   <ItemGroup>
     <!-- <ProjectReference Include="..\Sitko.Blazor.CKEditor\src\Sitko.Blazor.CKEditor\Sitko.Blazor.CKEditor.csproj" />
     <ProjectReference Include="..\Sitko.Blazor.CKEditor\src\Sitko.Blazor.CKEditor.Bundle\Sitko.Blazor.CKEditor.Bundle.csproj" />  -->
+    
     <ProjectReference Include="..\AdminClientViewModels\AdminClientViewModels.csproj" />
     <ProjectReference Include="..\BaseModels\BaseModels.csproj" />
     <ProjectReference Include="..\Client\Client.csproj" />
   </ItemGroup>
+  
+
+ 
   
 
 
