@@ -8,6 +8,8 @@ using System.Linq;
 using AdminBaseComponenets.BaseComs;
 using Tools;
 using AdminClientViewModels;
+using Blazorise;
+using Models;
 
 namespace AdminBaseComponenets.Pages
 {
@@ -99,6 +101,48 @@ namespace AdminBaseComponenets.Pages
             selectedTab = name;
 
             return Task.CompletedTask;
+        }
+
+        public class TabData
+        {
+            public string id { get; set; }
+            public string title { get; set; }
+        }
+        public List<TabData> getTabs()
+        {
+            var res = new List<TabData>();
+            foreach (var prop in genericArgs[0].GetProperties())
+            {
+                var y = prop.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
+                if (y != null)
+                    continue;
+                if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
+                    if(Program0.checkPermission<SelectAccess>(prop)){
+                        res.Add(new TabData()
+                        {
+                            title=prop.GetPerisanName(),
+                            id=prop.Name
+                        });
+                    }
+
+
+            }
+            foreach (var prop in genericArgs[0].GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy))
+            {
+                var y = prop.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
+                if (y != null)
+                    continue;
+                if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IQueryable<>))
+                    if(Program0.checkPermission<SelectAccess>(prop)){
+                        res.Add(new TabData()
+                        {
+                            title=prop.GetPerisanName(),
+                            id=prop.Name
+                        });
+                    }
+            }
+
+            return res;
         }
 
 

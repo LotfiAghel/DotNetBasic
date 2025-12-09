@@ -33,7 +33,7 @@
         var x = genericArgs[0].GetPerisanName();
 
 
-        <h1>@x</h1>
+        <h6>@x</h6>
 
 
 
@@ -77,35 +77,37 @@
 }
 else
 {
-    <Tabs RenderMode=@TabsRenderMode.LazyLoad SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged" Pill="true" Class="multi-line-tabs">
-        <Items>
-            <Tab Name="value">Value</Tab>
-            @foreach (var prop in genericArgs[0].GetProperties())
-            {
-                var y = prop.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
-                if (y != null)
-                    continue;
-                if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.ICollection<>))
-                    if(Program0.checkPermission<SelectAccess>(prop)){
-                        <Tab Name=@(prop.Name)>
-                            @prop.GetPerisanName()
-                        </Tab>
-                    }
-
-
+    <Tabs RenderMode=@TabsRenderMode.LazyLoad SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged" Pill="true"   Display="Display.InlineFlex">
+        <Items >
+            <Tab Name="value" >Value</Tab>
+            @{
+                var tabs = getTabs();
+                
+                <Dropdown >
+                    <DropdownToggle Color="Color.Secondary" Size="Size.Small">
+                        بیشتر
+                    </DropdownToggle>
+                    <DropdownMenu>
+                        @foreach (var prop in tabs)
+                        {
+                            <DropdownItem Clicked="@(() => OnTabSelected((prop.id)))">
+                                @prop.title
+                            </DropdownItem>
+                        }
+                    
+                    </DropdownMenu>
+                </Dropdown>
+                
+                foreach (var prop in tabs)
+                {
+                            <Tab Name=@(prop.id)>
+                                @prop.title
+                            </Tab>
+                }
+            
             }
-            @foreach (var prop in genericArgs[0].GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy))
-            {
-                var y = prop.GetCustomFirstAttributes<Models.IgnoreDefultForm>();
-                if (y != null)
-                    continue;
-                if (prop.ReturnType.IsGenericType && prop.ReturnType.GetGenericTypeDefinition() == typeof(IQueryable<>))
-                    if(Program0.checkPermission<SelectAccess>(prop)){
-                        <Tab Name=@(prop.Name)>
-                            @prop.GetPerisanName()
-                        </Tab>
-                    }
-            }
+            
+            
         </Items>
         <Content>
             <TabPanel Name="value">
@@ -169,6 +171,11 @@ else
 
 
 
+    private void OnTabSelected(string tabId)
+    {
+        selectedTab = tabId;
+        // منطق نمایش محتوای تب
+    }
 
 
 
