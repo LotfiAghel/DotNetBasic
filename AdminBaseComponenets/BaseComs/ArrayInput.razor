@@ -1,18 +1,21 @@
 @typeparam TItem
 
+@using Microsoft.AspNetCore.Components.Routing
 @inherits ArrayInputBase<TItem>
-
+<Blazorise.ThemeProvider Theme="@theme">
 @{
      var wtmp = Program0.getCollectionItemAttrs(Attributes);
      _itemWidget = Program0.createForm4(typeof(TItem), wtmp);
 }
+
    
 
 
 
-        @if (value != null)
-        {
-             <Accordion>
+
+@if (value != null)
+{
+     
         <Collapse   @bind-Visible=@collapse1Visible>
              <CollapseHeader>
                   <Row>
@@ -29,67 +32,78 @@
                         </Column>
                   </Row>
               </CollapseHeader>
-            <CollapseBody>
-                @{
-            int j = 0;
-            foreach(var unused in value){
-                int k = j;      
-                Action<object> onChangeReference = (x) =>
-                            {
-                                Console.WriteLine("setFValue0(j, x)");
-                                setValue(k, x);
-                            };
-                @if (!ReadOnly)
-                {
+              
+              @if (collapse1Visible)
+              {
+                  <Card>
+                      <CardBody style="padding: 2px; margin: 0">
+                          @{
+                              int j = 0;
+                              foreach (var unused in value)
+                              {
+                                  int k = j;
+                                  Action<object> onChangeReference = (x) =>
+                                  {
+                                      Console.WriteLine("setFValue0(j, x)");
+                                      setValue(k, x);
+                                  };
+                                  @if (!ReadOnly)
+                                  {
 
-                    <Button  Clicked="() => remove(k)" style="position: absolute; z-index: 10; margin: .5rem; left: 0;">
-                        <mat-icon class="material-icons" style="font-size:14px; font-weight:bold; color:red">close</mat-icon>
-                    </Button>
-                }
-                <Div >
-                    @if (!ReadOnly)
-                    {
+                                      <Button Clicked="() => remove(k)" style="position: absolute; z-index: 10; margin: .5rem; left: 0;">
+                                          <mat-icon class="material-icons" style="font-size:14px; font-weight:bold; color:red">close</mat-icon>
+                                      </Button>
+                                  }
 
-                        <Button  Clicked="() => remove(k)" style="position: absolute; z-index: 10; margin: .5rem; left: 0;">
-                            <mat-icon class="material-icons" style="font-size:14px; font-weight:bold; color:red">close</mat-icon>
-                        </Button>
-                    }
-                    @{
-                        if (_itemWidget != null)
-                        {
-                            <div>@Program0.CreateDynamicComponent2(this, _itemWidget, value[k], onChangeReference,null,ReadOnly)</div>
-                        }
-                    }
-                </Div>
-               
-
-                ++j;
-            }
-                  
+                                  <Div >
+                                      @{
+                                          if (_itemWidget != null)
+                                          {
+                                              <div>@Program0.CreateDynamicComponent2(this, _itemWidget, value[k], onChangeReference, null, ReadOnly)</div>
+                                          }
+                                      }
+                                  </Div>
 
 
-            
-            @if(!ReadOnly){
-                <Button Outlined="true" Clicked="@Add">add </Button>
-            }
-             }
-             </CollapseBody>
-              </Collapse>
-    </Accordion>
-        }
-        else
-        {
-            @if(!ReadOnly){
-                <Button Outlined="true" Clicked="@createArray">new </Button>
-            }
-        }
+                                  ++j;
+                              }
 
 
 
 
+                              @if (!ReadOnly)
+                              {
+                                  <Button Outlined="true" Clicked="@Add">add </Button>
+                              }
+                          }
+                      </CardBody>
+                  </Card>
+              }
+
+        </Collapse>
+    
+}
+else
+{
+    @if(!ReadOnly){
+        <Button Outlined="true" Clicked="@createArray">new </Button>
+    }
+}
+
+
+
+</Blazorise.ThemeProvider>
 
 @code
 {
+    private Theme theme = new Theme
+    {
+        CardOptions = new ThemeCardOptions()
+        {
+            
+        }
+    };
+    
     public override bool inRowField()=>false;
     ComponentBase _itemWidget = null;
     
