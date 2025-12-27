@@ -206,8 +206,9 @@ namespace Models
      
     }
 
-    public class IQueryContainer<T>{
-        public IQuery<T> query { get; set; }
+    public class IQueryContainer<T>(IQuery<T> query = null)
+    {
+        public IQuery<T> query { get; set; } = query;
     }
 
      

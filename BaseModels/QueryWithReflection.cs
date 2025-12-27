@@ -7,14 +7,6 @@ namespace Models;
 
 public class QueryWithReflection<T> : IQuery<T>
 {
-    public enum OPTYPE
-    {
-        NONE=0,
-        LTE=1,
-        GTE=2,
-        EQUAL=3,
-        IN=4
-    }
 
     public interface IPropQuery
     {
@@ -28,13 +20,13 @@ public class QueryWithReflection<T> : IQuery<T>
 
     public interface  IPropQueryMulti0 : IPropQuery
     {
-            
+        public IQuery0 parm0 { get;  }
     }
     public abstract class PropQueryMulti<T2>:IPropQueryMulti0
     {
-        public dynamic parm { get=>this.parm0;  }
-            
-        public IQuery<T2> parm0 { get; set; }
+        public dynamic parm { get=>this.parm2;  }
+        public IQuery0 parm0 { get=>this.parm2;   }
+        public IQuery<T2> parm2 { get; set; }
     }
     public class PropQueryEqual:IPropQuerySignle
     {
@@ -49,12 +41,8 @@ public class QueryWithReflection<T> : IQuery<T>
             
     }
         
-    public struct OP
-    {
-        public OPTYPE opType { get; set; }
-        public dynamic parm { get; set; }
-    }
-    public Dictionary<string,OP> filters { get; set; }
+   
+    public Dictionary<string,IPropQuery> filters { get; set; }
 
     public Type getPropType(string name)
     {
@@ -72,62 +60,60 @@ public class QueryWithReflection<T> : IQuery<T>
         foreach (var filter in filters)
         {
             var propertyName = filter.Key;
-            var op = filter.Value;
+            var propQuery = filter.Value;
 
             var property = Expression.PropertyOrField(parameter, propertyName);
-            var constant = Expression.Constant(op.parm);
-
             Expression exp = null;
 
-            switch (op.opType)
+            if (propQuery is PropQueryEqual equalQuery)
             {
-                case OPTYPE.EQUAL:
-                    exp = Expression.Equal(property, Expression.Convert(constant, property.Type));
-                    break;
-
-                case OPTYPE.LTE:
-                    exp = Expression.LessThanOrEqual(property, Expression.Convert(constant, property.Type));
-                    break;
-
-                case OPTYPE.GTE:
-                    exp = Expression.GreaterThanOrEqual(property, Expression.Convert(constant, property.Type));
-                    break;
-
-                case OPTYPE.IN:
-                    // parm باید IEnumerable داشته باشه
-                    var iqueryInterface = typeof(IQuery<>).MakeGenericType(property.Type);
-
-                    if (op.parm.GetType().IsAssignableTo(iqueryInterface))
-                    {
-                        /* // اجرا کردن IQuery روی DbSet واقعی
-                            var dbSetType = typeof(T).Assembly.GetType("YourNamespace.YourDbContext");
-                            var oldDb = DependesyContainer.IServiceProvider.GetRequiredService<IAssetManager>();
-                            var subQueryable = op.parm.run(oldDb.GetDbSet<object>());
-
-                            // x => subQueryable.Contains(x.Property)
-                            var containsMethod = typeof(Queryable)
-                                .GetMethods()
-                                .Single(m => m.Name == "Contains" && m.GetParameters().Length == 2)
-                                .MakeGenericMethod(property.Type);
-
-                            exp = Expression.Call(containsMethod, Expression.Constant(subQueryable), property);*/
-                    }
-                    else
-                    {
-                        // قبلی: parm یک IEnumerable معمولی
-                        var containsMethod = typeof(Enumerable)
-                            .GetMethods()
-                            .Single(m => m.Name == "Contains" && m.GetParameters().Length == 2)
-                            .MakeGenericMethod(property.Type);
-
-                        exp = Expression.Call(containsMethod, Expression.Constant(op.parm), property);
-                    }
-                    break;
-
-                case OPTYPE.NONE:
-                default:
-                    continue;
+                var constant = Expression.Constant(equalQuery.parm);
+                exp = Expression.Equal(property, Expression.Convert(constant, property.Type));
             }
+            else if (propQuery is PropQueryLTE lteQuery)
+            {
+                var constant = Expression.Constant(lteQuery.parm);
+                exp = Expression.LessThanOrEqual(property, Expression.Convert(constant, property.Type));
+            }
+            else if (propQuery is PropQueryGTE gteQuery)
+            {
+                var constant = Expression.Constant(gteQuery.parm);
+                exp = Expression.GreaterThanOrEqual(property, Expression.Convert(constant, property.Type));
+            }
+            else if (propQuery is IPropQueryMulti0 multiQuery)
+            {
+                // Assuming multiQuery.parm0 is IQuery<T2> and we want to build Contains expression
+                var iqueryType = multiQuery.parm0.GetType();
+                var elementType = iqueryType.GetGenericArguments().FirstOrDefault() ?? property.Type;
+
+                var iqueryInterface = typeof(IQuery<>).MakeGenericType(elementType);
+
+                if (multiQuery.parm0.GetType().IsAssignableTo(iqueryInterface))
+                {
+                    // We do not have the actual DbSet here, so we skip the subquery execution
+                    // This part can be implemented if the context is available
+                    // For now, skip or throw NotImplementedException
+                    throw new NotImplementedException("IQuery subquery execution is not implemented.");
+                }
+                else
+                {
+                    // If parm0 is IEnumerable
+                    var containsMethod = typeof(Enumerable)
+                        .GetMethods()
+                        .Single(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+                        .MakeGenericMethod(property.Type);
+
+                    exp = Expression.Call(containsMethod, Expression.Constant(multiQuery.parm0), property);
+                }
+            }
+            else
+            {
+                // Unknown IPropQuery type, skip
+                continue;
+            }
+
+            if (exp == null)
+                continue;
 
             if (combined == null)
                 combined = exp;
